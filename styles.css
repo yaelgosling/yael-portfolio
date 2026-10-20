@@ -1,0 +1,105 @@
+/* =========================================
+   Variables: colors, fonts and sizes from Figma
+   ========================================= */
+:root {
+  /* Colors */
+  --color-pink: #ff09ca;       /* background */
+  --color-yellow: #ffd30f;     /* title */
+
+  /* Fonts */
+  --font-display: "Instrument Serif", Georgia, serif;
+
+  /* The Figma frame size (Desktop - 1): 1440 × 1024 */
+  --frame-width: 1440;
+  --frame-height: 1024;
+
+  /* Title size: 300px out of a 1440px-wide frame */
+  --title-size: calc(300 / 1440 * 100cqw);
+  --title-line-height: 1.006;
+
+  /* Name size: 48px out of a 1440px-wide frame */
+  --name-size: calc(48 / 1440 * 100cqw);
+}
+
+
+/* =========================================
+   General page settings
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-pink);
+  min-height: 100vh;
+  min-height: 100svh;          /* correct height on phones too */
+  display: grid;
+  place-items: center;         /* center the stage on the screen */
+  overflow: hidden;            /* one screen, no scrolling */
+}
+
+
+/* =========================================
+   The "Coming soon" stage
+   Keeps the Figma frame's proportions and shrinks to fit any screen.
+   All positions are percentages of the frame, so the composition always stays the same.
+   ========================================= */
+.coming-soon {
+  position: relative;
+  width: min(100vw, 100svh * var(--frame-width) / var(--frame-height));
+  aspect-ratio: 1440 / 1024;
+  overflow: hidden;            /* like the frame in Figma: anything outside it is hidden */
+  container-type: inline-size; /* lets the title size follow the stage width */
+}
+
+/* The title "COMING SOON" (x 61, y 418 in Figma) */
+.coming-soon__title {
+  position: absolute;
+  left: calc(61 / 1440 * 100%);
+  top: calc(418 / 1024 * 100%);
+  width: calc(1342 / 1440 * 100%);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--title-size);
+  line-height: var(--title-line-height);
+  color: var(--color-yellow);
+}
+
+/* Illustrations: shared settings */
+.coming-soon__figure,
+.coming-soon__giraffe {
+  position: absolute;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Large figure (x 550, y -23, 727 × 1028 in Figma) */
+.coming-soon__figure {
+  left: calc(550 / 1440 * 100%);
+  top: calc(-23 / 1024 * 100%);
+  width: calc(727 / 1440 * 100%);
+  height: calc(1028 / 1024 * 100%);
+}
+
+/* Giraffe (x 40, y 295, 483 × 683 in Figma) */
+.coming-soon__giraffe {
+  left: calc(40 / 1440 * 100%);
+  top: calc(295 / 1024 * 100%);
+  width: calc(483 / 1440 * 100%);
+  height: calc(683 / 1024 * 100%);
+}
+
+/* The name "Yael Gosling" (x 1186, y 933 in Figma) */
+.coming-soon__name {
+  position: absolute;
+  left: calc(1186 / 1440 * 100%);
+  top: calc(933 / 1024 * 100%);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--name-size);
+  line-height: var(--title-line-height);
+  color: var(--color-yellow);
+  white-space: nowrap;         /* keep the name on one line */
+}
