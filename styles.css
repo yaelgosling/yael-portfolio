@@ -54,11 +54,11 @@ body {
   container-type: inline-size; /* lets the title size follow the stage width */
 }
 
-/* The title "COMING SOON" (x 49, y 418 in Figma) */
+/* The title "COMING SOON" (x 13, y 399 in Figma) */
 .coming-soon__title {
   position: absolute;
-  left: calc(49 / 1440 * 100%);
-  top: calc(418 / 1024 * 100%);
+  left: calc(13 / 1440 * 100%);
+  top: calc(399 / 1024 * 100%);
   width: calc(1342 / 1440 * 100%);
   font-family: var(--font-display);
   font-weight: 400;
@@ -67,22 +67,22 @@ body {
   color: var(--color-yellow);
 }
 
-/* Small figure (x 812, y 224, 170 × 240 in Figma) */
+/* Small figure (x 776, y 205, 170 × 240 in Figma) */
 .coming-soon__figure {
   position: absolute;
-  left: calc(812 / 1440 * 100%);
-  top: calc(224 / 1024 * 100%);
+  left: calc(776 / 1440 * 100%);
+  top: calc(205 / 1024 * 100%);
   width: calc(170 / 1440 * 100%);
   height: calc(240 / 1024 * 100%);
   object-fit: cover;
   pointer-events: none;
 }
 
-/* The name "Yael Gosling" (x 72, y 50 in Figma) */
+/* The name "Yael Gosling" (x 1272, y 924 in Figma) */
 .coming-soon__name {
   position: absolute;
-  left: calc(72 / 1440 * 100%);
-  top: calc(50 / 1024 * 100%);
+  left: calc(1272 / 1440 * 100%);
+  top: calc(924 / 1024 * 100%);
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--name-size);
