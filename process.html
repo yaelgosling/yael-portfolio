@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Process</title>
+
+  <!-- The Instrument Serif font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="process-page">
+
+  <!-- The "Process" screen: a stage with the same proportions as the Figma frame -->
+  <main class="process">
+
+    <!-- Pink rectangle behind the chosen direction (bottom layer) -->
+    <div class="process__chosen-background"></div>
+
+    <!--
+      The entries: one per week, oldest at the top.
+      To add a week, copy an entry, paste it at the end and change the date, title and text.
+      Its images go below, each with its own class and position in styles.css.
+    -->
+    <div class="process__entries">
+
+      <!-- 19/10 -->
+      <article class="entry">
+        <time class="entry__date" datetime="2026-10-19">19/10</time>
+        <h2 class="entry__title">Coming Soon.</h2>
+        <p class="entry__text"></p>
+      </article>
+
+      <!-- 26/10 -->
+      <article class="entry">
+        <time class="entry__date" datetime="2026-10-26">26/10</time>
+        <h2 class="entry__title">Two directions, pick one.</h2>
+        <p class="entry__text"></p>
+      </article>
+
+    </div>
+
+    <!-- Images of 26/10: the chosen direction (frames) and the other one (basket) -->
+    <img class="process__image process__image--frames" src="images/process-2026-10-26-frames.png" alt="Direction with hand-drawn picture frames (chosen)">
+    <img class="process__image process__image--basket" src="images/process-2026-10-26-basket.png" alt="Direction with a wire basket">
+
+    <!-- Chick on a skateboard (decoration) -->
+    <img class="process__image process__image--chick" src="images/process-chick.png" alt="">
+
+  </main>
+
+</body>
+</html>

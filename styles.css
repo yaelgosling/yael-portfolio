@@ -5,6 +5,7 @@
   /* Colors */
   --color-pink: #ff09ca;       /* background */
   --color-yellow: #ffd30f;     /* title */
+  --color-blue: #0000ff;       /* process page text */
 
   /* Fonts */
   --font-display: "Instrument Serif", Georgia, serif;
@@ -19,6 +20,9 @@
 
   /* Small text size (name, "Process"): 40px out of a 1440px-wide frame */
   --small-text-size: calc(40 / 1440 * 100cqw);
+
+  /* Process page text size: 40px out of a 1440px-wide frame */
+  --process-text-size: calc(40 / 1440 * 100cqw);
 }
 
 
@@ -88,6 +92,13 @@ body {
   line-height: var(--title-line-height);
   color: var(--color-yellow);
   white-space: nowrap;         /* keep each text on one line */
+  text-decoration: none;       /* "Process" is a link, but looks like the design */
+}
+
+/* Underline "Process" when hovering, so it feels clickable */
+.coming-soon__process:hover,
+.coming-soon__process:focus-visible {
+  text-decoration: underline;
 }
 
 /* The name "Yael Gosling" (x 365, y 110 in Figma) */
@@ -98,6 +109,101 @@ body {
 
 /* The word "Process" (x 1036, y 498 in Figma) */
 .coming-soon__process {
+  z-index: 1;                  /* above the title, so the click always reaches the link */
   left: calc(1036 / 1440 * 100%);
   top: calc(498 / 1024 * 100%);
+}
+
+
+/* =========================================
+   Process page
+   Same idea as the home page: a stage with the Figma frame's proportions
+   (1440 × 1024). Every element sits at its Figma position, in percentages.
+   ========================================= */
+
+/* The page background is yellow */
+body.process-page {
+  background-color: var(--color-yellow);
+}
+
+/* The stage: same size rules as the home page */
+.process {
+  position: relative;
+  width: min(100vw, 100svh * var(--frame-width) / var(--frame-height));
+  aspect-ratio: 1440 / 1024;
+  overflow: hidden;
+  container-type: inline-size;  /* lets the text size follow the stage width */
+}
+
+/* Pink rectangle behind the chosen direction (x 283, y 527, 521 × 316) */
+.process__chosen-background {
+  position: absolute;
+  left: calc(283 / 1440 * 100%);
+  top: calc(527 / 1024 * 100%);
+  width: calc(521 / 1440 * 100%);
+  height: calc(316 / 1024 * 100%);
+  background-color: var(--color-pink);
+}
+
+/* The text block with all the entries (x 247, y 244, 883 wide) */
+.process__entries {
+  position: absolute;
+  left: calc(247 / 1440 * 100%);
+  top: calc(244 / 1024 * 100%);
+  width: calc(883 / 1440 * 100%);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--process-text-size);
+  line-height: var(--title-line-height);
+  color: var(--color-blue);
+}
+
+/* One empty line between entries */
+.entry + .entry {
+  margin-top: calc(var(--title-line-height) * 1em);
+}
+
+/* Date and title: one under the other, same size */
+.entry__date,
+.entry__title {
+  display: block;
+  font-size: 1em;
+  font-weight: 400;
+}
+
+/* Short text under the title (hidden while it is empty) */
+.entry__text:empty {
+  display: none;
+}
+
+/* All the images: placed by their own class below */
+.process__image {
+  position: absolute;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 26/10, frames screenshot – the chosen direction (x 316, y 558, 455 × 253, pink border) */
+.process__image--frames {
+  left: calc(316 / 1440 * 100%);
+  top: calc(558 / 1024 * 100%);
+  width: calc(455 / 1440 * 100%);
+  height: calc(253 / 1024 * 100%);
+  border: 1px solid var(--color-pink);
+}
+
+/* 26/10, basket screenshot (x 771, y 86, 379 × 268) */
+.process__image--basket {
+  left: calc(771 / 1440 * 100%);
+  top: calc(86 / 1024 * 100%);
+  width: calc(379 / 1440 * 100%);
+  height: calc(268 / 1024 * 100%);
+}
+
+/* Chick on a skateboard (x 1057, y 728, 175 × 247) */
+.process__image--chick {
+  left: calc(1057 / 1440 * 100%);
+  top: calc(728 / 1024 * 100%);
+  width: calc(175 / 1440 * 100%);
+  height: calc(247 / 1024 * 100%);
 }
