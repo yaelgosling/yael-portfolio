@@ -39,20 +39,18 @@ body {
   background-color: var(--color-pink);
   min-height: 100vh;
   min-height: 100svh;          /* correct height on phones too */
-  display: grid;
-  place-items: center;         /* center the stage on the screen */
-  overflow: hidden;            /* one screen, no scrolling */
+  overflow-x: hidden;          /* never scroll sideways; scrolling down is fine */
 }
 
 
 /* =========================================
    The "Coming soon" stage
-   Keeps the Figma frame's proportions and shrinks to fit any screen.
+   Keeps the Figma frame's proportions and fills the full width of the window.
    All positions are percentages of the frame, so the composition always stays the same.
    ========================================= */
 .coming-soon {
   position: relative;
-  width: min(100vw, 100svh * var(--frame-width) / var(--frame-height));
+  width: 100%;                 /* always the full width of the window, like the frame in Figma */
   aspect-ratio: 1440 / 1024;
   overflow: hidden;            /* like the frame in Figma: anything outside it is hidden */
   container-type: inline-size; /* lets the title size follow the stage width */
@@ -129,7 +127,7 @@ body.process-page {
 /* The stage: same size rules as the home page */
 .process {
   position: relative;
-  width: min(100vw, 100svh * var(--frame-width) / var(--frame-height));
+  width: 100%;                 /* always the full width of the window, like the frame in Figma */
   aspect-ratio: 1440 / 1024;
   overflow: hidden;
   container-type: inline-size;  /* lets the text size follow the stage width */
