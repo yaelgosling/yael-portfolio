@@ -17,8 +17,8 @@
   --title-size: calc(300 / 1440 * 100cqw);
   --title-line-height: 1.006;
 
-  /* Name size: 36px out of a 1440px-wide frame */
-  --name-size: calc(36 / 1440 * 100cqw);
+  /* Small text size (name, "Process"): 40px out of a 1440px-wide frame */
+  --small-text-size: calc(40 / 1440 * 100cqw);
 }
 
 
@@ -54,10 +54,10 @@ body {
   container-type: inline-size; /* lets the title size follow the stage width */
 }
 
-/* The title "COMING SOON" (x 13, y 399 in Figma) */
+/* The title "COMING SOON" (x 49, y 399 in Figma) */
 .coming-soon__title {
   position: absolute;
-  left: calc(13 / 1440 * 100%);
+  left: calc(49 / 1440 * 100%);
   top: calc(399 / 1024 * 100%);
   width: calc(1342 / 1440 * 100%);
   font-family: var(--font-display);
@@ -67,26 +67,37 @@ body {
   color: var(--color-yellow);
 }
 
-/* Small figure (x 776, y 205, 170 × 240 in Figma) */
+/* Small figure (x 798, y 162, 199 × 282 in Figma) */
 .coming-soon__figure {
   position: absolute;
-  left: calc(776 / 1440 * 100%);
-  top: calc(205 / 1024 * 100%);
-  width: calc(170 / 1440 * 100%);
-  height: calc(240 / 1024 * 100%);
+  left: calc(798 / 1440 * 100%);
+  top: calc(162 / 1024 * 100%);
+  width: calc(199 / 1440 * 100%);
+  height: calc(282 / 1024 * 100%);
   object-fit: cover;
   pointer-events: none;
 }
 
-/* The name "Yael Gosling" (x 1272, y 924 in Figma) */
-.coming-soon__name {
+/* Shared style for the small texts: the name and "Process" */
+.coming-soon__name,
+.coming-soon__process {
   position: absolute;
-  left: calc(1272 / 1440 * 100%);
-  top: calc(924 / 1024 * 100%);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--name-size);
+  font-size: var(--small-text-size);
   line-height: var(--title-line-height);
   color: var(--color-yellow);
-  white-space: nowrap;         /* keep the name on one line */
+  white-space: nowrap;         /* keep each text on one line */
+}
+
+/* The name "Yael Gosling" (x 365, y 110 in Figma) */
+.coming-soon__name {
+  left: calc(365 / 1440 * 100%);
+  top: calc(110 / 1024 * 100%);
+}
+
+/* The word "Process" (x 1036, y 498 in Figma) */
+.coming-soon__process {
+  left: calc(1036 / 1440 * 100%);
+  top: calc(498 / 1024 * 100%);
 }
