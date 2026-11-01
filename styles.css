@@ -3,26 +3,39 @@
    ========================================= */
 :root {
   /* Colors */
-  --color-pink: #ff09ca;       /* background */
-  --color-yellow: #ffd30f;     /* title */
-  --color-blue: #0000ff;       /* process page text */
+  --color-white: #ffffff;      /* page background */
+  --color-black: #000000;      /* text */
+  --color-orange: #fd6126;     /* card pieces */
+  --color-blue: #5262f0;       /* card pieces */
+  --color-lime: #dffe40;       /* card pieces and small labels */
 
   /* Fonts */
   --font-display: "Instrument Serif", Georgia, serif;
+  --line-height: 1.006;
 
-  /* The Figma frame size (Desktop - 1): 1440 × 1024 */
-  --frame-width: 1440;
-  --frame-height: 1024;
+  /* One Figma pixel on the home page. The whole 1440 × 1024 frame always fits in the window,
+     and the rest of the wall fills any extra space (the wall is never smaller than the window) */
+  --figma-pixel: max(min(100vw / 1440, 100svh / 1024), 100vw / 2007.702, 100svh / 1477);
 
-  /* Title size: 300px out of a 1440px-wide frame */
-  --title-size: calc(300 / 1440 * 100cqw);
-  --title-line-height: 1.006;
+  /* The wall of frames is bigger than the Figma frame: how far it reaches past the frame's corner */
+  --wall-left: 276;
+  --wall-top: 179;
 
-  /* Small text size (name, "Process"): 40px out of a 1440px-wide frame */
-  --small-text-size: calc(40 / 1440 * 100cqw);
+  /* Coming soon page text sizes */
+  --title-size: calc(80 * var(--figma-pixel));
+  --small-text-size: calc(40 * var(--figma-pixel));
 
-  /* Process page text size: 40px out of a 1440px-wide frame */
-  --process-text-size: calc(40 / 1440 * 100cqw);
+  /* Process page: sizes out of a 1440px-wide frame */
+  --process-side-space: calc(95 / 1440 * 100cqw);
+  --process-top-space: calc(79 / 1440 * 100cqw);
+  --process-card-gap: calc(62 / 1440 * 100cqw);
+  --process-card-width: calc(302 / 1440 * 100cqw);
+
+  /* Card text: 12px out of a 302px-wide card */
+  --card-text-size: calc(12 / 302 * 100cqw);
+
+  /* Process page on phones */
+  --phone-space: 16px;
 }
 
 
@@ -36,7 +49,7 @@
 }
 
 body {
-  background-color: var(--color-pink);
+  background-color: var(--color-white);
   min-height: 100vh;
   min-height: 100svh;          /* correct height on phones too */
   overflow-x: hidden;          /* never scroll sideways; scrolling down is fine */
@@ -44,164 +57,201 @@ body {
 
 
 /* =========================================
-   The "Coming soon" stage
-   Keeps the Figma frame's proportions and fills the full width of the window.
-   All positions are percentages of the frame, so the composition always stays the same.
+   The "Coming soon" page
+   The window shows part of a big wall of frames, and the mouse pulls the wall around.
+   Numbers below are Figma positions, so they can be compared with the design.
    ========================================= */
 .coming-soon {
   position: relative;
-  width: 100%;                 /* always the full width of the window, like the frame in Figma */
-  aspect-ratio: 1440 / 1024;
-  overflow: hidden;            /* like the frame in Figma: anything outside it is hidden */
-  container-type: inline-size; /* lets the title size follow the stage width */
+  width: 100%;
+  height: 100vh;
+  height: 100svh;              /* exactly the size of the window */
+  overflow: hidden;
+  overflow: clip;
+  cursor: grab;
+  touch-action: none;          /* on phones a finger pulls the wall instead of scrolling */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* The title "COMING SOON" (x 49, y 399 in Figma) */
-.coming-soon__title {
-  position: absolute;
-  left: calc(49 / 1440 * 100%);
-  top: calc(399 / 1024 * 100%);
-  width: calc(1342 / 1440 * 100%);
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: var(--title-size);
-  line-height: var(--title-line-height);
-  color: var(--color-yellow);
+.coming-soon.is-dragging {
+  cursor: grabbing;
 }
 
-/* Small figure (x 798, y 162, 199 × 282 in Figma) */
-.coming-soon__figure {
+/* The wall. script.js changes --pan-x and --pan-y when it is pulled */
+.coming-soon__wall {
   position: absolute;
-  left: calc(798 / 1440 * 100%);
-  top: calc(162 / 1024 * 100%);
-  width: calc(199 / 1440 * 100%);
-  height: calc(282 / 1024 * 100%);
-  object-fit: cover;
+  left: 0;
+  top: 0;
+  width: calc(2007.702 * var(--figma-pixel));
+  height: calc(1477 * var(--figma-pixel));
+  transform: translate(
+    calc((var(--pan-x, 0) - var(--wall-left)) * var(--figma-pixel)),
+    calc((var(--pan-y, 0) - var(--wall-top)) * var(--figma-pixel))
+  );
+}
+
+/* The artwork area, turned 90° like in Figma (1477 × 2007.7 before turning) */
+.coming-soon__background {
+  position: absolute;
+  left: calc((-10.649 + var(--wall-left)) * var(--figma-pixel));
+  top: calc((-444.351 + var(--wall-top)) * var(--figma-pixel));
+  width: calc(1477 * var(--figma-pixel));
+  height: calc(2007.702 * var(--figma-pixel));
+  overflow: hidden;            /* the artwork is cropped to this area */
+  transform: rotate(90deg);
   pointer-events: none;
 }
 
-/* Shared style for the small texts: the name and "Process" */
+/* The artwork is wider than its area: Figma shows it at 135.93% width, from the left */
+.coming-soon__background-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 135.93%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Shared text style for this page */
+.coming-soon__title,
 .coming-soon__name,
-.coming-soon__process {
+.coming-soon__process-word {
   position: absolute;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--small-text-size);
-  line-height: var(--title-line-height);
-  color: var(--color-yellow);
-  white-space: nowrap;         /* keep each text on one line */
-  text-decoration: none;       /* "Process" is a link, but looks like the design */
+  line-height: var(--line-height);
+  color: var(--color-black);
 }
 
-/* Underline "Process" when hovering, so it feels clickable */
-.coming-soon__process:hover,
-.coming-soon__process:focus-visible {
-  text-decoration: underline;
+/* The title "COMING SOON" (x 146, y 420 in Figma) */
+.coming-soon__title {
+  left: calc((146 + var(--wall-left)) * var(--figma-pixel));
+  top: calc((420 + var(--wall-top)) * var(--figma-pixel));
+  font-size: var(--title-size);
 }
 
-/* The name "Yael Gosling" (x 365, y 110 in Figma) */
+/* The name "Yael Gosling" (x -138, y 0 in Figma) */
 .coming-soon__name {
-  left: calc(365 / 1440 * 100%);
-  top: calc(110 / 1024 * 100%);
+  left: calc((-138 + var(--wall-left)) * var(--figma-pixel));
+  top: calc((0 + var(--wall-top)) * var(--figma-pixel));
+  font-size: var(--small-text-size);
+  white-space: nowrap;
 }
 
-/* The word "Process" (x 1036, y 498 in Figma) */
-.coming-soon__process {
-  z-index: 1;                  /* above the title, so the click always reaches the link */
-  left: calc(1036 / 1440 * 100%);
-  top: calc(498 / 1024 * 100%);
+/* The clickable area: the whole orange frame with its drawn border (x 1039, y 385, 621 × 400) */
+.coming-soon__process-link {
+  position: absolute;
+  left: calc((1039 + var(--wall-left)) * var(--figma-pixel));
+  top: calc((385 + var(--wall-top)) * var(--figma-pixel));
+  width: calc(621 * var(--figma-pixel));
+  height: calc(400 * var(--figma-pixel));
+}
+
+/* The word "Process" (x 1316, y 559 in Figma, measured here from the clickable area) */
+.coming-soon__process-word {
+  left: calc((1316 - 1039) * var(--figma-pixel));
+  top: calc((559 - 385) * var(--figma-pixel));
+  font-size: var(--small-text-size);
+  white-space: nowrap;
+}
+
+/* Hovering over the frame or the word changes it to the italic of Instrument Serif */
+.coming-soon__process-link:hover .coming-soon__process-word,
+.coming-soon__process-link:focus-visible .coming-soon__process-word {
+  font-style: italic;
 }
 
 
 /* =========================================
    Process page
-   Same idea as the home page: a stage with the Figma frame's proportions
-   (1440 × 1024). Every element sits at its Figma position, in percentages.
+   A row of closed tabs, one per week. Clicking a tab opens its card.
+   Sizes follow the window width.
    ========================================= */
-
-/* The page background is yellow */
-body.process-page {
-  background-color: var(--color-yellow);
-}
-
-/* The stage: same size rules as the home page */
 .process {
+  width: 100%;
+  container-type: inline-size; /* lets the sizes below follow the page width */
+}
+
+.process__cards {
+  padding: var(--process-top-space) var(--process-side-space);
+  display: flex;
+  flex-wrap: wrap;             /* new weeks continue on the next line */
+  align-items: flex-start;
+  gap: var(--process-card-gap);
+}
+
+/* One card. Closed, it is only as tall as its tab */
+.card {
   position: relative;
-  width: 100%;                 /* always the full width of the window, like the frame in Figma */
-  aspect-ratio: 1440 / 1024;
-  overflow: hidden;
-  container-type: inline-size;  /* lets the text size follow the stage width */
+  flex: none;
+  width: var(--process-card-width);
+  aspect-ratio: 302 / var(--tab-height);
+  container-type: inline-size; /* lets everything inside follow the card width */
 }
 
-/* Pink rectangle behind the chosen direction (x 283, y 527, 521 × 316) */
-.process__chosen-background {
+.card.is-open {
+  aspect-ratio: 302 / var(--card-height);
+}
+
+/* A colored block or an image inside a card, placed in Figma pixels (see process.html) */
+.card__piece {
   position: absolute;
-  left: calc(283 / 1440 * 100%);
-  top: calc(527 / 1024 * 100%);
-  width: calc(521 / 1440 * 100%);
-  height: calc(316 / 1024 * 100%);
-  background-color: var(--color-pink);
+  left: calc(var(--x) / 302 * 100cqw);
+  top: calc(var(--y) / 302 * 100cqw);
+  width: calc(var(--w) / 302 * 100cqw);
+  height: calc(var(--h) / 302 * 100cqw);
 }
 
-/* The text block with all the entries (x 247, y 244, 883 wide) */
-.process__entries {
-  position: absolute;
-  left: calc(247 / 1440 * 100%);
-  top: calc(244 / 1024 * 100%);
-  width: calc(883 / 1440 * 100%);
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: var(--process-text-size);
-  line-height: var(--title-line-height);
-  color: var(--color-blue);
-}
+.card__piece--orange { background-color: var(--color-orange); }
+.card__piece--blue { background-color: var(--color-blue); }
+.card__piece--lime { background-color: var(--color-lime); }
+.card__piece--white { background-color: var(--color-white); }
 
-/* One empty line between entries */
-.entry + .entry {
-  margin-top: calc(var(--title-line-height) * 1em);
-}
-
-/* Date and title: one under the other, same size */
-.entry__date,
-.entry__title {
-  display: block;
-  font-size: 1em;
-  font-weight: 400;
-}
-
-/* Short text under the title (hidden while it is empty) */
-.entry__text:empty {
-  display: none;
-}
-
-/* All the images: placed by their own class below */
-.process__image {
-  position: absolute;
+.card__image {
   object-fit: cover;
-  pointer-events: none;
 }
 
-/* 26/10, frames screenshot – the chosen direction (x 316, y 558, 455 × 253, pink border) */
-.process__image--frames {
-  left: calc(316 / 1440 * 100%);
-  top: calc(558 / 1024 * 100%);
-  width: calc(455 / 1440 * 100%);
-  height: calc(253 / 1024 * 100%);
-  border: 1px solid var(--color-pink);
+/* The date tab: a button that opens and closes the card */
+.card__tab {
+  border: none;
+  cursor: pointer;
 }
 
-/* 26/10, basket screenshot (x 771, y 86, 379 × 268) */
-.process__image--basket {
-  left: calc(771 / 1440 * 100%);
-  top: calc(86 / 1024 * 100%);
-  width: calc(379 / 1440 * 100%);
-  height: calc(268 / 1024 * 100%);
+/* Hovering over the tab changes the date to the italic of Instrument Serif */
+.card__tab:hover .card__date,
+.card__tab:focus-visible .card__date {
+  font-style: italic;
 }
 
-/* Chick on a skateboard (x 1057, y 728, 175 × 247) */
-.process__image--chick {
-  left: calc(1057 / 1440 * 100%);
-  top: calc(728 / 1024 * 100%);
-  width: calc(175 / 1440 * 100%);
-  height: calc(247 / 1024 * 100%);
+/* A piece of text inside a card */
+.card__text {
+  position: absolute;
+  left: calc(var(--x) / 302 * 100cqw);
+  top: calc(var(--y) / 302 * 100cqw);
+  width: calc(var(--w) / 302 * 100cqw);
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: var(--card-text-size);
+  font-weight: 400;
+  line-height: var(--line-height);
+  color: var(--color-black);
+}
+
+.card__text--lime {
+  color: var(--color-lime);
+}
+
+/* Phones: the cards stack and fill the width, so the text stays readable */
+@media (max-width: 700px) {
+  .process__cards {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: var(--phone-space);
+    gap: var(--phone-space);
+  }
+
+  .card {
+    width: 100%;
+  }
 }

@@ -8,28 +8,36 @@
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- The "Coming soon" screen: a stage with the same proportions as the Figma frame -->
+  <!-- The "Coming soon" screen: fills the window, and the wall inside it can be pulled around -->
   <main class="coming-soon">
+    <div class="coming-soon__wall">
 
-    <!-- The main title (bottom layer, the illustrations sit on top of it) -->
-    <h1 class="coming-soon__title">COMING SOON</h1>
+      <!-- The hand-drawn frames artwork (bottom layer) -->
+      <div class="coming-soon__background">
+        <img class="coming-soon__background-image" src="images/home-frames-background.png" alt="">
+      </div>
 
-    <!-- Small figure standing on top of the letter G -->
-    <img class="coming-soon__figure" src="images/figure-large.png" alt="">
+      <!-- The title, inside the big blue frame -->
+      <h1 class="coming-soon__title">COMING<br>SOON</h1>
 
-    <!-- My name, top left -->
-    <p class="coming-soon__name">Yael Gosling</p>
+      <!-- My name. It starts outside the first view: pull the wall to see all of it -->
+      <p class="coming-soon__name">Yael Gosling</p>
 
-    <!-- Link to the process page, to the right of the title -->
-    <a class="coming-soon__process" href="process.html">Process</a>
+      <!-- Link to the process page: covers the whole orange frame and the word in it -->
+      <a class="coming-soon__process-link" href="process.html">
+        <span class="coming-soon__process-word">Process</span>
+      </a>
 
+    </div>
   </main>
+
+  <script src="script.js"></script>
 
 </body>
 </html>

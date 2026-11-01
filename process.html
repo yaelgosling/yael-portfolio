@@ -8,49 +8,65 @@
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="process-page">
+<body>
 
-  <!-- The "Process" screen: a stage with the same proportions as the Figma frame -->
+  <!-- The "Process" screen: one card per week, oldest on the left -->
   <main class="process">
+    <div class="process__cards">
 
-    <!-- Pink rectangle behind the chosen direction (bottom layer) -->
-    <div class="process__chosen-background"></div>
-
-    <!--
-      The entries: one per week, oldest at the top.
-      To add a week, copy an entry, paste it at the end and change the date, title and text.
-      Its images go below, each with its own class and position in styles.css.
-    -->
-    <div class="process__entries">
+      <!--
+        HOW TO ADD A NEW WEEK
+        Copy a whole card, paste it at the end of the list and change its content.
+        The numbers are the Figma pixels, measured from the card's top left corner:
+        x and y = position, w and h = size. A card is 302 wide.
+        --card-height = height of the open card, --tab-height = height of the closed tab.
+        Pieces later in the code sit on top of earlier ones.
+      -->
 
       <!-- 19/10 -->
-      <article class="entry">
-        <time class="entry__date" datetime="2026-10-19">19/10</time>
-        <h2 class="entry__title">Coming Soon.</h2>
-        <p class="entry__text"></p>
+      <article class="card" style="--card-height: 341; --tab-height: 35">
+        <!-- The tab with the date: all you see until you click it -->
+        <button class="card__tab card__piece card__piece--blue" style="--x: 0; --y: 0; --w: 151; --h: 35" type="button" aria-expanded="false">
+          <time class="card__text card__date" style="--x: 26; --y: 12; --w: 62" datetime="2026-10-19">19/10</time>
+        </button>
+        <!-- Everything that opens -->
+        <div class="card__content" hidden>
+          <div class="card__piece card__piece--orange" style="--x: 0; --y: 48; --w: 302; --h: 272"></div>
+          <div class="card__piece card__piece--lime" style="--x: 0; --y: 35; --w: 302; --h: 35"></div>
+          <h2 class="card__text" style="--x: 26; --y: 48; --w: 164">COMING SOON PAGE</h2>
+          <div class="card__piece card__piece--lime" style="--x: 0; --y: 309; --w: 302; --h: 32"></div>
+          <img class="card__piece card__image" style="--x: 29; --y: 102; --w: 244.874; --h: 175" src="images/process-coming-soon-page.png" alt="The first Coming Soon page">
+        </div>
       </article>
 
-      <!-- 26/10 -->
-      <article class="entry">
-        <time class="entry__date" datetime="2026-10-26">26/10</time>
-        <h2 class="entry__title">Two directions, pick one.</h2>
-        <p class="entry__text"></p>
+      <!-- 27/10 -->
+      <article class="card" style="--card-height: 507; --tab-height: 34.8">
+        <button class="card__tab card__piece card__piece--lime" style="--x: 0; --y: 0; --w: 151.1; --h: 34.8" type="button" aria-expanded="false">
+          <time class="card__text card__date" style="--x: 26; --y: 11; --w: 62" datetime="2026-10-27">27/10</time>
+        </button>
+        <div class="card__content" hidden>
+          <div class="card__piece card__piece--blue" style="--x: 0; --y: 48; --w: 302; --h: 459"></div>
+          <div class="card__piece card__piece--orange" style="--x: 0; --y: 475; --w: 302; --h: 32"></div>
+          <img class="card__piece card__image" style="--x: 29; --y: 102; --w: 244.52; --h: 136" src="images/process-2026-10-26-frames.png" alt="Direction A: hand-drawn picture frames">
+          <img class="card__piece card__image" style="--x: 29; --y: 270; --w: 245; --h: 173.202" src="images/process-2026-10-26-basket.png" alt="Direction B: a wire basket">
+          <div class="card__piece card__piece--orange" style="--x: 151; --y: 0; --w: 151; --h: 70"></div>
+          <div class="card__piece card__piece--white" style="--x: 0; --y: 34.8; --w: 151.1; --h: 34.8"></div>
+          <p class="card__text" style="--x: 26; --y: 48; --w: 62">PROCESS</p>
+          <p class="card__text" style="--x: 26; --y: 485; --w: 258">#A FOR THE WIN</p>
+          <p class="card__text card__text--lime" style="--x: 29; --y: 90; --w: 62">#A</p>
+          <p class="card__text card__text--lime" style="--x: 29; --y: 258; --w: 62">#B</p>
+          <h2 class="card__text" style="--x: 189; --y: 23; --w: 95">TWO DIRECTIONS, PICK ONE.</h2>
+        </div>
       </article>
 
     </div>
-
-    <!-- Images of 26/10: the chosen direction (frames) and the other one (basket) -->
-    <img class="process__image process__image--frames" src="images/process-2026-10-26-frames.png" alt="Direction with hand-drawn picture frames (chosen)">
-    <img class="process__image process__image--basket" src="images/process-2026-10-26-basket.png" alt="Direction with a wire basket">
-
-    <!-- Chick on a skateboard (decoration) -->
-    <img class="process__image process__image--chick" src="images/process-chick.png" alt="">
-
   </main>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
