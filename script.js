@@ -20,7 +20,7 @@ if (home && canMove) {
   const between = (min, max) => min + Math.random() * (max - min);
 
   // How much each frame moves: more for frames further from the middle, with a bit of randomness
-  const frames = [...home.querySelectorAll(".home-frame")].map((element) => {
+  const frames = [...home.querySelectorAll(".home__frames .home-frame")].map((element) => {
     const read = (name) => parseFloat(element.style.getPropertyValue(name));
     const middleX = read("--x") + read("--w") / 2;
     const middleY = read("--y") + read("--h") / 2;
@@ -90,7 +90,7 @@ if (home && canMove) {
    ========================================= */
 const PAGE_CHANGE_TIME = 900;  // the same as --page-change-time in styles.css
 
-document.querySelectorAll(".home-frame--link").forEach((link) => {
+document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
   let slide = null;
 
   // Load the project page below the screen (as soon as the mouse is over the frame)
@@ -161,6 +161,47 @@ document.querySelectorAll(".project-video").forEach((video) => {
   video.addEventListener("pause", () => video.classList.remove("is-playing"));
   video.addEventListener("ended", () => video.classList.remove("is-playing"));
 });
+
+
+/* =========================================
+   The index: clicking INDEX opens the list and blurs everything else.
+   Clicking on the blur (or pressing Escape) closes it.
+   ========================================= */
+const indexButton = document.querySelector(".site-bar__index");
+
+if (indexButton) {
+  const blur = document.createElement("div");
+  blur.className = "site-index-blur";
+  document.body.appendChild(blur);
+
+  function setIndexOpen(open) {
+    document.body.classList.toggle("is-index-open", open);
+    document.documentElement.classList.toggle("is-index-open-page", open);   // the page can't scroll
+    indexButton.setAttribute("aria-expanded", open);
+  }
+
+  indexButton.addEventListener("click", () => {
+    setIndexOpen(!document.body.classList.contains("is-index-open"));
+  });
+  blur.addEventListener("click", () => setIndexOpen(false));
+
+  // The two buttons in the band switch between the list and the photos
+  const panel = document.querySelector(".site-index");
+  panel.querySelectorAll(".site-index__view").forEach((button) => {
+    button.addEventListener("click", () => {
+      const view = button.classList.contains("site-index__view--photos") ? "photos" : "list";
+      panel.dataset.view = view;
+      panel.querySelectorAll(".site-index__view").forEach((other) => {
+        const chosen = other === button;
+        other.classList.toggle("is-active", chosen);
+        other.setAttribute("aria-pressed", chosen);
+      });
+    });
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setIndexOpen(false);
+  });
+}
 
 
 /* =========================================

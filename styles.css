@@ -22,10 +22,15 @@
   --project-title-size: calc(50 * var(--stage-pixel));
   --project-contact-size: calc(36 * var(--stage-pixel));
   --project-nav-text-size: calc(11.747 * var(--stage-pixel));
-  --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
+  --project-line: 1px;         /* every black line on the site: always exactly 1 pixel thin */
 
   /* The mouse on project pages: a tiny black dot (6px, the click point is its middle) */
   --cursor-dot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='3' fill='black'/%3E%3C/svg%3E") 3 3, auto;
+
+  /* The index */
+  --index-blur: 12px;              /* how much the page blurs behind the open index */
+  --index-open-time: 0.7s;
+  --index-name-size: calc(12 * var(--stage-pixel));
 
   /* Moving between pages */
   --page-change-time: 0.9s;
@@ -124,7 +129,8 @@ body.home-page {
   z-index: 1;
 }
 
-.home-frame:has(.home-frame__hover):hover .home-frame__image {
+.home-frame:has(.home-frame__hover):hover .home-frame__image,
+.home-frame:has(.home-frame__hover):hover .site-index__photo-part {
   visibility: hidden;
 }
 
@@ -177,10 +183,211 @@ body.home-page {
   transform: translateX(-50%);
 }
 
+/* INDEX is a button: no button look */
+.site-bar__index {
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
 /* Hovering over a word in the bar makes it italic, so people know it can be clicked */
 .site-bar__text:hover,
 .site-bar__text:focus-visible {
   font-style: italic;
+}
+
+
+/* =========================================
+   The index ("open index list" in Figma)
+   Clicking INDEX opens the list downwards under the bar, and everything else blurs.
+   Clicking on the blur closes it again (script.js).
+   ========================================= */
+
+/* While the index is open, INDEX stays italic */
+.is-index-open .site-bar__index {
+  font-style: italic;
+}
+
+/* The orange panel under the bar. Closed, it is rolled up to the top */
+.site-index {
+  position: absolute;
+  left: 0;
+  top: calc(69.6 * var(--stage-pixel));
+  width: calc(302 * var(--stage-pixel));
+  height: calc(636 * var(--stage-pixel));
+  background-color: var(--color-orange);
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path var(--index-open-time) var(--page-change-easing),
+    visibility 0s linear var(--index-open-time);
+}
+
+.is-index-open .site-index {
+  clip-path: inset(0 0 0 0);
+  visibility: visible;
+  transition: clip-path var(--index-open-time) var(--page-change-easing);
+}
+
+/* The black lines between the names */
+.site-index__line {
+  position: absolute;
+  left: 0;
+  top: calc(var(--y) * var(--stage-pixel));
+  width: 100%;
+  height: var(--project-line);
+  background-color: var(--color-black);
+}
+
+/* A project name: Inter 12px. On hover it changes to Instrument Serif italic.
+   Each name fills the row between its two lines and sits in the middle of it,
+   so both fonts sit in exactly the same place */
+.site-index__name {
+  position: absolute;
+  left: calc(33 * var(--stage-pixel));
+  right: 0;
+  top: calc(var(--y) * var(--stage-pixel) + var(--project-line));
+  height: calc(var(--h) * var(--stage-pixel) - var(--project-line));
+  display: flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: var(--index-name-size);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-black);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-index__name:hover,
+.site-index__name:focus-visible {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* The lime band at the bottom, with the list and grid icons */
+.site-index__band {
+  position: absolute;
+  left: 0;
+  top: calc(603 * var(--stage-pixel));
+  width: 100%;
+  height: calc(33 * var(--stage-pixel));
+  background-color: var(--color-lime);
+}
+
+/* The two view buttons in the band: black, purple on hover and when chosen */
+.site-index__view {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(12 * var(--stage-pixel));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-black);
+  cursor: pointer;
+}
+
+.site-index__view svg {
+  display: block;
+  width: 100%;
+  fill: currentColor;
+}
+
+.site-index__view:hover,
+.site-index__view:focus-visible,
+.site-index__view.is-active {
+  color: var(--color-blue);
+}
+
+/* Which view is showing: the list (names and their lines) or the photos */
+.site-index[data-view="photos"] .site-index__name,
+.site-index[data-view="photos"] .site-index__line--list,
+.site-index[data-view="list"] .site-index__photos {
+  display: none;
+}
+
+/* The photos: a column of frames between the top line and the band. Scrolls inside */
+.site-index__photos {
+  position: absolute;
+  left: 0;
+  top: calc(1 * var(--stage-pixel) + var(--project-line));
+  width: 100%;
+  height: calc(602 * var(--stage-pixel) - var(--project-line));
+  overflow-y: auto;
+  overscroll-behavior: contain;   /* scrolling to the end doesn't scroll the page */
+  scrollbar-width: none;
+}
+
+.site-index__photos::-webkit-scrollbar {
+  display: none;
+}
+
+.site-index__photos-track {
+  position: relative;
+  height: calc(918 * var(--stage-pixel));
+}
+
+/* The frames use the home page frame styles (with the same hover pictures),
+   but they don't follow the mouse here */
+.site-index__photo {
+  transform: none;
+  transition: none;
+}
+
+/* Some frames show only their inner drawing, placed like in Figma */
+.site-index__photo-part {
+  position: absolute;
+  inset: var(--inset);
+  width: auto;
+  height: auto;
+}
+
+.site-index__photo-part img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Everything else blurs. The blur sits under the bar and above the page */
+.site-index-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  backdrop-filter: blur(var(--index-blur));
+  -webkit-backdrop-filter: blur(var(--index-blur));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--index-open-time) ease;
+}
+
+.is-index-open .site-index-blur {
+  opacity: 1;
+  pointer-events: auto;      /* clicking on the blur closes the index */
+}
+
+/* On the home page the bar sits in the middle, so the open index wouldn't fit below it:
+   the bar moves up to its spot at the top first (the same spot as on the project page) */
+.is-index-open .home .site-bar {
+  transform: translate(
+    calc((569 - 571) * var(--stage-pixel)),
+    calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
+  );
+}
+
+/* While the index is open the page doesn't scroll (so "Reach Out" can't come up) */
+html.is-index-open-page {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-index,
+  .is-index-open .site-index,
+  .site-index-blur {
+    transition: none;
+  }
 }
 
 

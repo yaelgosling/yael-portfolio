@@ -8,7 +8,7 @@
   <!-- Fonts from Google Fonts: Instrument Serif (titles and menu) and Inter (project text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,500;0,600;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -20,8 +20,137 @@
     <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
     <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
     <a class="site-bar__text" style="--x: 62.4; --y: 12" href="index.html">HOME</a>
-    <span class="site-bar__text" style="--x: 213.6; --y: 12">INDEX</span>
+    <button class="site-bar__text site-bar__index" style="--x: 213.6; --y: 12" type="button" aria-expanded="false" aria-controls="site-index">INDEX</button>
     <span class="site-bar__text site-bar__text--centered" style="--x: 226.2; --y: 46.6">HI</span>
+    <!-- The index ("open index list" in Figma): opens downwards under the bar.
+         Numbers are Figma pixels from the top left corner of the orange panel -->
+    <div class="site-index" id="site-index" data-view="list">
+      <div class="site-index__line" style="--y: 1"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 64"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 124"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 184"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 244"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 304"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 364"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 424"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 484"></div>
+      <div class="site-index__line site-index__line--list" style="--y: 544"></div>
+      <div class="site-index__line" style="--y: 604"></div>
+      <span class="site-index__name" style="--y: 1; --h: 63">THE WITCH</span>
+      <a class="site-index__name" style="--y: 64; --h: 60" href="i-dont-touch-meat.html">I DON’T TOUCH MEAT</a>
+      <span class="site-index__name" style="--y: 124; --h: 60">GRUNGE</span>
+      <span class="site-index__name" style="--y: 184; --h: 60">BOARD GAMES</span>
+      <span class="site-index__name" style="--y: 244; --h: 60">JUDGES, CHAPTER 4</span>
+      <span class="site-index__name" style="--y: 304; --h: 60">MTV IDENT</span>
+      <span class="site-index__name" style="--y: 364; --h: 60">DAVAR ACHAD</span>
+      <span class="site-index__name" style="--y: 424; --h: 60">TRAVEL JOURNEY</span>
+      <span class="site-index__name" style="--y: 484; --h: 60">THE GUIDE FOR THE NEW ISRAELI</span>
+      <span class="site-index__name" style="--y: 544; --h: 60">PAINTINGS / ILLUSTRATIONS</span>
+      <div class="site-index__band"></div>
+      <button class="site-index__view site-index__view--list is-active" style="--x: 120; --y: 615" type="button" aria-label="Show the list" aria-pressed="true">
+        <svg viewBox="0 0 12 10" aria-hidden="true"><rect y="0" width="12" height="2" rx="1"/><rect y="4" width="12" height="2" rx="1"/><rect y="8" width="12" height="2" rx="1"/></svg>
+      </button>
+      <button class="site-index__view site-index__view--photos" style="--x: 170; --y: 614" type="button" aria-label="Show the photos" aria-pressed="false">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="2.5" cy="2.5" r="2.5"/><circle cx="9.5" cy="2.5" r="2.5"/><circle cx="9.5" cy="9.5" r="2.5"/><circle cx="2.5" cy="9.5" r="2.5"/></svg>
+      </button>
+      <!-- The photos view ("Frame 8 index photos"): scroll down inside it for more projects.
+           Hovering over a frame shows its picture, like on the home page -->
+      <div class="site-index__photos">
+        <div class="site-index__photos-track">
+          <div class="home-frame site-index__photo" style="--x: 62; --y: 25.4; --w: 180.979; --h: 148.815">
+            <div class="home-frame__image site-index__photo-part" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/index/witch.svg" alt=""></div>
+            <div class="home-frame__hover">
+              <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/home/hover/witch-1.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/home/hover/witch-2.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 9.02% 7.41% 12.25% 6.83%"><img src="images/home/hover/witch-3.png" width="184.25" height="139.096" alt=""></div>
+            </div>
+          </div>
+          <a class="home-frame site-index__photo" href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat" style="--x: 62; --y: 174.4; --w: 177.129; --h: 191.625">
+            <img class="home-frame__image" src="images/index/dont-eat-meat.svg" alt="">
+            <div class="home-frame__hover">
+              <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/home/hover/dont-eat-meat-1.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img src="images/home/hover/dont-eat-meat-2.png" width="142.146" height="163.042" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/home/hover/dont-eat-meat-3.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img src="images/home/hover/dont-eat-meat-4.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img src="images/home/hover/dont-eat-meat-5.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/home/hover/dont-eat-meat-6.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/home/hover/dont-eat-meat-7.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/home/hover/dont-eat-meat-8.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/home/hover/dont-eat-meat-9.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img src="images/home/hover/dont-eat-meat-10.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.67% 16.3%"><img src="images/home/hover/dont-eat-meat-11.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img src="images/home/hover/dont-eat-meat-12.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/home/hover/dont-eat-meat-13.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img src="images/home/hover/dont-eat-meat-14.svg" alt=""></div>
+            </div>
+          </a>
+          <div class="home-frame site-index__photo" style="--x: 73; --y: 373.4; --w: 155.384; --h: 166.709">
+            <img class="home-frame__image" src="images/index/grunge.svg" alt="">
+            <div class="home-frame__hover">
+              <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img src="images/home/hover/grunge-1.png" width="139.523" height="149.213" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/home/hover/grunge-2.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/home/hover/grunge-3.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/home/hover/grunge-4.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/home/hover/grunge-5.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/home/hover/grunge-6.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/home/hover/grunge-7.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/home/hover/grunge-8.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img src="images/home/hover/grunge-9.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/home/hover/grunge-10.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/home/hover/grunge-11.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/home/hover/grunge-12.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/home/hover/grunge-13.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/home/hover/grunge-14.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/home/hover/grunge-15.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/home/hover/grunge-16.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/home/hover/grunge-17.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/home/hover/grunge-18.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img src="images/home/hover/grunge-19.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img src="images/home/hover/grunge-20.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img src="images/home/hover/grunge-21.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/home/hover/grunge-22.svg" alt=""></div>
+            </div>
+          </div>
+          <div class="home-frame site-index__photo" style="--x: 38; --y: 524.4; --w: 218.353; --h: 104.193">
+            <div class="home-frame__image site-index__photo-part" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/index/judges.svg" alt=""></div>
+            <div class="home-frame__hover">
+              <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/home/hover/judges-1.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img src="images/home/hover/judges-2.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 37.44% 35.69% 26.39% 41.7%"><img src="images/home/hover/judges-3.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 37.98% 35.96% 26.89% 41.93%"><img src="images/home/hover/judges-4.png" width="57.302" height="43.456" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 38.56% 11.07% 26.21% 66.01%"><img src="images/home/hover/judges-5.png" width="59.402" height="43.571" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 38.56% 12.97% 26.21% 66.01%"><img src="images/home/hover/judges-6.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 37.27% 60.1% 26.6% 17.33%"><img src="images/home/hover/judges-7.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 37.85% 60.35% 27.18% 17.59%"><img src="images/home/hover/judges-8.png" width="57.197" height="43.255" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 38.67% 10.87% 26.1% 66.31%"><img src="images/home/hover/judges-9.svg" alt=""></div>
+            </div>
+          </div>
+          <div class="home-frame site-index__photo" style="--x: 83; --y: 623.4; --w: 137.49; --h: 269.543">
+            <div class="home-frame__image site-index__photo-part" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/index/mtv-ident.svg" alt=""></div>
+            <div class="home-frame__hover">
+              <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/home/hover/mtv-ident-1.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img src="images/home/hover/mtv-ident-2.png" width="109.72" height="247.034" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/home/hover/mtv-ident-3.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/home/hover/mtv-ident-4.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/home/hover/mtv-ident-5.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 81.63% 68.36% 13.73% 25.72%"><img src="images/home/hover/mtv-ident-6.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/home/hover/mtv-ident-7.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/home/hover/mtv-ident-8.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img src="images/home/hover/mtv-ident-9.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/home/hover/mtv-ident-10.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img src="images/home/hover/mtv-ident-11.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img src="images/home/hover/mtv-ident-12.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/home/hover/mtv-ident-13.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img src="images/home/hover/mtv-ident-14.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/home/hover/mtv-ident-15.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img src="images/home/hover/mtv-ident-16.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/home/hover/mtv-ident-17.svg" alt=""></div>
+              <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/home/hover/mtv-ident-18.svg" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <main>
@@ -52,9 +181,9 @@
           <p class="project-text" style="--x: 143; --y: 761; --w: 171">Motion. Illustration.</p>
 
           <!-- The animation: click to play or pause (with sound) -->
-          <video class="project-strip__piece project-video" style="--x: 752; --y: 165.32; --w: 1014.957; --h: 570.913" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
+          <video class="project-strip__piece project-video" style="--x: 721; --y: 165.32; --w: 1014.957; --h: 570.913" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
           <!-- The "pause play" symbol in the middle of the video: hidden while it plays -->
-          <img class="project-video__play project-video__play--turned" style="--x: 1243.98; --y: 437.28; --w: 31; --h: 27" src="images/i-dont-touch-meat/pause-play.svg" alt="">
+          <img class="project-video__play project-video__play--turned" style="--x: 1212.98; --y: 437.28; --w: 31; --h: 27" src="images/i-dont-touch-meat/pause-play.svg" alt="">
 
           <!-- The pictures -->
           <img class="project-strip__piece" style="--x: 1827.85; --y: 165.32; --w: 542.981; --h: 305.427" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
