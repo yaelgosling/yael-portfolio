@@ -11,11 +11,27 @@
 
   /* Fonts */
   --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "Inter", Arial, sans-serif;     /* project pages */
   --line-height: 1.006;
 
-  /* Home page: one Figma pixel. The whole 1440 × 768 "Home New" frame fits in the window */
-  --home-pixel: min(100vw / 1440, 100svh / 768);
-  --home-text-size: calc(12 * var(--home-pixel));
+  /* One Figma pixel on the home and project pages. A 1440 × 768 Figma frame fits in the window */
+  --stage-pixel: min(100vw / 1440, 100svh / 768);
+  --bar-text-size: calc(12 * var(--stage-pixel));
+  --project-text-size: calc(15 * var(--stage-pixel));
+  --project-title-size: calc(50 * var(--stage-pixel));
+  --project-contact-size: calc(36 * var(--stage-pixel));
+  --project-reach-size: calc(75 * var(--stage-pixel));
+  --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
+
+  /* The arrow mouse on project pages (75% of the Figma size): points down,
+     then up from the bottom of the page until you are back at the top.
+     The two numbers are the click point: the middle of the circle */
+  --cursor-scroll-down: url("images/i-dont-touch-meat/scroll-cursor.svg") 37 30, s-resize;
+  --cursor-scroll-up: url("images/i-dont-touch-meat/scroll-cursor-up.svg") 37 30, n-resize;
+
+  /* Moving between pages */
+  --page-change-time: 0.9s;
+  --page-change-easing: cubic-bezier(0.7, 0, 0.2, 1);
 
   /* Process page: sizes out of a 1440px-wide frame */
   --process-side-space: calc(95 / 1440 * 100cqw);
@@ -62,20 +78,20 @@ body.home-page {
 
 .home {
   position: relative;
-  width: calc(1440 * var(--home-pixel));
-  height: calc(768 * var(--home-pixel));
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(768 * var(--stage-pixel));
 }
 
 /* One frame. script.js moves it with --move-x and --move-y (Figma pixels) */
 .home-frame {
   position: absolute;
-  left: calc(var(--x) * var(--home-pixel));
-  top: calc(var(--y) * var(--home-pixel));
-  width: calc(var(--w) * var(--home-pixel));
-  height: calc(var(--h) * var(--home-pixel));
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+  height: calc(var(--h) * var(--stage-pixel));
   transform: translate(
-    calc(var(--move-x, 0) * var(--home-pixel)),
-    calc(var(--move-y, 0) * var(--home-pixel))
+    calc(var(--move-x, 0) * var(--stage-pixel)),
+    calc(var(--move-y, 0) * var(--stage-pixel))
   );
 }
 
@@ -118,33 +134,307 @@ body.home-page {
   visibility: visible;
 }
 
-/* The menu bar */
-.home-bar__block {
-  position: absolute;
-  left: calc(var(--x) * var(--home-pixel));
-  top: calc(var(--y) * var(--home-pixel));
-  width: calc(151 * var(--home-pixel));
-  height: calc(35 * var(--home-pixel));
+/* A frame that opens a project page */
+.home-frame--link {
+  cursor: pointer;
 }
 
-.home-bar__block--blue { background-color: var(--color-blue); }
-.home-bar__block--lime { background-color: var(--color-lime); }
-.home-bar__block--orange { background-color: var(--color-orange); }
+/* After clicking a frame: the frames fade away and the bar moves up to where it sits on the project page */
+.home-frame {
+  transition: opacity calc(var(--page-change-time) * 0.6) ease;
+}
 
-.home-bar__text {
+.home.is-leaving .home-frame {
+  opacity: 0;
+}
+
+.site-bar--home {
   position: absolute;
-  left: calc(var(--x) * var(--home-pixel));
-  top: calc(var(--y) * var(--home-pixel));
+  inset: 0;
+  pointer-events: none;        /* the bar's box covers the page: let the mouse reach the frames */
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+
+/* The stage sits in the middle of the window, so the bar also moves up by that empty space */
+.home.is-leaving .site-bar--home {
+  transform: translate(
+    calc((568 - 571) * var(--stage-pixel)),
+    calc((57 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
+  );
+}
+
+/* The menu bar (home and project pages) */
+.site-bar__block {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(151 * var(--stage-pixel));
+  height: calc(35 * var(--stage-pixel));
+}
+
+.site-bar__block--blue { background-color: var(--color-blue); }
+.site-bar__block--lime { background-color: var(--color-lime); }
+.site-bar__block--orange { background-color: var(--color-orange); }
+
+.site-bar__text {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
   font-family: var(--font-display);
-  font-size: var(--home-text-size);
+  font-size: var(--bar-text-size);
   line-height: var(--line-height);
   color: var(--color-black);
   text-decoration: none;
   white-space: nowrap;
 }
 
-.home-bar__text--centered {
+.site-bar__text--centered {
   transform: translateX(-50%);
+}
+
+/* Hovering over a word in the bar makes it italic, so people know it can be clicked */
+.site-bar__text:hover,
+.site-bar__text:focus-visible {
+  font-style: italic;
+}
+
+/* The words take mouse hovers even inside the home page bar (which lets the mouse through to the frames) */
+.site-bar--home .site-bar__text {
+  pointer-events: auto;
+}
+
+
+/* =========================================
+   Project pages (first one: "I Don't Touch Meat")
+   A first screen with the project info that stays in place,
+   and the pictures that slide up over it when you scroll.
+   ========================================= */
+
+/* The menu bar stays at the top, above everything */
+.site-bar--top {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: calc(1440 * var(--stage-pixel));
+  transform: translateX(-50%);
+}
+
+/* The first screen */
+.project-info {
+  position: sticky;
+  top: 0;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(768 * var(--stage-pixel));
+  margin: 0 auto;
+  animation: project-appear var(--page-change-time) ease both;
+}
+
+/* The arrow mouse ("mouse for i dont touch meat") on the whole page, to show you can scroll down.
+   script.js adds "is-at-bottom" when the page reaches the end: then the arrow points up
+   until the page is back at the top */
+body.project-page {
+  cursor: var(--cursor-scroll-down);
+}
+
+body.project-page.is-at-bottom {
+  cursor: var(--cursor-scroll-up);
+}
+
+/* A piece placed in Figma pixels */
+.project-info__piece,
+.project-pictures__piece,
+.project-text {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+}
+
+.project-info__piece,
+.project-pictures__piece {
+  height: calc(var(--h) * var(--stage-pixel));
+  display: block;
+}
+
+/* Black lines: --w for a line across, --h for a line down */
+.project-line {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+  height: var(--project-line);
+  background-color: var(--color-black);
+  z-index: 1;
+}
+
+.project-line--down {
+  width: var(--project-line);
+  height: calc(var(--h) * var(--stage-pixel));
+}
+
+.project-info__gradient {
+  background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
+}
+
+.project-info__band {
+  background-color: var(--color-lime);
+}
+
+/* Project text: Inter Semi Bold 15px */
+.project-text {
+  font-family: var(--font-body);
+  font-size: var(--project-text-size);
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-black);
+}
+
+.project-text--title {
+  font-size: var(--project-title-size);
+  line-height: 1.112;
+  white-space: nowrap;         /* one line, like in Figma */
+}
+
+.project-text--list {
+  padding-left: calc(22.5 * var(--stage-pixel));
+  list-style: disc;
+}
+
+/* The pictures part: slides over the first screen.
+   When its bottom reaches the bottom of the window it stays there, so "Reach Out" can slide over it */
+.project-pictures {
+  position: sticky;
+  top: calc(100vh - 2946 * var(--stage-pixel));
+  z-index: 1;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(2946 * var(--stage-pixel));
+  margin: 0 auto;
+  background-color: var(--color-white);
+  animation: project-appear var(--page-change-time) ease both;
+}
+
+.project-pictures img.project-pictures__piece {
+  object-fit: cover;
+}
+
+/* Pictures that Figma crops a little */
+.project-pictures__crop {
+  overflow: hidden;
+}
+
+.project-pictures__crop img {
+  position: absolute;
+  inset: var(--crop);
+  width: var(--crop-w);
+  height: var(--crop-h);
+  max-width: none;
+}
+
+.project-video {
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Play symbol on the video. Clicks go through it to the video */
+.project-video__play {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+  height: calc(var(--h) * var(--stage-pixel));
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.project-video.is-playing + .project-video__play {
+  opacity: 0;
+}
+
+/* Previous and next project frames */
+.project-nav__frame,
+.project-nav__hover {
+  position: absolute;
+  inset: 0;
+}
+
+.project-nav__hover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
+/* On hover: the frame changes to its "next page hovers" version */
+.project-nav:hover .project-nav__frame {
+  visibility: hidden;
+}
+
+.project-nav:hover .project-nav__hover {
+  visibility: visible;
+}
+
+.project-nav__layer {
+  position: absolute;
+  inset: var(--inset);
+}
+
+.project-nav__layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-nav__text {
+  position: absolute;
+  inset: var(--inset);
+  font-family: var(--font-display);
+  font-size: var(--bar-text-size);
+  line-height: var(--line-height);
+  color: var(--color-orange);
+}
+
+.project-nav__label {
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+/* "Reach Out": the last screen, slides up over the pictures */
+.project-reach {
+  position: relative;
+  z-index: 1;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(768 * var(--stage-pixel));
+  margin: 0 auto;
+  background-color: var(--color-white);
+}
+
+.project-text--reach {
+  font-size: var(--project-reach-size);
+  font-weight: 500;
+}
+
+.project-text--contact {
+  font-size: var(--project-contact-size);
+  text-decoration: none;
+}
+
+/* The page content fades in after the bar has moved up on the home page */
+@keyframes project-appear {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-info,
+  .project-pictures {
+    animation: none;
+  }
+
+  .home-frame,
+  .site-bar--home {
+    transition: none;
+  }
 }
 
 

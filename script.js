@@ -84,6 +84,60 @@ if (home && canMove) {
 
 
 /* =========================================
+   Home page: clicking a frame opens its project page.
+   First the bar moves up to the top (like twomuch.studio), then the new page opens.
+   ========================================= */
+document.querySelectorAll(".home-frame--link").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
+
+    event.preventDefault();
+    home.classList.add("is-leaving");
+    const time = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--page-change-time")) * 1000;
+    setTimeout(() => { window.location.href = link.href; }, time);
+  });
+});
+
+// Coming back with the browser's back button: show the home page again
+window.addEventListener("pageshow", () => {
+  if (home) home.classList.remove("is-leaving");
+});
+
+
+/* =========================================
+   Project page: the arrow mouse points up once the page reaches the bottom,
+   and stays up until the page is back at the top
+   ========================================= */
+if (document.body.classList.contains("project-page")) {
+  function updateArrow() {
+    const bottom = document.documentElement.scrollHeight - window.innerHeight;
+    if (window.scrollY >= bottom - 2) document.body.classList.add("is-at-bottom");
+    if (window.scrollY <= 2) document.body.classList.remove("is-at-bottom");
+  }
+  window.addEventListener("scroll", updateArrow, { passive: true });
+  window.addEventListener("resize", updateArrow);
+  updateArrow();
+}
+
+
+/* =========================================
+   Project page: click the animation to play or pause it
+   ========================================= */
+document.querySelectorAll(".project-video").forEach((video) => {
+  video.addEventListener("click", () => {
+    if (video.paused) video.play();
+    else video.pause();
+  });
+
+  // Hide the play symbol while the video plays, show it again when it stops
+  video.addEventListener("play", () => video.classList.add("is-playing"));
+  video.addEventListener("pause", () => video.classList.remove("is-playing"));
+  video.addEventListener("ended", () => video.classList.remove("is-playing"));
+});
+
+
+/* =========================================
    Process page: click a date tab to open or close its card
    ========================================= */
 document.querySelectorAll(".card__tab").forEach((tab) => {
