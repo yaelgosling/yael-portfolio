@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="project-html">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>I Don't Touch Meat – Yael Gosling</title>
 
-  <!-- Fonts from Google Fonts: Instrument Serif (menu) and Inter (project text) -->
+  <!-- Fonts from Google Fonts: Instrument Serif (titles and menu) and Inter (project text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,500;0,600;1,600&display=swap" rel="stylesheet">
@@ -14,51 +14,54 @@
 </head>
 <body class="project-page">
 
-  <!-- The menu bar: stays at the top of the screen while the page scrolls -->
-  <nav class="site-bar site-bar--top" aria-label="Main">
-    <div class="site-bar__block site-bar__block--blue" style="--x: 568; --y: 57"></div>
-    <div class="site-bar__block site-bar__block--lime" style="--x: 568; --y: 92"></div>
-    <div class="site-bar__block site-bar__block--orange" style="--x: 719; --y: 57"></div>
-    <a class="site-bar__text" style="--x: 630.4; --y: 69" href="index.html">HOME</a>
-    <span class="site-bar__text" style="--x: 781.6; --y: 69">INDEX</span>
-    <span class="site-bar__text site-bar__text--centered" style="--x: 643.2; --y: 103.6">HI</span>
-  </nav>
+  <!--
+    The menu bar. It starts in the middle (like on "Info look whole page") and when you
+    start scrolling it moves up until it sits at the top (like on frame "x"). See script.js.
+  -->
+  <nav class="site-bar site-bar--project" style="--x: 569; --y: 314" aria-label="Main">
+      <div class="site-bar__block site-bar__block--light" style="--x: 0; --y: 0"></div>
+      <div class="site-bar__block site-bar__block--dark" style="--x: 0; --y: 35"></div>
+      <div class="site-bar__block site-bar__block--mid" style="--x: 151; --y: 0"></div>
+      <a class="site-bar__text" style="--x: 62.4; --y: 12" href="index.html">HOME</a>
+      <span class="site-bar__text" style="--x: 213.6; --y: 12">INDEX</span>
+      <span class="site-bar__text site-bar__text--centered site-bar__text--white" style="--x: 75.2; --y: 46.6">HI</span>
+    </nav>
+
+  <!-- The top of the page: the title and the black line under the bar. The pictures slide under it -->
+  <header class="project-header">
+    <p class="project-title" style="--x: 15; --y: 19">I DON’T TOUCH MEAT</p>
+    <div class="project-line project-line--full" style="--y: 0"></div>
+    <div class="project-line project-line--full" style="--y: 92"></div>
+  </header>
 
   <main>
 
     <!--
       The first screen ("Info look whole page" in Figma).
-      It stays in place, and the pictures below slide up over it.
+      It stays in place while the pictures slide up over it.
       Numbers are Figma pixels: x and y = position, w and h = size.
     -->
     <section class="project-info">
-      <div class="project-info__piece project-info__gradient" style="--x: 0; --y: 127; --w: 719; --h: 641"></div>
-      <div class="project-info__piece project-info__band" style="--x: 0; --y: 735; --w: 720; --h: 33"></div>
+      <!-- (The black line under the information is the top line of the pictures, which start right here) -->
+      <div class="project-info__piece project-info__gradient" style="--x: 0; --y: 93; --w: 719; --h: 642"></div>
 
-      <!-- Black lines -->
-      <div class="project-line" style="--x: 0; --y: 0; --w: 1440"></div>
-      <div class="project-line project-line--down" style="--x: 719; --y: 1; --h: 767"></div>
-      <div class="project-line" style="--x: 0; --y: 126; --w: 719"></div>
-      <div class="project-line" style="--x: 0; --y: 734; --w: 719"></div>
+      <h1 class="project-text" style="--x: 15; --y: 130; --w: 87">Overview</h1>
+      <p class="project-text" style="--x: 143; --y: 127; --w: 320">‘I Don’t Touch Meat’ is a short animation I created using an audio clip from the Israeli TV show <em>Come Eat with Me</em>, which later became a viral meme in Israel.</p>
 
-      <p class="project-text" style="--x: 15; --y: 30; --w: 414.665">Project</p>
-      <h1 class="project-text project-text--title" style="--x: 15; --y: 48; --w: 531">I DON’T TOUCH MEAT</h1>
-      <p class="project-text" style="--x: 13; --y: 157; --w: 475">‘I Don’t Touch Meat’ is a short animation I created using an audio clip from the Israeli TV show <em>Come Eat with Me</em>, which later became a viral meme in Israel.</p>
-
-      <p class="project-text" style="--x: 15; --y: 466; --w: 87">Challenges</p>
-      <ul class="project-text project-text--list" style="--x: 152; --y: 466; --w: 475">
+      <p class="project-text" style="--x: 15; --y: 478; --w: 87">Challenges</p>
+      <ul class="project-text project-text--list" style="--x: 134; --y: 478; --w: 475">
         <li>Finding ways to add a visual twist to the words, giving the humour a second layer of meaning.</li>
         <li>It was my first time illustrating multiple scenes, so I had to learn how to create a seamless flow between them.</li>
         <li>Finding an illustration style that worked with the humour of the story. I originally chose a darker colour palette, but realised it didn't quite fit.</li>
       </ul>
 
-      <p class="project-text" style="--x: 13; --y: 657; --w: 53">Year</p>
-      <p class="project-text" style="--x: 161; --y: 657; --w: 53">2026</p>
-      <p class="project-text" style="--x: 13; --y: 684; --w: 53">Field</p>
-      <p class="project-text" style="--x: 161; --y: 684; --w: 171">Motion. Illustration.</p>
+      <p class="project-text" style="--x: 13; --y: 669; --w: 53">Year</p>
+      <p class="project-text" style="--x: 143; --y: 669; --w: 53">2026</p>
+      <p class="project-text" style="--x: 13; --y: 696; --w: 53">Field</p>
+      <p class="project-text" style="--x: 143; --y: 696; --w: 171">Motion. Illustration.</p>
     </section>
 
-    <!-- The pictures ("pictures dont touch meat" in Figma): slide up over the first screen -->
+    <!-- The pictures ("pictures dont touch meat" in Figma): slide up over the first screen, under the title -->
     <section class="project-pictures">
       <img class="project-pictures__piece" style="--x: 493; --y: 1070.6; --w: 236.6; --h: 133.087" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
       <img class="project-pictures__piece" style="--x: 835.2; --y: 643.4; --w: 554.667; --h: 312" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
@@ -75,17 +78,9 @@
 
       <!-- The animation: click to play or pause (with sound) -->
       <video class="project-pictures__piece project-video" style="--x: 75.6; --y: 167; --w: 1036.8; --h: 583.2" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
-
-      <!-- Play symbol in the middle of the video: hidden while it plays (same style as the arrow mouse) -->
-      <svg class="project-video__play" style="--x: 553.2; --y: 418.6; --w: 80; --h: 80" viewBox="0 0 80 80" aria-hidden="true">
-        <defs>
-          <linearGradient id="play-gradient" x1="40" y1="0" x2="40" y2="80" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#ffffff"/>
-            <stop offset="0.875" stop-color="#5262f0"/>
-          </linearGradient>
-        </defs>
-        <circle cx="40" cy="40" r="40" fill="url(#play-gradient)"/>
-        <path d="M32 26 L56 40 L32 54 Z" fill="#5262f0"/>
+      <!-- Play symbol in the middle of the video: hidden while it plays -->
+      <svg class="project-video__play" style="--x: 554; --y: 418.6; --w: 80; --h: 80" viewBox="0 0 80 80" aria-hidden="true">
+        <path d="M32 26 L56 40 L32 54 Z"/>
       </svg>
 
       <!-- The black border lines around the pictures -->
@@ -119,23 +114,20 @@
       </div>
     </section>
 
-    <!-- "Reach Out" in Figma: slides up over the pictures at the end of the page -->
+    <!-- "reach out new" in Figma: slides up over the pictures at the end of the page -->
     <section class="project-reach" id="reach-out">
-      <div class="project-info__piece project-info__gradient" style="--x: 0; --y: 124; --w: 1440; --h: 644"></div>
-      <div class="project-info__piece project-info__band" style="--x: 0; --y: 735; --w: 1440; --h: 33"></div>
+      <div class="project-info__piece project-info__gradient project-full" style="--y: 93; --h: 675"></div>
 
       <!-- Black lines -->
-      <div class="project-line" style="--x: 0; --y: 0; --w: 1440"></div>
-      <div class="project-line" style="--x: 0; --y: 123; --w: 1440"></div>
-      <div class="project-line" style="--x: 0; --y: 734; --w: 1440"></div>
-      <div class="project-line project-line--down" style="--x: 720; --y: 123; --h: 612"></div>
+      <div class="project-line project-line--full" style="--y: 0"></div>
+      <div class="project-line project-line--full" style="--y: 92"></div>
 
-      <h2 class="project-text project-text--reach" style="--x: 20; --y: 17; --w: 1400">REACH OUT</h2>
-      <p class="project-text" style="--x: 30.53; --y: 154; --w: 414.665">Email me</p>
-      <a class="project-text project-text--contact" style="--x: 30.53; --y: 173; --w: 462.927" href="mailto:Yaelgosling5@gmail.com">Yaelgosling5@gmail.com</a>
-      <p class="project-text" style="--x: 731.82; --y: 154; --w: 414.665">Let’s talk</p>
-      <a class="project-text project-text--contact" style="--x: 731.82; --y: 173; --w: 462.927" href="tel:+972538521501">+972 538521501</a>
-      <p class="project-text" style="--x: 31; --y: 698; --w: 414.665">Instagram</p>
+      <h2 class="project-title" style="--x: 15; --y: 19">REACH OUT</h2>
+      <p class="project-text" style="--x: 15; --y: 158; --w: 414.665">Email me</p>
+      <a class="project-text project-text--contact" style="--x: 15; --y: 177; --w: 462.927" href="mailto:Yaelgosling5@gmail.com">Yaelgosling5@gmail.com</a>
+      <p class="project-text" style="--x: 739.29; --y: 158; --w: 414.665">Let’s talk</p>
+      <a class="project-text project-text--contact" style="--x: 739.29; --y: 177; --w: 462.927" href="tel:+972538521501">+972 538521501</a>
+      <p class="project-text" style="--x: 15; --y: 527; --w: 414.665">Instagram</p>
     </section>
 
   </main>

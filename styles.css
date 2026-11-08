@@ -17,11 +17,16 @@
   /* One Figma pixel on the home and project pages. A 1440 × 768 Figma frame fits in the window */
   --stage-pixel: min(100vw / 1440, 100svh / 768);
   --bar-text-size: calc(12 * var(--stage-pixel));
-  --project-text-size: calc(15 * var(--stage-pixel));
+  --project-text-size: calc(12 * var(--stage-pixel));
   --project-title-size: calc(50 * var(--stage-pixel));
   --project-contact-size: calc(36 * var(--stage-pixel));
-  --project-reach-size: calc(75 * var(--stage-pixel));
+  --project-nav-text-size: calc(12 * var(--stage-pixel));
   --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
+
+  /* The menu bar's grey colours */
+  --color-bar-light: #e7e7e7;
+  --color-bar-mid: #8a8989;
+  --color-bar-dark: #383838;
 
   /* The arrow mouse on project pages (75% of the Figma size): points down,
      then up from the bottom of the page until you are back at the top.
@@ -139,32 +144,19 @@ body.home-page {
   cursor: pointer;
 }
 
-/* After clicking a frame: the frames fade away and the bar moves up to where it sits on the project page */
-.home-frame {
-  transition: opacity calc(var(--page-change-time) * 0.6) ease;
-}
-
-.home.is-leaving .home-frame {
-  opacity: 0;
-}
-
-.site-bar--home {
+/* =========================================
+   The menu bar (home and project pages)
+   ========================================= */
+.site-bar {
   position: absolute;
-  inset: 0;
-  pointer-events: none;        /* the bar's box covers the page: let the mouse reach the frames */
-  transition: transform var(--page-change-time) var(--page-change-easing);
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(302 * var(--stage-pixel));
+  height: calc(70 * var(--stage-pixel));
+  z-index: 5;
+  view-transition-name: site-bar;   /* moves smoothly between pages (see "Moving between pages") */
 }
 
-
-/* The stage sits in the middle of the window, so the bar also moves up by that empty space */
-.home.is-leaving .site-bar--home {
-  transform: translate(
-    calc((568 - 571) * var(--stage-pixel)),
-    calc((57 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
-  );
-}
-
-/* The menu bar (home and project pages) */
 .site-bar__block {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -173,9 +165,9 @@ body.home-page {
   height: calc(35 * var(--stage-pixel));
 }
 
-.site-bar__block--blue { background-color: var(--color-blue); }
-.site-bar__block--lime { background-color: var(--color-lime); }
-.site-bar__block--orange { background-color: var(--color-orange); }
+.site-bar__block--light { background-color: var(--color-bar-light); }
+.site-bar__block--mid { background-color: var(--color-bar-mid); }
+.site-bar__block--dark { background-color: var(--color-bar-dark); }
 
 .site-bar__text {
   position: absolute;
@@ -193,47 +185,63 @@ body.home-page {
   transform: translateX(-50%);
 }
 
+.site-bar__text--white {
+  color: var(--color-white);
+}
+
 /* Hovering over a word in the bar makes it italic, so people know it can be clicked */
 .site-bar__text:hover,
 .site-bar__text:focus-visible {
   font-style: italic;
 }
 
-/* The words take mouse hovers even inside the home page bar (which lets the mouse through to the frames) */
-.site-bar--home .site-bar__text {
-  pointer-events: auto;
+
+/* =========================================
+   Moving between pages
+   Clicking a frame on the home page: the project page slides up over the home page,
+   and the bar glides to its place. (Works in Chrome, Edge and Safari; other browsers
+   simply open the page.)
+   ========================================= */
+@view-transition {
+  navigation: auto;
+}
+
+.project-html::view-transition-old(root) {
+  animation: none;                  /* the home page stays still underneath */
+}
+
+.project-html::view-transition-new(root) {
+  animation: page-slide-up var(--page-change-time) var(--page-change-easing) both;
+}
+
+::view-transition-group(site-bar) {
+  animation-duration: var(--page-change-time);
+  animation-timing-function: var(--page-change-easing);
+}
+
+@keyframes page-slide-up {
+  from { transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 
 /* =========================================
    Project pages (first one: "I Don't Touch Meat")
-   A first screen with the project info that stays in place,
-   and the pictures that slide up over it when you scroll.
+   1. The first screen with the information stays in place.
+   2. The bar moves up to the top when you start scrolling (script.js).
+   3. The pictures slide up over the information, under the title at the top.
+   4. At the end, "Reach Out" slides up over the pictures.
    ========================================= */
 
-/* The menu bar stays at the top, above everything */
-.site-bar--top {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  z-index: 2;
-  width: calc(1440 * var(--stage-pixel));
-  transform: translateX(-50%);
-}
-
-/* The first screen */
-.project-info {
-  position: sticky;
-  top: 0;
-  width: calc(1440 * var(--stage-pixel));
-  height: calc(768 * var(--stage-pixel));
-  margin: 0 auto;
-  animation: project-appear var(--page-change-time) ease both;
-}
-
-/* The arrow mouse ("mouse for i dont touch meat") on the whole page, to show you can scroll down.
-   script.js adds "is-at-bottom" when the page reaches the end: then the arrow points up
-   until the page is back at the top */
+/* The arrow mouse ("mouse for i dont touch meat") on the whole page.
+   script.js adds "is-at-bottom" at the end of the page: the arrow points up until you are back at the top */
 body.project-page {
   cursor: var(--cursor-scroll-down);
 }
@@ -242,9 +250,47 @@ body.project-page.is-at-bottom {
   cursor: var(--cursor-scroll-up);
 }
 
+/* The bar stays on the screen. script.js moves it up with --bar-shift (in screen pixels) */
+.site-bar--project {
+  position: fixed;
+  left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
+  transform: translateY(calc(var(--bar-shift, 0) * -1px));
+}
+
+/* The top of the page with the title: stays on the screen above the pictures */
+.project-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: calc(93 * var(--stage-pixel));
+  background-color: var(--color-white);
+}
+
+.project-title {
+  position: absolute;
+  left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  font-family: var(--font-display);
+  font-size: var(--project-title-size);
+  font-weight: 400;
+  line-height: 1.112;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* The first screen: ends at the black line, so the pictures follow straight after it (735 high in Figma) */
+.project-info {
+  position: sticky;
+  top: 0;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(735 * var(--stage-pixel));
+  margin: 0 auto;
+}
+
 /* A piece placed in Figma pixels */
 .project-info__piece,
-.project-pictures__piece,
 .project-text {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -252,10 +298,13 @@ body.project-page.is-at-bottom {
   width: calc(var(--w) * var(--stage-pixel));
 }
 
-.project-info__piece,
-.project-pictures__piece {
+.project-info__piece {
   height: calc(var(--h) * var(--stage-pixel));
   display: block;
+}
+
+.project-info__gradient {
+  background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
 }
 
 /* Black lines: --w for a line across, --h for a line down */
@@ -274,15 +323,20 @@ body.project-page.is-at-bottom {
   height: calc(var(--h) * var(--stage-pixel));
 }
 
-.project-info__gradient {
-  background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
+/* (After the line rules, so it wins.) Something that reaches both edges of the window, also past the 1440 design on wide screens */
+.project-full,
+.project-line--full {
+  left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
+  width: 100vw;
 }
 
-.project-info__band {
-  background-color: var(--color-lime);
+/* In the header the lines span the window, which is the header's own width */
+.project-header .project-line--full {
+  left: 0;
+  width: 100%;
 }
 
-/* Project text: Inter Semi Bold 15px */
+/* Project text: Inter Semi Bold 12px */
 .project-text {
   font-family: var(--font-body);
   font-size: var(--project-text-size);
@@ -291,19 +345,18 @@ body.project-page.is-at-bottom {
   color: var(--color-black);
 }
 
-.project-text--title {
-  font-size: var(--project-title-size);
-  line-height: 1.112;
-  white-space: nowrap;         /* one line, like in Figma */
-}
-
 .project-text--list {
-  padding-left: calc(22.5 * var(--stage-pixel));
+  padding-left: calc(18 * var(--stage-pixel));
   list-style: disc;
 }
 
-/* The pictures part: slides over the first screen.
-   When its bottom reaches the bottom of the window it stays there, so "Reach Out" can slide over it */
+.project-text--contact {
+  font-size: var(--project-contact-size);
+  text-decoration: none;
+}
+
+/* The pictures: slide up over the first screen and pass under the title.
+   When their bottom reaches the bottom of the window they stay, so "Reach Out" can slide over them */
 .project-pictures {
   position: sticky;
   top: calc(100vh - 2946 * var(--stage-pixel));
@@ -312,10 +365,18 @@ body.project-page.is-at-bottom {
   height: calc(2946 * var(--stage-pixel));
   margin: 0 auto;
   background-color: var(--color-white);
-  animation: project-appear var(--page-change-time) ease both;
 }
 
-.project-pictures img.project-pictures__piece {
+.project-pictures__piece {
+  position: absolute;
+  display: block;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+  height: calc(var(--h) * var(--stage-pixel));
+}
+
+img.project-pictures__piece {
   object-fit: cover;
 }
 
@@ -337,7 +398,7 @@ body.project-page.is-at-bottom {
   cursor: pointer;
 }
 
-/* Play symbol on the video. Clicks go through it to the video */
+/* Play symbol on the video: just a black triangle. Clicks go through it to the video */
 .project-video__play {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -346,6 +407,10 @@ body.project-page.is-at-bottom {
   height: calc(var(--h) * var(--stage-pixel));
   pointer-events: none;
   transition: opacity 0.3s ease;
+}
+
+.project-video__play path {
+  fill: var(--color-black);
 }
 
 .project-video.is-playing + .project-video__play {
@@ -390,7 +455,7 @@ body.project-page.is-at-bottom {
   position: absolute;
   inset: var(--inset);
   font-family: var(--font-display);
-  font-size: var(--bar-text-size);
+  font-size: var(--project-nav-text-size);
   line-height: var(--line-height);
   color: var(--color-orange);
 }
@@ -400,41 +465,14 @@ body.project-page.is-at-bottom {
   font-weight: 600;
 }
 
-/* "Reach Out": the last screen, slides up over the pictures */
+/* "Reach Out": the last screen, slides up over the pictures (and over the title at the top) */
 .project-reach {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: calc(1440 * var(--stage-pixel));
   height: calc(768 * var(--stage-pixel));
   margin: 0 auto;
   background-color: var(--color-white);
-}
-
-.project-text--reach {
-  font-size: var(--project-reach-size);
-  font-weight: 500;
-}
-
-.project-text--contact {
-  font-size: var(--project-contact-size);
-  text-decoration: none;
-}
-
-/* The page content fades in after the bar has moved up on the home page */
-@keyframes project-appear {
-  from { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-info,
-  .project-pictures {
-    animation: none;
-  }
-
-  .home-frame,
-  .site-bar--home {
-    transition: none;
-  }
 }
 
 

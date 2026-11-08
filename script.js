@@ -84,25 +84,24 @@ if (home && canMove) {
 
 
 /* =========================================
-   Home page: clicking a frame opens its project page.
-   First the bar moves up to the top (like twomuch.studio), then the new page opens.
+   Project page: the bar moves up when you start scrolling,
+   from the middle (like "Info look whole page") to the top (like frame "x")
    ========================================= */
-document.querySelectorAll(".home-frame--link").forEach((link) => {
-  link.addEventListener("click", (event) => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
+const projectBar = document.querySelector(".site-bar--project");
 
-    event.preventDefault();
-    home.classList.add("is-leaving");
-    const time = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--page-change-time")) * 1000;
-    setTimeout(() => { window.location.href = link.href; }, time);
-  });
-});
+if (projectBar) {
+  const BAR_START = 314;       // Figma y of the bar on the first screen
+  const BAR_END = 10;          // Figma y of the bar at the top
 
-// Coming back with the browser's back button: show the home page again
-window.addEventListener("pageshow", () => {
-  if (home) home.classList.remove("is-leaving");
-});
+  function moveBar() {
+    const figmaPixel = Math.min(window.innerWidth / 1440, window.innerHeight / 768);
+    const shift = Math.min(window.scrollY, (BAR_START - BAR_END) * figmaPixel);
+    projectBar.style.setProperty("--bar-shift", shift);
+  }
+  window.addEventListener("scroll", moveBar, { passive: true });
+  window.addEventListener("resize", moveBar);
+  moveBar();
+}
 
 
 /* =========================================
