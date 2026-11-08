@@ -20,14 +20,11 @@
   --project-text-size: calc(12 * var(--stage-pixel));
   --project-title-size: calc(50 * var(--stage-pixel));
   --project-contact-size: calc(36 * var(--stage-pixel));
-  --project-nav-text-size: calc(12 * var(--stage-pixel));
+  --project-nav-text-size: calc(6 * var(--stage-pixel));
   --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
 
-  /* The arrow mouse on project pages (75% of the Figma size): points down,
-     then up from the bottom of the page until you are back at the top.
-     The two numbers are the click point: the middle of the circle */
-  --cursor-scroll-down: url("images/i-dont-touch-meat/scroll-cursor.svg") 37 30, s-resize;
-  --cursor-scroll-up: url("images/i-dont-touch-meat/scroll-cursor-up.svg") 37 30, n-resize;
+  /* The mouse on project pages: a tiny black dot (6px, the click point is its middle) */
+  --cursor-dot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='3' fill='black'/%3E%3C/svg%3E") 3 3, auto;
 
   /* Moving between pages */
   --page-change-time: 0.9s;
@@ -193,6 +190,20 @@ body.home-page {
    (a link, a refresh): the page slides up by itself.
    ========================================= */
 
+/* While the project page slides up, the home page bar moves up to its spot on the
+   project page (x 569, y 31). The home page sits in the middle of the window,
+   so the bar also moves up by that empty space */
+.home .site-bar {
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+.home.is-leaving .site-bar {
+  transform: translate(
+    calc((569 - 571) * var(--stage-pixel)),
+    calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
+  );
+}
+
 /* The project page, waiting below the screen on the home page */
 .page-slide {
   position: fixed;
@@ -216,8 +227,9 @@ body.home-page {
   visibility: hidden;
 }
 
-/* Opening a project page any other way: the page slides up by itself (script.js adds the class) */
-body.is-sliding-in {
+/* Opening a project page any other way: the page slides up by itself (script.js adds the class).
+   Only the content slides: the bar stays still */
+body.is-sliding-in main {
   animation: page-slide-up-alone var(--page-change-time) var(--page-change-easing) both;
 }
 
@@ -226,11 +238,12 @@ body.is-sliding-in {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-slide {
+  .page-slide,
+  .home .site-bar {
     transition: none;
   }
 
-  body.is-sliding-in {
+  body.is-sliding-in main {
     animation: none;
   }
 }
@@ -238,56 +251,23 @@ body.is-sliding-in {
 
 /* =========================================
    Project pages (first one: "I Don't Touch Meat")
-   1. The first screen with the information stays in place.
-   2. The bar moves up to the top when you start scrolling (script.js).
-   3. The pictures slide up over the information, under the title at the top.
-   4. At the end, "Reach Out" slides up over the pictures.
+   Half screens: the information stays on the left half while the pictures
+   scroll up on the right half. At the end, "Reach Out" slides up over everything.
    ========================================= */
 
-/* The arrow mouse ("mouse for i dont touch meat") on the whole page.
-   script.js adds "is-at-bottom" at the end of the page: the arrow points up until you are back at the top */
-body.project-page {
-  cursor: var(--cursor-scroll-down);
+/* The mouse: a tiny black dot, everywhere on the page (also on links and the video) */
+body.project-page,
+body.project-page * {
+  cursor: var(--cursor-dot);
 }
 
-body.project-page.is-at-bottom {
-  cursor: var(--cursor-scroll-up);
-}
-
-/* The bar stays on the screen. It starts in exactly the same spot as on the home page
-   (where the home page sits in the middle of the window), and script.js moves it up
-   with --bar-shift-x and --bar-shift-y (in screen pixels) */
+/* The bar stays at the top of the screen, also while the pictures scroll */
 .site-bar--project {
   position: fixed;
   left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
-  top: calc((100svh - 768 * var(--stage-pixel)) / 2 + var(--y) * var(--stage-pixel));
-  transform: translate(calc(var(--bar-shift-x, 0) * -1px), calc(var(--bar-shift-y, 0) * -1px));
 }
 
-/* The top of the page with the title: stays on the screen above the pictures */
-.project-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  width: 100%;
-  height: calc(93 * var(--stage-pixel));
-  background-color: var(--color-white);
-}
-
-.project-title {
-  position: absolute;
-  left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
-  top: calc(var(--y) * var(--stage-pixel));
-  font-family: var(--font-display);
-  font-size: var(--project-title-size);
-  font-weight: 400;
-  line-height: 1.112;
-  color: var(--color-black);
-  white-space: nowrap;
-}
-
-/* The first screen: ends at the black line, so the pictures follow straight after it (735 high in Figma) */
+/* The first screen: stays in place (735 high in Figma) */
 .project-info {
   position: sticky;
   top: 0;
@@ -314,33 +294,32 @@ body.project-page.is-at-bottom {
   background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
 }
 
-/* Black lines: --w for a line across, --h for a line down */
-.project-line {
+/* Titles: Instrument Serif 50px */
+.project-title {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
   top: calc(var(--y) * var(--stage-pixel));
-  width: calc(var(--w) * var(--stage-pixel));
+  font-family: var(--font-display);
+  font-size: var(--project-title-size);
+  font-weight: 400;
+  line-height: 1.112;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* Black lines */
+.project-line {
+  position: absolute;
+  top: calc(var(--y) * var(--stage-pixel));
   height: var(--project-line);
   background-color: var(--color-black);
   z-index: 1;
 }
 
-.project-line--down {
-  width: var(--project-line);
-  height: calc(var(--h) * var(--stage-pixel));
-}
-
-/* (After the line rules, so it wins.) Something that reaches both edges of the window, also past the 1440 design on wide screens */
-.project-full,
+/* A line across the whole window, also past the 1440 design on wide screens */
 .project-line--full {
   left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
   width: 100vw;
-}
-
-/* In the header the lines span the window, which is the header's own width */
-.project-header .project-line--full {
-  left: 0;
-  width: 100%;
 }
 
 /* Project text: Inter Semi Bold 12px */
@@ -368,15 +347,17 @@ body.project-page.is-at-bottom {
   font-style: italic;
 }
 
-/* The pictures: slide up over the first screen and pass under the title.
+/* The pictures: the right half, starting just under the bar (y 168 on the first screen)
+   and scrolling up next to the information.
    When their bottom reaches the bottom of the window they stay, so "Reach Out" can slide over them */
 .project-pictures {
   position: sticky;
-  top: calc(100vh - 2946 * var(--stage-pixel));
+  top: calc(100vh - 1573 * var(--stage-pixel));
   z-index: 1;
-  width: calc(1440 * var(--stage-pixel));
-  height: calc(2946 * var(--stage-pixel));
-  margin: 0 auto;
+  width: calc(720 * var(--stage-pixel));
+  height: calc(1573 * var(--stage-pixel));
+  margin-top: calc((168 - 735) * var(--stage-pixel));   /* moves up onto the first screen */
+  margin-left: 50%;            /* the right half */
   background-color: var(--color-white);
 }
 
@@ -408,7 +389,6 @@ img.project-pictures__piece {
 
 .project-video {
   object-fit: cover;
-  cursor: pointer;
 }
 
 /* The "pause play" button on the video. Clicks go through it to the video */
@@ -424,6 +404,11 @@ img.project-pictures__piece {
 
 .project-video.is-playing + .project-video__play {
   opacity: 0;
+}
+
+/* The triangle is drawn pointing up; in the design it is turned to point right */
+.project-video__play--turned {
+  transform: rotate(90deg);
 }
 
 /* Previous and next project frames */
@@ -474,14 +459,13 @@ img.project-pictures__piece {
   font-weight: 600;
 }
 
-/* "Reach Out": the last screen, slides up over the pictures (and over the title at the top).
-   It is at least as tall as the window, so at the end it reaches the very top and its
-   lines sit exactly where the lines at the top were */
+/* "Reach Out": the last screen, slides up over everything. It is at least as tall
+   as the window, so at the end it reaches the very top */
 .project-reach {
   position: relative;
   z-index: 3;
   width: calc(1440 * var(--stage-pixel));
-  height: max(calc(768 * var(--stage-pixel)), 100vh);
+  height: max(calc(735 * var(--stage-pixel)), 100vh);
   margin: 0 auto;
   background-color: var(--color-white);
 }

@@ -117,6 +117,7 @@ document.querySelectorAll(".home-frame--link").forEach((link) => {
     const page = prepareSlide();
     await page.ready;
     page.classList.add("is-sliding");
+    home.classList.add("is-leaving");     // the bar moves up to its spot on the project page
     setTimeout(() => {
       sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
       window.location.href = link.href;
@@ -127,6 +128,7 @@ document.querySelectorAll(".home-frame--link").forEach((link) => {
 // Coming back with the browser's back button: put the waiting page away again
 window.addEventListener("pageshow", () => {
   document.querySelectorAll(".page-slide").forEach((page) => page.classList.remove("is-sliding"));
+  if (home) home.classList.remove("is-leaving");
 });
 
 
@@ -142,49 +144,6 @@ if (document.body.classList.contains("project-page")) {
   } else {
     document.body.classList.add("is-sliding-in");
   }
-}
-
-
-/* =========================================
-   Project page: the bar moves up when you start scrolling,
-   from its spot on the home page to the top (like frame "x")
-   ========================================= */
-const projectBar = document.querySelector(".site-bar--project");
-
-if (projectBar) {
-  const BAR_START_X = 571;     // Figma position of the bar on the home page
-  const BAR_START_Y = 333;
-  const BAR_END_X = 569;       // Figma position of the bar at the top (frame "x")
-  const BAR_END_Y = 10;
-
-  function moveBar() {
-    const figmaPixel = Math.min(window.innerWidth / 1440, window.innerHeight / 768);
-    const homeTop = (window.innerHeight - 768 * figmaPixel) / 2;   // the home page sits in the middle
-    const distance = homeTop + (BAR_START_Y - BAR_END_Y) * figmaPixel;
-    const shiftY = Math.min(window.scrollY, distance);
-    const shiftX = (shiftY / distance) * (BAR_START_X - BAR_END_X) * figmaPixel;
-    projectBar.style.setProperty("--bar-shift-x", shiftX);
-    projectBar.style.setProperty("--bar-shift-y", shiftY);
-  }
-  window.addEventListener("scroll", moveBar, { passive: true });
-  window.addEventListener("resize", moveBar);
-  moveBar();
-}
-
-
-/* =========================================
-   Project page: the arrow mouse points up once the page reaches the bottom,
-   and stays up until the page is back at the top
-   ========================================= */
-if (document.body.classList.contains("project-page")) {
-  function updateArrow() {
-    const bottom = document.documentElement.scrollHeight - window.innerHeight;
-    if (window.scrollY >= bottom - 2) document.body.classList.add("is-at-bottom");
-    if (window.scrollY <= 2) document.body.classList.remove("is-at-bottom");
-  }
-  window.addEventListener("scroll", updateArrow, { passive: true });
-  window.addEventListener("resize", updateArrow);
-  updateArrow();
 }
 
 
