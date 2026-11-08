@@ -84,6 +84,25 @@ if (home && canMove) {
 
 
 /* =========================================
+   Project page: the page slides up when it opens.
+   Coming from the home page in Chrome, Edge or Safari, the browser's page change already
+   slides it up over the home page (see "Moving between pages" in styles.css).
+   In every other case (a link, a refresh, other browsers) the page slides up by itself.
+   ========================================= */
+if (document.body.classList.contains("project-page")) {
+  const slideIn = () => document.body.classList.add("is-sliding-in");
+
+  if ("onpagereveal" in window) {
+    window.addEventListener("pagereveal", (event) => {
+      if (!event.viewTransition) slideIn();
+    }, { once: true });
+  } else {
+    slideIn();
+  }
+}
+
+
+/* =========================================
    Project page: the bar moves up when you start scrolling,
    from the middle (like "Info look whole page") to the top (like frame "x")
    ========================================= */

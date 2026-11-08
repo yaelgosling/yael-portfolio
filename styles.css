@@ -223,10 +223,20 @@ body.home-page {
   from { transform: translateY(100%); }
 }
 
+/* Opening a project page any other way: the page slides up by itself (script.js adds the class) */
+body.is-sliding-in {
+  animation: page-slide-up-alone var(--page-change-time) var(--page-change-easing) both;
+}
+
+@keyframes page-slide-up-alone {
+  from { translate: 0 100vh; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
-  ::view-transition-new(*) {
+  ::view-transition-new(*),
+  body.is-sliding-in {
     animation: none !important;
   }
 }
