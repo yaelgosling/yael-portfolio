@@ -194,10 +194,6 @@ if (indexButton) {
   document.body.appendChild(blur);
 
   function setIndexOpen(open) {
-    if (open) {                                         // close the Hi page first
-      document.body.classList.remove("is-hi-open");
-      document.documentElement.classList.remove("is-hi-open-page");
-    }
     document.body.classList.toggle("is-index-open", open);
     document.documentElement.classList.toggle("is-index-open-page", open);   // the page can't scroll
     indexButton.setAttribute("aria-expanded", open);

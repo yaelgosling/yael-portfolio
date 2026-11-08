@@ -162,7 +162,7 @@ body.project-page * {
   top: calc(var(--y) * var(--stage-pixel));
   width: calc(302 * var(--stage-pixel));
   height: calc(70 * var(--stage-pixel));
-  z-index: 5;
+  z-index: 6;                  /* above everything, also the blur behind the open index */
 }
 
 .site-bar__block {
@@ -372,11 +372,11 @@ body.project-page * {
   height: 100%;
 }
 
-/* Everything else blurs. The blur sits under the bar and above the page */
+/* Everything else blurs. The blur sits under the bar and above the page (and above the Hi page) */
 .site-index-blur {
   position: fixed;
   inset: 0;
-  z-index: 4;
+  z-index: 5;
   backdrop-filter: blur(var(--index-blur));
   -webkit-backdrop-filter: blur(var(--index-blur));
   opacity: 0;
@@ -501,6 +501,41 @@ html.is-hi-open-page {
   font-weight: 400;
   user-select: all;          /* one click selects all of it */
   -webkit-user-select: all;
+}
+
+/* The drawings on the Hi page. Each one is a window onto one big sheet of drawings */
+.hi-doodle {
+  display: contents;
+}
+
+.hi-doodle__picture {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w) * var(--stage-pixel));
+  height: calc(var(--h) * var(--stage-pixel));
+  overflow: hidden;
+}
+
+.hi-doodle__picture img {
+  position: absolute;
+  left: var(--il);
+  top: var(--it);
+  width: var(--iw);
+  height: var(--ih);
+  max-width: none;
+  pointer-events: none;
+}
+
+/* The text next to a drawing: hidden until you hover over the drawing */
+.hi-doodle__text {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hi-doodle:hover .hi-doodle__text {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
