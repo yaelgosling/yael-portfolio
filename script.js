@@ -13,8 +13,8 @@ const canMove =
 if (home && canMove) {
   const STAGE_WIDTH = 1440;    // the "Home New" frame, in Figma pixels
   const STAGE_HEIGHT = 768;
-  const MAX_MOVE = 60;         // how far (Figma pixels) a frame at the edge can move
-  const EASING = 0.05;         // how quickly frames catch up with the mouse (smaller = smoother)
+  const MAX_MOVE = 160;        // how far (Figma pixels) a frame at the edge can move
+  const EASING = 0.04;         // how quickly frames catch up with the mouse (smaller = smoother)
 
   // A random number between min and max
   const between = (min, max) => min + Math.random() * (max - min);
@@ -28,8 +28,8 @@ if (home && canMove) {
     const distanceY = Math.abs(middleY - STAGE_HEIGHT / 2) / (STAGE_HEIGHT / 2);
     return {
       element,
-      strengthX: Math.max(0.4, distanceX) * between(0.666, 1),
-      strengthY: Math.max(0.4, distanceY) * between(0.666, 1),
+      strengthX: Math.max(0.3, distanceX) * between(0.5, 1.2),
+      strengthY: Math.max(0.3, distanceY) * between(0.5, 1.2),
       moveX: 0,
       moveY: 0,
     };
