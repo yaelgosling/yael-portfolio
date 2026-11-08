@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coming Soon</title>
+  <title>Yael Gosling</title>
 
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,29 +12,160 @@
 
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="home-page">
 
-  <!-- The "Coming soon" screen: fills the window, and the wall inside it can be pulled around -->
-  <main class="coming-soon">
-    <div class="coming-soon__wall">
+  <!-- The home page ("Home New" in Figma): a 1440 × 768 stage that fits the window -->
+  <main class="home">
 
-      <!-- The hand-drawn frames artwork (bottom layer) -->
-      <div class="coming-soon__background">
-        <img class="coming-soon__background-image" src="images/home-frames-background.png" alt="">
+    <!--
+      The frames move a little when the mouse moves (see script.js).
+      Numbers are Figma pixels: x and y = position, w and h = size.
+      Frames with a "home-frame__hover" part change to their "Hover Home New" version on hover.
+    -->
+    <div class="home__frames">
+
+      <!-- judges frame -->
+      <div class="home-frame" style="--x: 365; --y: 138; --w: 259.204; --h: 123.687">
+        <img class="home-frame__image" src="images/home/judges-frame.svg" alt="">
+        <!-- The Judges Chapter 4 frame from "Hover Home New": shown on hover -->
+        <div class="home-frame__hover">
+          <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/home/hover/judges-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img src="images/home/hover/judges-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.44% 35.69% 26.39% 41.7%"><img src="images/home/hover/judges-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.98% 35.96% 26.89% 41.93%"><img src="images/home/hover/judges-4.png" width="57.302" height="43.456" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.56% 11.07% 26.21% 66.01%"><img src="images/home/hover/judges-5.png" width="59.402" height="43.571" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.56% 12.97% 26.21% 66.01%"><img src="images/home/hover/judges-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.27% 60.1% 26.6% 17.33%"><img src="images/home/hover/judges-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.85% 60.35% 27.18% 17.59%"><img src="images/home/hover/judges-8.png" width="57.197" height="43.255" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.67% 10.87% 26.1% 66.31%"><img src="images/home/hover/judges-9.svg" alt=""></div>
+        </div>
       </div>
 
-      <!-- The title, inside the big blue frame -->
-      <h1 class="coming-soon__title">COMING<br>SOON</h1>
+      <!-- witch frame -->
+      <div class="home-frame" style="--x: 351; --y: 282; --w: 214.838; --h: 176.657">
+        <img class="home-frame__image" src="images/home/witch-frame.svg" alt="">
+        <!-- The The Witch frame from "Hover Home New": shown on hover -->
+        <div class="home-frame__hover">
+          <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/home/hover/witch-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/home/hover/witch-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 9.02% 7.41% 12.25% 6.83%"><img src="images/home/hover/witch-3.png" width="184.25" height="139.096" alt=""></div>
+        </div>
+      </div>
 
-      <!-- My name. It starts outside the first view: pull the wall to see all of it -->
-      <p class="coming-soon__name">Yael Gosling</p>
+      <!-- oval-lime frame -->
+      <div class="home-frame" style="--x: 40; --y: 358; --w: 226.4; --h: 114.007">
+        <img class="home-frame__image" src="images/home/oval-lime-frame.svg" alt="">
+      </div>
 
-      <!-- Link to the process page: covers the whole orange frame and the word in it -->
-      <a class="coming-soon__process-link" href="process.html">
-        <span class="coming-soon__process-word">Process</span>
-      </a>
+      <!-- grunge frame -->
+      <div class="home-frame" style="--x: 812; --y: 457; --w: 184.454; --h: 197.899">
+        <img class="home-frame__image" src="images/home/grunge-frame.svg" alt="">
+        <!-- The Grunge frame from "Hover Home New": shown on hover -->
+        <div class="home-frame__hover">
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img src="images/home/hover/grunge-1.png" width="139.523" height="149.213" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/home/hover/grunge-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/home/hover/grunge-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/home/hover/grunge-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/home/hover/grunge-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/home/hover/grunge-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/home/hover/grunge-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/home/hover/grunge-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img src="images/home/hover/grunge-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/home/hover/grunge-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/home/hover/grunge-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/home/hover/grunge-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/home/hover/grunge-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/home/hover/grunge-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/home/hover/grunge-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/home/hover/grunge-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/home/hover/grunge-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/home/hover/grunge-18.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img src="images/home/hover/grunge-19.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img src="images/home/hover/grunge-20.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img src="images/home/hover/grunge-21.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/home/hover/grunge-22.svg" alt=""></div>
+        </div>
+      </div>
 
+      <!-- mtv-ident frame -->
+      <div class="home-frame" style="--x: 804; --y: 105; --w: 163.213; --h: 319.972">
+        <img class="home-frame__image" src="images/home/mtv-ident-frame.svg" alt="">
+        <!-- The MTV Ident frame from "Hover Home New": shown on hover -->
+        <div class="home-frame__hover">
+          <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/home/hover/mtv-ident-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img src="images/home/hover/mtv-ident-2.png" width="109.72" height="247.034" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/home/hover/mtv-ident-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/home/hover/mtv-ident-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/home/hover/mtv-ident-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 81.63% 68.36% 13.73% 25.72%"><img src="images/home/hover/mtv-ident-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/home/hover/mtv-ident-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/home/hover/mtv-ident-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img src="images/home/hover/mtv-ident-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/home/hover/mtv-ident-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img src="images/home/hover/mtv-ident-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img src="images/home/hover/mtv-ident-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/home/hover/mtv-ident-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img src="images/home/hover/mtv-ident-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/home/hover/mtv-ident-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img src="images/home/hover/mtv-ident-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/home/hover/mtv-ident-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/home/hover/mtv-ident-18.svg" alt=""></div>
+        </div>
+      </div>
+
+      <!-- tall-blue-orange frame -->
+      <div class="home-frame" style="--x: 644; --y: 326; --w: 138.475; --h: 281.253">
+        <img class="home-frame__image" src="images/home/tall-blue-orange-frame.svg" alt="">
+      </div>
+
+      <!-- wide-lime frame -->
+      <div class="home-frame" style="--x: 1016; --y: 56; --w: 313.25; --h: 193.865">
+        <img class="home-frame__image" src="images/home/wide-lime-frame.svg" alt="">
+      </div>
+
+      <!-- wide-blue frame -->
+      <div class="home-frame" style="--x: 1173; --y: 444; --w: 248.449; --h: 129.871">
+        <img class="home-frame__image" src="images/home/wide-blue-frame.svg" alt="">
+      </div>
+
+      <!-- tall-blue-lime frame -->
+      <div class="home-frame" style="--x: 153; --y: 98; --w: 160.524; --h: 255.978">
+        <img class="home-frame__image" src="images/home/tall-blue-lime-frame.svg" alt="">
+      </div>
+
+      <!-- dont-eat-meat frame -->
+      <div class="home-frame" style="--x: 280; --y: 528; --w: 210.267; --h: 227.476">
+        <img class="home-frame__image" src="images/home/dont-eat-meat-frame.svg" alt="">
+        <!-- The Don't Eat Meat frame from "Hover Home New": shown on hover -->
+        <div class="home-frame__hover">
+          <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/home/hover/dont-eat-meat-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img src="images/home/hover/dont-eat-meat-2.png" width="142.146" height="163.042" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/home/hover/dont-eat-meat-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img src="images/home/hover/dont-eat-meat-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img src="images/home/hover/dont-eat-meat-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/home/hover/dont-eat-meat-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/home/hover/dont-eat-meat-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/home/hover/dont-eat-meat-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/home/hover/dont-eat-meat-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img src="images/home/hover/dont-eat-meat-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.67% 16.3%"><img src="images/home/hover/dont-eat-meat-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img src="images/home/hover/dont-eat-meat-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/home/hover/dont-eat-meat-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img src="images/home/hover/dont-eat-meat-14.svg" alt=""></div>
+        </div>
+      </div>
     </div>
+
+    <!-- The menu bar. Only HOME is a link for now: the other pages don't exist yet -->
+    <nav class="home-bar" aria-label="Main">
+      <div class="home-bar__block home-bar__block--blue" style="--x: 569; --y: 57"></div>
+      <div class="home-bar__block home-bar__block--lime" style="--x: 569; --y: 92"></div>
+      <div class="home-bar__block home-bar__block--orange" style="--x: 720; --y: 57"></div>
+      <a class="home-bar__text" style="--x: 631.4; --y: 69" href="index.html">HOME</a>
+      <span class="home-bar__text" style="--x: 782.6; --y: 69">INDEX</span>
+      <span class="home-bar__text home-bar__text--centered" style="--x: 644.2; --y: 103.6">HI</span>
+    </nav>
+
   </main>
 
   <script src="script.js"></script>

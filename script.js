@@ -1,85 +1,85 @@
 /* =========================================
-   Home page: pull the wall of frames around
+   Home page: the frames follow the mouse
+   Like guillaumetomasi.com: everything drifts slowly away from the mouse,
+   and frames further from the middle move more, which gives a feeling of depth.
    ========================================= */
-const comingSoon = document.querySelector(".coming-soon");
+const home = document.querySelector(".home");
 
-if (comingSoon) {
-  const wall = comingSoon.querySelector(".coming-soon__wall");
+// Only with a real mouse, and not for people who asked their computer for less motion
+const canMove =
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // The wall's size and how far it reaches past the Figma frame's corner (Figma pixels)
-  const WALL_WIDTH = 2007.702;
-  const WALL_HEIGHT = 1477;
-  const WALL_LEFT = 276;
-  const WALL_TOP = 179;
+if (home && canMove) {
+  const STAGE_WIDTH = 1440;    // the "Home New" frame, in Figma pixels
+  const STAGE_HEIGHT = 768;
+  const MAX_MOVE = 60;         // how far (Figma pixels) a frame at the edge can move
+  const EASING = 0.05;         // how quickly frames catch up with the mouse (smaller = smoother)
 
-  // How far the mouse must move before a press counts as pulling and not as a click
-  const DRAG_START_DISTANCE = 5;
+  // A random number between min and max
+  const between = (min, max) => min + Math.random() * (max - min);
 
-  let panX = 0;
-  let panY = 0;
-  let press = null;            // where the current press started
-  let hasDragged = false;
-
-  // Size of one Figma pixel on this screen
-  function figmaPixel() {
-    return wall.offsetWidth / WALL_WIDTH;
-  }
-
-  // Move the wall, but never so far that its edge comes into the window
-  function moveWall(x, y) {
-    const windowWidth = comingSoon.clientWidth / figmaPixel();
-    const windowHeight = comingSoon.clientHeight / figmaPixel();
-    panX = Math.min(WALL_LEFT, Math.max(windowWidth + WALL_LEFT - WALL_WIDTH, x));
-    panY = Math.min(WALL_TOP, Math.max(windowHeight + WALL_TOP - WALL_HEIGHT, y));
-    wall.style.setProperty("--pan-x", panX);
-    wall.style.setProperty("--pan-y", panY);
-  }
-
-  comingSoon.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) return;
-    press = { mouseX: event.clientX, mouseY: event.clientY, panX, panY };
-    hasDragged = false;
+  // How much each frame moves: more for frames further from the middle, with a bit of randomness
+  const frames = [...home.querySelectorAll(".home-frame")].map((element) => {
+    const read = (name) => parseFloat(element.style.getPropertyValue(name));
+    const middleX = read("--x") + read("--w") / 2;
+    const middleY = read("--y") + read("--h") / 2;
+    const distanceX = Math.abs(middleX - STAGE_WIDTH / 2) / (STAGE_WIDTH / 2);
+    const distanceY = Math.abs(middleY - STAGE_HEIGHT / 2) / (STAGE_HEIGHT / 2);
+    return {
+      element,
+      strengthX: Math.max(0.4, distanceX) * between(0.666, 1),
+      strengthY: Math.max(0.4, distanceY) * between(0.666, 1),
+      moveX: 0,
+      moveY: 0,
+    };
   });
 
-  comingSoon.addEventListener("pointermove", (event) => {
-    if (!press) return;
-    const movedX = event.clientX - press.mouseX;
-    const movedY = event.clientY - press.mouseY;
+  // Where the mouse is: from -0.5 (left/top) to 0.5 (right/bottom)
+  let mouseX = 0;
+  let mouseY = 0;
+  let isAnimating = false;
 
-    if (!hasDragged) {
-      if (Math.hypot(movedX, movedY) < DRAG_START_DISTANCE) return;
-      hasDragged = true;
-      comingSoon.setPointerCapture(event.pointerId);
-      comingSoon.classList.add("is-dragging");
+  // Every screen refresh, move each frame a small step towards where it should be
+  function animate() {
+    let stillMoving = false;
+
+    frames.forEach((frame) => {
+      const targetX = -mouseX * 2 * MAX_MOVE * frame.strengthX;
+      const targetY = -mouseY * 2 * MAX_MOVE * frame.strengthY;
+      frame.moveX += (targetX - frame.moveX) * EASING;
+      frame.moveY += (targetY - frame.moveY) * EASING;
+      frame.element.style.setProperty("--move-x", frame.moveX.toFixed(2));
+      frame.element.style.setProperty("--move-y", frame.moveY.toFixed(2));
+      if (Math.abs(targetX - frame.moveX) > 0.05 || Math.abs(targetY - frame.moveY) > 0.05) {
+        stillMoving = true;
+      }
+    });
+
+    // Stop when everything has arrived, so the page rests when the mouse is still
+    isAnimating = stillMoving;
+    if (isAnimating) requestAnimationFrame(animate);
+  }
+
+  function startAnimating() {
+    if (!isAnimating) {
+      isAnimating = true;
+      requestAnimationFrame(animate);
     }
+  }
 
-    moveWall(press.panX + movedX / figmaPixel(), press.panY + movedY / figmaPixel());
+  window.addEventListener("pointermove", (event) => {
+    mouseX = event.clientX / window.innerWidth - 0.5;
+    mouseY = event.clientY / window.innerHeight - 0.5;
+    startAnimating();
   });
 
-  function endPress() {
-    press = null;
-    comingSoon.classList.remove("is-dragging");
-  }
-  comingSoon.addEventListener("pointerup", endPress);
-  comingSoon.addEventListener("pointercancel", endPress);
-
-  // After pulling, letting go must not open the Process link
-  comingSoon.addEventListener("click", (event) => {
-    if (hasDragged) event.preventDefault();
-  }, true);
-
-  // Stop the browser from dragging the link or image as a file
-  comingSoon.addEventListener("dragstart", (event) => event.preventDefault());
-
-  // Scrolling with a trackpad or wheel also moves the wall
-  comingSoon.addEventListener("wheel", (event) => {
-    event.preventDefault();
-    moveWall(panX - event.deltaX / figmaPixel(), panY - event.deltaY / figmaPixel());
-  }, { passive: false });
-
-  // Keep the wall inside its limits when the page opens and when the window changes size
-  moveWall(panX, panY);
-  window.addEventListener("resize", () => moveWall(panX, panY));
+  // When the mouse leaves the window, the frames drift back to their places
+  document.documentElement.addEventListener("mouseleave", () => {
+    mouseX = 0;
+    mouseY = 0;
+    startAnimating();
+  });
 }
 
 

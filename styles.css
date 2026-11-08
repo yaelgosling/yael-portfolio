@@ -13,17 +13,9 @@
   --font-display: "Instrument Serif", Georgia, serif;
   --line-height: 1.006;
 
-  /* One Figma pixel on the home page. The whole 1440 × 1024 frame always fits in the window,
-     and the rest of the wall fills any extra space (the wall is never smaller than the window) */
-  --figma-pixel: max(min(100vw / 1440, 100svh / 1024), 100vw / 2007.702, 100svh / 1477);
-
-  /* The wall of frames is bigger than the Figma frame: how far it reaches past the frame's corner */
-  --wall-left: 276;
-  --wall-top: 179;
-
-  /* Coming soon page text sizes */
-  --title-size: calc(80 * var(--figma-pixel));
-  --small-text-size: calc(40 * var(--figma-pixel));
+  /* Home page: one Figma pixel. The whole 1440 × 768 "Home New" frame fits in the window */
+  --home-pixel: min(100vw / 1440, 100svh / 768);
+  --home-text-size: calc(12 * var(--home-pixel));
 
   /* Process page: sizes out of a 1440px-wide frame */
   --process-side-space: calc(95 / 1440 * 100cqw);
@@ -57,109 +49,102 @@ body {
 
 
 /* =========================================
-   The "Coming soon" page
-   The window shows part of a big wall of frames, and the mouse pulls the wall around.
-   Numbers below are Figma positions, so they can be compared with the design.
+   Home page ("Home New" in Figma)
+   A 1440 × 768 stage in the middle of the window. Positions are Figma pixels.
    ========================================= */
-.coming-soon {
-  position: relative;
-  width: 100%;
+body.home-page {
   height: 100vh;
-  height: 100svh;              /* exactly the size of the window */
-  overflow: hidden;
-  overflow: clip;
-  cursor: grab;
-  touch-action: none;          /* on phones a finger pulls the wall instead of scrolling */
-  user-select: none;
-  -webkit-user-select: none;
+  height: 100svh;
+  overflow: hidden;            /* one screen, no scrolling */
+  display: grid;
+  place-items: center;         /* the stage sits in the middle of the window */
 }
 
-.coming-soon.is-dragging {
-  cursor: grabbing;
+.home {
+  position: relative;
+  width: calc(1440 * var(--home-pixel));
+  height: calc(768 * var(--home-pixel));
 }
 
-/* The wall. script.js changes --pan-x and --pan-y when it is pulled */
-.coming-soon__wall {
+/* One frame. script.js moves it with --move-x and --move-y (Figma pixels) */
+.home-frame {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(2007.702 * var(--figma-pixel));
-  height: calc(1477 * var(--figma-pixel));
+  left: calc(var(--x) * var(--home-pixel));
+  top: calc(var(--y) * var(--home-pixel));
+  width: calc(var(--w) * var(--home-pixel));
+  height: calc(var(--h) * var(--home-pixel));
   transform: translate(
-    calc((var(--pan-x, 0) - var(--wall-left)) * var(--figma-pixel)),
-    calc((var(--pan-y, 0) - var(--wall-top)) * var(--figma-pixel))
+    calc(var(--move-x, 0) * var(--home-pixel)),
+    calc(var(--move-y, 0) * var(--home-pixel))
   );
 }
 
-/* The artwork area, turned 90° like in Figma (1477 × 2007.7 before turning) */
-.coming-soon__background {
-  position: absolute;
-  left: calc((-10.649 + var(--wall-left)) * var(--figma-pixel));
-  top: calc((-444.351 + var(--wall-top)) * var(--figma-pixel));
-  width: calc(1477 * var(--figma-pixel));
-  height: calc(2007.702 * var(--figma-pixel));
-  overflow: hidden;            /* the artwork is cropped to this area */
-  transform: rotate(90deg);
-  pointer-events: none;
-}
-
-/* The artwork is wider than its area: Figma shows it at 135.93% width, from the left */
-.coming-soon__background-image {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 135.93%;
+.home-frame__image {
+  display: block;
+  width: 100%;
   height: 100%;
-  max-width: none;
 }
 
-/* Shared text style for this page */
-.coming-soon__title,
-.coming-soon__name,
-.coming-soon__process-word {
+/* The "Hover Home New" version: hidden until the mouse is over the frame */
+.home-frame__hover {
   position: absolute;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* One drawn layer of the hover version, placed like in Figma */
+.home-frame__layer {
+  position: absolute;
+  inset: var(--inset);
+}
+
+.home-frame__layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* On hover the frame swaps to its hover version, and comes in front of the others */
+.home-frame:hover {
+  z-index: 1;
+}
+
+.home-frame:has(.home-frame__hover):hover .home-frame__image {
+  visibility: hidden;
+}
+
+.home-frame:hover .home-frame__hover {
+  visibility: visible;
+}
+
+/* The menu bar */
+.home-bar__block {
+  position: absolute;
+  left: calc(var(--x) * var(--home-pixel));
+  top: calc(var(--y) * var(--home-pixel));
+  width: calc(151 * var(--home-pixel));
+  height: calc(35 * var(--home-pixel));
+}
+
+.home-bar__block--blue { background-color: var(--color-blue); }
+.home-bar__block--lime { background-color: var(--color-lime); }
+.home-bar__block--orange { background-color: var(--color-orange); }
+
+.home-bar__text {
+  position: absolute;
+  left: calc(var(--x) * var(--home-pixel));
+  top: calc(var(--y) * var(--home-pixel));
   font-family: var(--font-display);
-  font-weight: 400;
+  font-size: var(--home-text-size);
   line-height: var(--line-height);
   color: var(--color-black);
-}
-
-/* The title "COMING SOON" (x 146, y 420 in Figma) */
-.coming-soon__title {
-  left: calc((146 + var(--wall-left)) * var(--figma-pixel));
-  top: calc((420 + var(--wall-top)) * var(--figma-pixel));
-  font-size: var(--title-size);
-}
-
-/* The name "Yael Gosling" (x -138, y 0 in Figma) */
-.coming-soon__name {
-  left: calc((-138 + var(--wall-left)) * var(--figma-pixel));
-  top: calc((0 + var(--wall-top)) * var(--figma-pixel));
-  font-size: var(--small-text-size);
+  text-decoration: none;
   white-space: nowrap;
 }
 
-/* The clickable area: the whole orange frame with its drawn border (x 1039, y 385, 621 × 400) */
-.coming-soon__process-link {
-  position: absolute;
-  left: calc((1039 + var(--wall-left)) * var(--figma-pixel));
-  top: calc((385 + var(--wall-top)) * var(--figma-pixel));
-  width: calc(621 * var(--figma-pixel));
-  height: calc(400 * var(--figma-pixel));
-}
-
-/* The word "Process" (x 1316, y 559 in Figma, measured here from the clickable area) */
-.coming-soon__process-word {
-  left: calc((1316 - 1039) * var(--figma-pixel));
-  top: calc((559 - 385) * var(--figma-pixel));
-  font-size: var(--small-text-size);
-  white-space: nowrap;
-}
-
-/* Hovering over the frame or the word changes it to the italic of Instrument Serif */
-.coming-soon__process-link:hover .coming-soon__process-word,
-.coming-soon__process-link:focus-visible .coming-soon__process-word {
-  font-style: italic;
+.home-bar__text--centered {
+  transform: translateX(-50%);
 }
 
 
