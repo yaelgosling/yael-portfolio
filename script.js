@@ -149,24 +149,6 @@ if (document.body.classList.contains("project-page")) {
 
 
 /* =========================================
-   Home and project pages: the mouse dot is always the same size as one dot of the four
-   circles index button (5 Figma pixels), which grows and shrinks with the window
-   ========================================= */
-if (document.body.matches(".home-page, .project-page")) {
-  function sizeCursorDot() {
-    const figmaPixel = Math.min(window.innerWidth / 1440, window.innerHeight / 800);
-    const size = Math.max(5, Math.round(5 * figmaPixel));
-    const middle = size / 2;
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><circle cx='${middle}' cy='${middle}' r='${middle}' fill='black'/></svg>`;
-    const cursor = `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${Math.floor(middle)} ${Math.floor(middle)}, auto`;
-    document.documentElement.style.setProperty("--cursor-dot", cursor);
-  }
-  window.addEventListener("resize", sizeCursorDot);
-  sizeCursorDot();
-}
-
-
-/* =========================================
    Project page: click the animation to play or pause it
    ========================================= */
 document.querySelectorAll(".project-video").forEach((video) => {
