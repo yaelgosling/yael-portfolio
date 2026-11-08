@@ -69,6 +69,7 @@ if (home && canMove) {
   }
 
   window.addEventListener("pointermove", (event) => {
+    if (document.body.classList.contains("is-index-open")) return;   // the frames stay still behind the open index
     mouseX = event.clientX / window.innerWidth - 0.5;
     mouseY = event.clientY / window.innerHeight - 0.5;
     startAnimating();
