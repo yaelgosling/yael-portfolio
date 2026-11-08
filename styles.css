@@ -25,7 +25,7 @@
   --project-line: 1px;         /* every black line on the site: always exactly 1 pixel thin */
 
   /* The mouse on project pages: a tiny black dot, the same size as one dot of the
-     four circles index button (5px). The click point is its middle */
+     four circles index button. script.js resizes it with the window; this is the smallest size */
   --cursor-dot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Ccircle cx='2.5' cy='2.5' r='2.5' fill='black'/%3E%3C/svg%3E") 2 2, auto;
 
   /* The index */
@@ -143,6 +143,15 @@ body.home-page {
 .home-frame--link {
   cursor: pointer;
 }
+
+/* The mouse: a tiny black dot, everywhere on the home and project pages (also on links) */
+body.home-page,
+body.home-page *,
+body.project-page,
+body.project-page * {
+  cursor: var(--cursor-dot);
+}
+
 
 /* =========================================
    The menu bar (home and project pages)
@@ -464,11 +473,7 @@ body.is-sliding-in main {
    and "Reach Out" that slides up over it whenever you scroll down.
    ========================================= */
 
-/* The mouse: a tiny black dot, everywhere on the page (also on links and the video) */
-body.project-page,
-body.project-page * {
-  cursor: var(--cursor-dot);
-}
+
 
 /* The bar stays still at the top of the screen */
 .site-bar--project {
@@ -568,10 +573,17 @@ img.project-strip__piece {
   text-decoration: none;
 }
 
-/* Hovering over the email address makes it italic, so people know it can be clicked */
+/* Hovering over the email address or Instagram changes it to Instrument Serif italic,
+   so people know it can be clicked */
+.project-text--email {
+  text-decoration: none;
+}
+
 .project-text--email:hover,
 .project-text--email:focus-visible {
+  font-family: var(--font-display);
   font-style: italic;
+  font-weight: 400;
 }
 
 .project-video {
