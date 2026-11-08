@@ -23,11 +23,6 @@
   --project-nav-text-size: calc(12 * var(--stage-pixel));
   --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
 
-  /* The menu bar's grey colours */
-  --color-bar-light: #e7e7e7;
-  --color-bar-mid: #8a8989;
-  --color-bar-dark: #383838;
-
   /* The arrow mouse on project pages (75% of the Figma size): points down,
      then up from the bottom of the page until you are back at the top.
      The two numbers are the click point: the middle of the circle */
@@ -154,7 +149,6 @@ body.home-page {
   width: calc(302 * var(--stage-pixel));
   height: calc(70 * var(--stage-pixel));
   z-index: 5;
-  view-transition-name: site-bar;   /* moves smoothly between pages (see "Moving between pages") */
 }
 
 .site-bar__block {
@@ -165,9 +159,9 @@ body.home-page {
   height: calc(35 * var(--stage-pixel));
 }
 
-.site-bar__block--light { background-color: var(--color-bar-light); }
-.site-bar__block--mid { background-color: var(--color-bar-mid); }
-.site-bar__block--dark { background-color: var(--color-bar-dark); }
+.site-bar__block--blue { background-color: var(--color-blue); }
+.site-bar__block--orange { background-color: var(--color-orange); }
+.site-bar__block--lime { background-color: var(--color-lime); }
 
 .site-bar__text {
   position: absolute;
@@ -185,10 +179,6 @@ body.home-page {
   transform: translateX(-50%);
 }
 
-.site-bar__text--white {
-  color: var(--color-white);
-}
-
 /* Hovering over a word in the bar makes it italic, so people know it can be clicked */
 .site-bar__text:hover,
 .site-bar__text:focus-visible {
@@ -198,29 +188,32 @@ body.home-page {
 
 /* =========================================
    Moving between pages
-   Clicking a frame on the home page: the project page slides up over the home page,
-   and the bar glides to its place. (Works in Chrome, Edge and Safari; other browsers
-   simply open the page.)
+   Clicking a frame on the home page: the project page slides up over the home page
+   while the bar stays where it is (script.js). Opening a project page any other way
+   (a link, a refresh): the page slides up by itself.
    ========================================= */
-@view-transition {
-  navigation: auto;
+
+/* The project page, waiting below the screen on the home page */
+.page-slide {
+  position: fixed;
+  inset: 0;
+  z-index: 4;                       /* under the bar (5), over the frames */
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-white);
+  pointer-events: none;
+  transform: translateY(100%);
+  transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
-.project-html::view-transition-old(root) {
-  animation: none;                  /* the home page stays still underneath */
+.page-slide.is-sliding {
+  transform: none;
 }
 
-.project-html::view-transition-new(root) {
-  animation: page-slide-up var(--page-change-time) var(--page-change-easing) both;
-}
-
-::view-transition-group(site-bar) {
-  animation-duration: var(--page-change-time);
-  animation-timing-function: var(--page-change-easing);
-}
-
-@keyframes page-slide-up {
-  from { transform: translateY(100%); }
+/* Inside that waiting copy, the bar is hidden: the home page's bar is the one you see */
+.is-preview .site-bar {
+  visibility: hidden;
 }
 
 /* Opening a project page any other way: the page slides up by itself (script.js adds the class) */
@@ -233,11 +226,12 @@ body.is-sliding-in {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*),
+  .page-slide {
+    transition: none;
+  }
+
   body.is-sliding-in {
-    animation: none !important;
+    animation: none;
   }
 }
 
@@ -260,11 +254,14 @@ body.project-page.is-at-bottom {
   cursor: var(--cursor-scroll-up);
 }
 
-/* The bar stays on the screen. script.js moves it up with --bar-shift (in screen pixels) */
+/* The bar stays on the screen. It starts in exactly the same spot as on the home page
+   (where the home page sits in the middle of the window), and script.js moves it up
+   with --bar-shift-x and --bar-shift-y (in screen pixels) */
 .site-bar--project {
   position: fixed;
   left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
-  transform: translateY(calc(var(--bar-shift, 0) * -1px));
+  top: calc((100svh - 768 * var(--stage-pixel)) / 2 + var(--y) * var(--stage-pixel));
+  transform: translate(calc(var(--bar-shift-x, 0) * -1px), calc(var(--bar-shift-y, 0) * -1px));
 }
 
 /* The top of the page with the title: stays on the screen above the pictures */
@@ -365,6 +362,12 @@ body.project-page.is-at-bottom {
   text-decoration: none;
 }
 
+/* Hovering over the email address makes it italic, so people know it can be clicked */
+.project-text--email:hover,
+.project-text--email:focus-visible {
+  font-style: italic;
+}
+
 /* The pictures: slide up over the first screen and pass under the title.
    When their bottom reaches the bottom of the window they stay, so "Reach Out" can slide over them */
 .project-pictures {
@@ -408,7 +411,7 @@ img.project-pictures__piece {
   cursor: pointer;
 }
 
-/* Play symbol on the video: just a black triangle. Clicks go through it to the video */
+/* The "pause play" button on the video. Clicks go through it to the video */
 .project-video__play {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -417,10 +420,6 @@ img.project-pictures__piece {
   height: calc(var(--h) * var(--stage-pixel));
   pointer-events: none;
   transition: opacity 0.3s ease;
-}
-
-.project-video__play path {
-  fill: var(--color-black);
 }
 
 .project-video.is-playing + .project-video__play {
@@ -475,12 +474,14 @@ img.project-pictures__piece {
   font-weight: 600;
 }
 
-/* "Reach Out": the last screen, slides up over the pictures (and over the title at the top) */
+/* "Reach Out": the last screen, slides up over the pictures (and over the title at the top).
+   It is at least as tall as the window, so at the end it reaches the very top and its
+   lines sit exactly where the lines at the top were */
 .project-reach {
   position: relative;
   z-index: 3;
   width: calc(1440 * var(--stage-pixel));
-  height: calc(768 * var(--stage-pixel));
+  height: max(calc(768 * var(--stage-pixel)), 100vh);
   margin: 0 auto;
   background-color: var(--color-white);
 }

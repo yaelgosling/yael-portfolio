@@ -84,38 +84,87 @@ if (home && canMove) {
 
 
 /* =========================================
-   Project page: the page slides up when it opens.
-   Coming from the home page in Chrome, Edge or Safari, the browser's page change already
-   slides it up over the home page (see "Moving between pages" in styles.css).
-   In every other case (a link, a refresh, other browsers) the page slides up by itself.
+   Home page: clicking a frame opens its project page.
+   The project page waits (already loaded) below the screen, slides up over the
+   home page while the bar stays where it is, and then the browser opens it.
+   ========================================= */
+const PAGE_CHANGE_TIME = 900;  // the same as --page-change-time in styles.css
+
+document.querySelectorAll(".home-frame--link").forEach((link) => {
+  let slide = null;
+
+  // Load the project page below the screen (as soon as the mouse is over the frame)
+  function prepareSlide() {
+    if (slide) return slide;
+    slide = document.createElement("iframe");
+    slide.className = "page-slide";
+    slide.src = link.href;
+    slide.tabIndex = -1;
+    slide.setAttribute("aria-hidden", "true");
+    slide.ready = new Promise((resolve) => slide.addEventListener("load", resolve, { once: true }));
+    document.body.appendChild(slide);
+    return slide;
+  }
+
+  link.addEventListener("pointerenter", prepareSlide);
+  link.addEventListener("focus", prepareSlide);
+
+  link.addEventListener("click", async (event) => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
+
+    event.preventDefault();
+    const page = prepareSlide();
+    await page.ready;
+    page.classList.add("is-sliding");
+    setTimeout(() => {
+      sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
+      window.location.href = link.href;
+    }, PAGE_CHANGE_TIME);
+  });
+});
+
+// Coming back with the browser's back button: put the waiting page away again
+window.addEventListener("pageshow", () => {
+  document.querySelectorAll(".page-slide").forEach((page) => page.classList.remove("is-sliding"));
+});
+
+
+/* =========================================
+   Project page: the page slides up when it opens (unless it already slid up over the
+   home page). Inside the waiting copy on the home page, nothing moves and the bar is hidden.
    ========================================= */
 if (document.body.classList.contains("project-page")) {
-  const slideIn = () => document.body.classList.add("is-sliding-in");
-
-  if ("onpagereveal" in window) {
-    window.addEventListener("pagereveal", (event) => {
-      if (!event.viewTransition) slideIn();
-    }, { once: true });
+  if (window.frameElement) {
+    document.documentElement.classList.add("is-preview");
+  } else if (sessionStorage.getItem("page-slid-in")) {
+    sessionStorage.removeItem("page-slid-in");
   } else {
-    slideIn();
+    document.body.classList.add("is-sliding-in");
   }
 }
 
 
 /* =========================================
    Project page: the bar moves up when you start scrolling,
-   from the middle (like "Info look whole page") to the top (like frame "x")
+   from its spot on the home page to the top (like frame "x")
    ========================================= */
 const projectBar = document.querySelector(".site-bar--project");
 
 if (projectBar) {
-  const BAR_START = 314;       // Figma y of the bar on the first screen
-  const BAR_END = 10;          // Figma y of the bar at the top
+  const BAR_START_X = 571;     // Figma position of the bar on the home page
+  const BAR_START_Y = 333;
+  const BAR_END_X = 569;       // Figma position of the bar at the top (frame "x")
+  const BAR_END_Y = 10;
 
   function moveBar() {
     const figmaPixel = Math.min(window.innerWidth / 1440, window.innerHeight / 768);
-    const shift = Math.min(window.scrollY, (BAR_START - BAR_END) * figmaPixel);
-    projectBar.style.setProperty("--bar-shift", shift);
+    const homeTop = (window.innerHeight - 768 * figmaPixel) / 2;   // the home page sits in the middle
+    const distance = homeTop + (BAR_START_Y - BAR_END_Y) * figmaPixel;
+    const shiftY = Math.min(window.scrollY, distance);
+    const shiftX = (shiftY / distance) * (BAR_START_X - BAR_END_X) * figmaPixel;
+    projectBar.style.setProperty("--bar-shift-x", shiftX);
+    projectBar.style.setProperty("--bar-shift-y", shiftY);
   }
   window.addEventListener("scroll", moveBar, { passive: true });
   window.addEventListener("resize", moveBar);

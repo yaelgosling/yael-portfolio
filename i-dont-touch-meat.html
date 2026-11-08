@@ -15,16 +15,16 @@
 <body class="project-page">
 
   <!--
-    The menu bar. It starts in the middle (like on "Info look whole page") and when you
+    The menu bar. It starts in exactly the same spot as on the home page, and when you
     start scrolling it moves up until it sits at the top (like on frame "x"). See script.js.
   -->
-  <nav class="site-bar site-bar--project" style="--x: 569; --y: 314" aria-label="Main">
-      <div class="site-bar__block site-bar__block--light" style="--x: 0; --y: 0"></div>
-      <div class="site-bar__block site-bar__block--dark" style="--x: 0; --y: 35"></div>
-      <div class="site-bar__block site-bar__block--mid" style="--x: 151; --y: 0"></div>
+  <nav class="site-bar site-bar--project" style="--x: 571; --y: 333" aria-label="Main">
+      <div class="site-bar__block site-bar__block--blue" style="--x: 0; --y: 0"></div>
+      <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
+      <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
       <a class="site-bar__text" style="--x: 62.4; --y: 12" href="index.html">HOME</a>
       <span class="site-bar__text" style="--x: 213.6; --y: 12">INDEX</span>
-      <span class="site-bar__text site-bar__text--centered site-bar__text--white" style="--x: 75.2; --y: 46.6">HI</span>
+      <span class="site-bar__text site-bar__text--centered" style="--x: 226.2; --y: 46.6">HI</span>
     </nav>
 
   <!-- The top of the page: the title and the black line under the bar. The pictures slide under it -->
@@ -78,10 +78,8 @@
 
       <!-- The animation: click to play or pause (with sound) -->
       <video class="project-pictures__piece project-video" style="--x: 75.6; --y: 167; --w: 1036.8; --h: 583.2" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
-      <!-- Play symbol in the middle of the video: hidden while it plays -->
-      <svg class="project-video__play" style="--x: 554; --y: 418.6; --w: 80; --h: 80" viewBox="0 0 80 80" aria-hidden="true">
-        <path d="M32 26 L56 40 L32 54 Z"/>
-      </svg>
+      <!-- The "pause play" button in the middle of the video: hidden while it plays -->
+      <img class="project-video__play" style="--x: 518.5; --y: 441.1; --w: 151; --h: 35" src="images/i-dont-touch-meat/pause-play.svg" alt="">
 
       <!-- The black border lines around the pictures -->
       <div class="project-line" style="--x: 0; --y: 0; --w: 1440"></div>
@@ -124,7 +122,7 @@
 
       <h2 class="project-title" style="--x: 15; --y: 19">REACH OUT</h2>
       <p class="project-text" style="--x: 15; --y: 158; --w: 414.665">Email me</p>
-      <a class="project-text project-text--contact" style="--x: 15; --y: 177; --w: 462.927" href="mailto:Yaelgosling5@gmail.com">Yaelgosling5@gmail.com</a>
+      <a class="project-text project-text--contact project-text--email" style="--x: 15; --y: 177; --w: 462.927" href="mailto:Yaelgosling5@gmail.com">Yaelgosling5@gmail.com</a>
       <p class="project-text" style="--x: 739.29; --y: 158; --w: 414.665">Let’s talk</p>
       <a class="project-text project-text--contact" style="--x: 739.29; --y: 177; --w: 462.927" href="tel:+972538521501">+972 538521501</a>
       <p class="project-text" style="--x: 15; --y: 527; --w: 414.665">Instagram</p>
