@@ -193,15 +193,26 @@ body.project-page * {
   transform: translateX(-50%);
 }
 
-/* INDEX is a button: no button look */
-.site-bar__index {
+/* INDEX and HI are buttons: no button look */
+.site-bar__index,
+.site-bar__hi {
   border: 0;
   padding: 0;
   background: none;
   cursor: pointer;
 }
 
-/* Hovering over a word in the bar makes it italic, so people know it can be clicked */
+/* HOME, INDEX and HI fill their whole coloured box, with the word in the middle,
+   so hovering or clicking anywhere on the box works */
+.site-bar__box {
+  width: calc(151 * var(--stage-pixel));
+  height: calc(35 * var(--stage-pixel));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hovering over a word in the bar (or its box) makes it italic, so people know it can be clicked */
 .site-bar__text:hover,
 .site-bar__text:focus-visible {
   font-style: italic;
@@ -214,7 +225,8 @@ body.project-page * {
    Clicking on the blur closes it again (script.js).
    ========================================= */
 
-/* While the index is open, INDEX stays italic */
+/* While the index or the Hi page is open, INDEX or HI stays italic */
+.is-hi-open .site-bar__hi,
 .is-index-open .site-bar__index {
   font-style: italic;
 }
@@ -378,16 +390,19 @@ body.project-page * {
 }
 
 /* On the home page the bar sits in the middle, so the open index wouldn't fit below it:
-   the bar moves up to its spot at the top first (the same spot as on the project page) */
-.is-index-open .home .site-bar {
+   the bar moves up to its spot at the top first (the same spot as on the project page).
+   The same happens when the Hi page is open */
+.is-index-open .home .site-bar,
+.is-hi-open .home .site-bar {
   transform: translate(
     calc((569 - 571) * var(--stage-pixel)),
     calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
 }
 
-/* While the index is open the page doesn't scroll (so "Reach Out" can't come up) */
-html.is-index-open-page {
+/* While the index or the Hi page is open the page doesn't scroll (so "Reach Out" can't come up) */
+html.is-index-open-page,
+html.is-hi-open-page {
   overflow: hidden;
   overscroll-behavior: none;
 }
@@ -396,6 +411,101 @@ html.is-index-open-page {
   .site-index,
   .is-index-open .site-index,
   .site-index-blur {
+    transition: none;
+  }
+}
+
+
+/* =========================================
+   The Hi page ("Hi page" in Figma)
+   Slides up from the bottom over the page when HI is clicked (script.js).
+   The bar stays on top of it.
+   ========================================= */
+.hi-page {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  background-color: var(--color-white);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform var(--page-change-time) var(--page-change-easing),
+    visibility 0s linear var(--page-change-time);
+}
+
+.is-hi-open .hi-page {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+/* White to lime, from under the top line to the bottom of the window */
+.hi-page__gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(62 * var(--stage-pixel));
+  bottom: 0;
+  background: linear-gradient(to bottom, var(--color-white), var(--color-lime));
+}
+
+.hi-page .project-line--full {
+  left: 0;
+  width: 100%;
+}
+
+/* The 1440 design, in the middle of the window */
+.hi-page__stage {
+  position: relative;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(800 * var(--stage-pixel));
+  margin: 0 auto;
+}
+
+/* "Email me" and "Let's talk": buttons that show the email address or phone number */
+.hi-page__reveal {
+  position: absolute;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: none;
+  text-align: left;
+  white-space: nowrap;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* "Let's talk": its right edge stays where it is in Figma, so the longer number fits */
+.hi-page__reveal--right {
+  left: auto;
+  right: calc((1440 - var(--right)) * var(--stage-pixel));
+  text-align: right;
+}
+
+/* On hover (or after a click) the email address or number shows instead of the label */
+.hi-page__reveal-value,
+.hi-page__reveal:hover .hi-page__reveal-label,
+.hi-page__reveal:focus-visible .hi-page__reveal-label,
+.hi-page__reveal.is-showing .hi-page__reveal-label {
+  display: none;
+}
+
+.hi-page__reveal:hover .hi-page__reveal-value,
+.hi-page__reveal:focus-visible .hi-page__reveal-value,
+.hi-page__reveal.is-showing .hi-page__reveal-value {
+  display: inline;
+  font-family: var(--font-display);   /* the email address and number: Instrument Serif italic */
+  font-style: italic;
+  font-weight: 400;
+  user-select: all;          /* one click selects all of it */
+  -webkit-user-select: all;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hi-page,
+  .is-hi-open .hi-page {
     transition: none;
   }
 }

@@ -8,7 +8,7 @@
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -162,9 +162,9 @@
       <div class="site-bar__block site-bar__block--blue" style="--x: 0; --y: 0"></div>
       <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
       <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
-      <a class="site-bar__text" style="--x: 62.4; --y: 12" href="index.html">HOME</a>
-      <button class="site-bar__text site-bar__index" style="--x: 213.6; --y: 12" type="button" aria-expanded="false" aria-controls="site-index">INDEX</button>
-      <span class="site-bar__text site-bar__text--centered" style="--x: 226.2; --y: 46.6">HI</span>
+      <a class="site-bar__text site-bar__box" style="--x: 0; --y: 0" href="index.html">HOME</a>
+      <button class="site-bar__text site-bar__box site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index">INDEX</button>
+      <button class="site-bar__text site-bar__box site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page">HI</button>
       <!-- The index ("open index list" in Figma): opens downwards under the bar.
            Numbers are Figma pixels from the top left corner of the orange panel -->
       <div class="site-index" id="site-index" data-view="list">
@@ -297,6 +297,34 @@
     </nav>
 
   </main>
+
+  <!-- The Hi page ("Hi page" in Figma): slides up from the bottom when HI is clicked.
+       Click HI again (or press Escape) to close it -->
+  <section class="hi-page" id="hi-page" aria-label="Hi, I'm Yael" aria-hidden="true">
+    <div class="hi-page__gradient"></div>
+    <div class="project-line project-line--full" style="--y: 0"></div>
+    <div class="hi-page__stage">
+      <h2 class="project-title" style="--x: 15; --y: 56">HI I’M YAEL</h2>
+
+      <p class="project-text" style="--x: 15; --y: 212; --w: 87">Background</p>
+      <p class="project-text" style="--x: 134; --y: 212; --w: 268">Born in New Zealand<br>Moved to Australia with family<br>Immigrated to Israel at 18 by myself in 2019</p>
+      <p class="project-text" style="--x: 694; --y: 431; --w: 254">Currently studying Visual Communication at Bezalel, focusing on illustration and design.</p>
+      <p class="project-text" style="--x: 694; --y: 561; --w: 269">My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+
+      <a class="project-text project-text--email" style="--x: 15; --y: 755; --w: 84" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">Instagram</a>
+      <!-- "Email me" and "Let's talk" show the email address and phone number on hover.
+           Email: a click opens a new email straight away and also copies the address.
+           Phone: a click copies the number. Both can also be selected and copied by hand -->
+      <a class="project-text hi-page__reveal" style="--x: 694; --y: 758" href="mailto:Yaelgosling5@gmail.com" aria-label="Email: Yaelgosling5@gmail.com">
+        <span class="hi-page__reveal-label">Email me</span>
+        <span class="hi-page__reveal-value">Yaelgosling5@gmail.com</span>
+      </a>
+      <button class="project-text hi-page__reveal hi-page__reveal--right" style="--right: 1425; --y: 758" type="button" aria-label="Phone number: +972 538521501. Click to copy">
+        <span class="hi-page__reveal-label">Let’s talk</span>
+        <span class="hi-page__reveal-value">+972 538521501</span>
+      </button>
+    </div>
+  </section>
 
   <script src="script.js"></script>
 

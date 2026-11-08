@@ -69,7 +69,7 @@ if (home && canMove) {
   }
 
   window.addEventListener("pointermove", (event) => {
-    if (document.body.classList.contains("is-index-open")) return;   // the frames stay still behind the open index
+    if (document.body.matches(".is-index-open, .is-hi-open")) return;   // the frames stay still behind the index or the Hi page
     mouseX = event.clientX / window.innerWidth - 0.5;
     mouseY = event.clientY / window.innerHeight - 0.5;
     startAnimating();
@@ -194,6 +194,10 @@ if (indexButton) {
   document.body.appendChild(blur);
 
   function setIndexOpen(open) {
+    if (open) {                                         // close the Hi page first
+      document.body.classList.remove("is-hi-open");
+      document.documentElement.classList.remove("is-hi-open-page");
+    }
     document.body.classList.toggle("is-index-open", open);
     document.documentElement.classList.toggle("is-index-open-page", open);   // the page can't scroll
     indexButton.setAttribute("aria-expanded", open);
@@ -219,6 +223,49 @@ if (indexButton) {
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setIndexOpen(false);
+  });
+}
+
+
+/* =========================================
+   The Hi page: clicking HI slides it up from the bottom, clicking HI again
+   (or pressing Escape) slides it back down
+   ========================================= */
+const hiButton = document.querySelector(".site-bar__hi");
+const hiPage = document.querySelector(".hi-page");
+
+if (hiButton && hiPage) {
+  function setHiOpen(open) {
+    if (open) document.body.classList.remove("is-index-open");   // close the index first
+    document.body.classList.toggle("is-hi-open", open);
+    document.documentElement.classList.toggle("is-hi-open-page", open);
+    document.documentElement.classList.toggle("is-index-open-page", false);
+    hiButton.setAttribute("aria-expanded", open);
+    hiPage.setAttribute("aria-hidden", !open);
+  }
+
+  hiButton.addEventListener("click", () => {
+    setHiOpen(!document.body.classList.contains("is-hi-open"));
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setHiOpen(false);
+  });
+
+  // "Email me" is a link: a click opens a new email straight away and also copies the address.
+  // "Let's talk": a click copies the number.
+  async function copy(reveal) {
+    reveal.classList.add("is-showing");
+    const value = reveal.querySelector(".hi-page__reveal-value").textContent;
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch (error) {
+      // Copying isn't allowed here: it can still be selected and copied by hand
+    }
+  }
+
+  hiPage.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
+    reveal.addEventListener("click", () => copy(reveal));
+    reveal.addEventListener("mouseleave", () => reveal.classList.remove("is-showing"));
   });
 }
 
