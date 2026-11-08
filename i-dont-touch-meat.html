@@ -14,7 +14,7 @@
 </head>
 <body class="project-page">
 
-  <!-- The menu bar: stays at the top. Coming from the home page, it moves up to here -->
+  <!-- The menu bar: stays still at the top. Coming from the home page, it moves up to here -->
   <nav class="site-bar site-bar--project" style="--x: 569; --y: 31" aria-label="Main">
     <div class="site-bar__block site-bar__block--blue" style="--x: 0; --y: 0"></div>
     <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
@@ -27,78 +27,80 @@
   <main>
 
     <!--
-      The first screen ("Info look whole page" in Figma): the information on the left half.
-      It stays in place while the pictures scroll up on the right half.
-      Numbers are Figma pixels: x and y = position, w and h = size.
+      The work page ("new dont touch meat page" in Figma, 1440 × 800).
+      Everything is in one long strip ("Frame 7"): swipe left and right to move it
+      (trackpad, or Shift + mouse wheel). Scrolling down brings up "Reach Out".
+      Numbers are Figma pixels from the strip's top left corner.
     -->
-    <section class="project-info">
-      <div class="project-info__piece project-info__gradient" style="--x: 0; --y: 59; --w: 720; --h: 676"></div>
+    <section class="project-work">
+      <div class="project-strip">
+        <div class="project-strip__track" style="--w: 5589">
 
-      <p class="project-text" style="--x: 15; --y: 43; --w: 87">Project</p>
-      <h1 class="project-title" style="--x: 15; --y: 56">I DON’T<br>TOUCH MEAT</h1>
-      <p class="project-text" style="--x: 143; --y: 191; --w: 240">‘I Don’t Touch Meat’ is a short animation I created using an audio clip from the Israeli TV show <em>Come Eat with Me</em>, which later became a viral meme in Israel.</p>
+          <!-- The information -->
+          <p class="project-text" style="--x: 15; --y: 43; --w: 87">Project</p>
+          <h1 class="project-title" style="--x: 15; --y: 56">I DON’T<br>TOUCH MEAT</h1>
+          <p class="project-text" style="--x: 143; --y: 191; --w: 240">‘I Don’t Touch Meat’ is a short animation I created using an audio clip from the Israeli TV show <em>Come Eat with Me</em>, which later became a viral meme in Israel.</p>
+          <p class="project-text" style="--x: 15; --y: 543; --w: 87">Challenges</p>
+          <ul class="project-text project-text--list" style="--x: 134; --y: 543; --w: 434">
+            <li>Finding ways to add a visual twist to the words, giving the humour a second layer of meaning.</li>
+            <li>It was my first time illustrating multiple scenes, so I had to learn how to create a seamless flow between them.</li>
+            <li>Finding an illustration style that worked with the humour of the story. I originally chose a darker colour palette, but realised it didn't quite fit.</li>
+          </ul>
+          <p class="project-text" style="--x: 15; --y: 734; --w: 53">Year</p>
+          <p class="project-text" style="--x: 143; --y: 734; --w: 53">2026</p>
+          <p class="project-text" style="--x: 15; --y: 761; --w: 53">Field</p>
+          <p class="project-text" style="--x: 143; --y: 761; --w: 171">Motion. Illustration.</p>
 
-      <p class="project-text" style="--x: 15; --y: 478; --w: 87">Challenges</p>
-      <ul class="project-text project-text--list" style="--x: 134; --y: 478; --w: 434">
-        <li>Finding ways to add a visual twist to the words, giving the humour a second layer of meaning.</li>
-        <li>It was my first time illustrating multiple scenes, so I had to learn how to create a seamless flow between them.</li>
-        <li>Finding an illustration style that worked with the humour of the story. I originally chose a darker colour palette, but realised it didn't quite fit.</li>
-      </ul>
+          <!-- The animation: click to play or pause (with sound) -->
+          <video class="project-strip__piece project-video" style="--x: 752; --y: 165.32; --w: 1014.957; --h: 570.913" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
+          <!-- The "pause play" symbol in the middle of the video: hidden while it plays -->
+          <img class="project-video__play project-video__play--turned" style="--x: 1243.98; --y: 437.28; --w: 31; --h: 27" src="images/i-dont-touch-meat/pause-play.svg" alt="">
 
-      <p class="project-text" style="--x: 15; --y: 669; --w: 53">Year</p>
-      <p class="project-text" style="--x: 143; --y: 669; --w: 53">2026</p>
-      <p class="project-text" style="--x: 15; --y: 696; --w: 53">Field</p>
-      <p class="project-text" style="--x: 143; --y: 696; --w: 171">Motion. Illustration.</p>
+          <!-- The pictures -->
+          <img class="project-strip__piece" style="--x: 1827.85; --y: 165.32; --w: 542.981; --h: 305.427" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
+          <img class="project-strip__piece" style="--x: 1945.32; --y: 300.42; --w: 400.971; --h: 225.546" src="images/i-dont-touch-meat/artwork-73.gif" alt="">
+          <img class="project-strip__piece" style="--x: 2881.18; --y: 605.85; --w: 231.615; --h: 130.284" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
+          <img class="project-strip__piece" style="--x: 2431.85; --y: 134; --w: 406.594; --h: 635.303" src="images/i-dont-touch-meat/artwork-5.png" alt="">
+          <img class="project-strip__piece" style="--x: 3464.82; --y: 515; --w: 444.03; --h: 250.223" src="images/i-dont-touch-meat/still-18-05-02.png" alt="A still from the animation">
+          <img class="project-strip__piece" style="--x: 3211.08; --y: 325.87; --w: 442.73; --h: 249.118" src="images/i-dont-touch-meat/still-18-02-33.png" alt="A still from the animation">
+          <div class="project-strip__piece project-strip__crop" style="--x: 4026.53; --y: 182.95; --w: 443.456; --h: 248.649">
+            <img style="--crop: -0.16% auto auto 0.04%; --crop-w: 99.86%; --crop-h: 100.63%" src="images/i-dont-touch-meat/still-18-03-38.png" alt="A still from the animation">
+          </div>
+          <div class="project-strip__piece project-strip__crop" style="--x: 4421.04; --y: 506.97; --w: 443.456; --h: 249.628">
+            <img style="--crop: 0.08% auto auto -0.35%; --crop-w: 100.28%; --crop-h: 100.09%" src="images/i-dont-touch-meat/still-18-03-19.png" alt="A still from the animation">
+          </div>
+
+          <!--
+            Next and previous project. On hover they change to their "next page hovers" version.
+            They become links once those project pages exist.
+          -->
+          <div class="project-strip__piece project-nav" style="--x: 5336.34; --y: 134.98; --w: 177.166; --h: 145.68">
+            <div class="project-nav__frame">
+              <div class="project-nav__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/i-dont-touch-meat/next-witch-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/i-dont-touch-meat/next-witch-2.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 9.02% 7.66% 12.25% 6.58%"><img src="images/i-dont-touch-meat/next-witch-3.svg" alt=""></div>
+              <p class="project-nav__text" style="--inset: 31.58% 34.8% 34.15% 33.71%"><span class="project-nav__label">NEXT PROJECT</span><br><br>The Witch</p>
+            </div>
+            <img class="project-nav__hover" src="images/i-dont-touch-meat/next-witch-hover.svg" alt="">
+          </div>
+
+          <div class="project-strip__piece project-nav" style="--x: 5230.62; --y: 640.11; --w: 282.912; --h: 134.999">
+            <div class="project-nav__frame">
+              <div class="project-nav__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/i-dont-touch-meat/previous-judges-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 29.62% 8.39% 20.36% 13.24%"><img src="images/i-dont-touch-meat/previous-judges-2.svg" alt=""></div>
+              <p class="project-nav__text" style="--inset: 47.14% 53.63% 31.83% 19.72%"><span class="project-nav__label">PREVIOUS PROJECT</span></p>
+              <p class="project-nav__text" style="--inset: 50.76% 12.46% 34.74% 60.9%">Judges, Chapter 4</p>
+            </div>
+            <img class="project-nav__hover" src="images/i-dont-touch-meat/previous-judges-hover.svg" alt="">
+          </div>
+
+        </div>
+      </div>
     </section>
 
-    <!-- The pictures ("pictures dont touch meat" in Figma): half a screen wide, on the right.
-         They start just under the bar (y 168) and scroll up while the information stays -->
-    <section class="project-pictures">
-      <img class="project-pictures__piece" style="--x: 246.5; --y: 617.6; --w: 118.3; --h: 66.544" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
-      <img class="project-pictures__piece" style="--x: 417.6; --y: 404; --w: 277.333; --h: 156" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
-      <img class="project-pictures__piece" style="--x: 490.2; --y: 502.4; --w: 204.8; --h: 115.2" src="images/i-dont-touch-meat/artwork-73.gif" alt="">
-      <img class="project-pictures__piece" style="--x: 401.6; --y: 617.6; --w: 207.672; --h: 324.487" src="images/i-dont-touch-meat/artwork-5.png" alt="">
-      <img class="project-pictures__piece" style="--x: 268.1; --y: 975.2; --w: 226.793; --h: 127.804" src="images/i-dont-touch-meat/still-18-05-02.png" alt="A still from the animation">
-      <div class="project-pictures__piece project-pictures__crop" style="--x: 417.5; --y: 1160.8; --w: 226.5; --h: 127">
-        <img style="--crop: -0.16% auto auto 0.04%; --crop-w: 99.86%; --crop-h: 100.63%" src="images/i-dont-touch-meat/still-18-03-38.png" alt="A still from the animation">
-      </div>
-      <div class="project-pictures__piece project-pictures__crop" style="--x: 49.5; --y: 1213.3; --w: 226.5; --h: 127.5">
-        <img style="--crop: 0.08% auto auto -0.35%; --crop-w: 100.28%; --crop-h: 100.09%" src="images/i-dont-touch-meat/still-18-03-19.png" alt="A still from the animation">
-      </div>
-      <img class="project-pictures__piece" style="--x: 138.5; --y: 878.6; --w: 226.129; --h: 127.24" src="images/i-dont-touch-meat/still-18-02-33.png" alt="A still from the animation">
-
-      <!-- The animation: click to play or pause (with sound) -->
-      <video class="project-pictures__piece project-video" style="--x: 47; --y: 28; --w: 593.956; --h: 334.1" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
-      <!-- The "pause play" symbol in the middle of the video: hidden while it plays -->
-      <img class="project-video__play project-video__play--turned" style="--x: 328.48; --y: 181.55; --w: 31; --h: 27" src="images/i-dont-touch-meat/pause-play.svg" alt="">
-
-      <!--
-        Previous and next project. On hover they change to their "next page hovers" version.
-        They become links once those project pages exist.
-      -->
-      <div class="project-pictures__piece project-nav" style="--x: -0.5; --y: 1419.8; --w: 144.5; --h: 68.952">
-        <div class="project-nav__frame">
-          <div class="project-nav__layer" style="--inset: 25.58% 6.45% 16.55% 11.38%"><img src="images/i-dont-touch-meat/previous-judges-1.svg" alt=""></div>
-          <div class="project-nav__layer" style="--inset: 29.62% 8.39% 20.36% 13.24%"><img src="images/i-dont-touch-meat/previous-judges-2.svg" alt=""></div>
-          <p class="project-nav__text" style="--inset: 47.14% 53.63% 31.83% 19.72%"><span class="project-nav__label">PREVIOUS PROJECT</span></p>
-          <p class="project-nav__text" style="--inset: 50.76% 12.46% 34.73% 60.9%">Judges, Chapter 4</p>
-        </div>
-        <img class="project-nav__hover" src="images/i-dont-touch-meat/previous-judges-hover.svg" alt="">
-      </div>
-
-      <div class="project-pictures__piece project-nav" style="--x: 616; --y: 1419.8; --w: 90.49; --h: 74.408">
-        <div class="project-nav__frame">
-          <div class="project-nav__layer" style="--inset: 4.47% 3.25% 8.34% 2.62%"><img src="images/i-dont-touch-meat/next-witch-1.svg" alt=""></div>
-          <div class="project-nav__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/i-dont-touch-meat/next-witch-2.svg" alt=""></div>
-          <div class="project-nav__layer" style="--inset: 9.02% 7.66% 12.24% 6.58%"><img src="images/i-dont-touch-meat/next-witch-3.svg" alt=""></div>
-          <p class="project-nav__text" style="--inset: 31.59% 34.8% 34.14% 33.71%"><span class="project-nav__label">NEXT PROJECT</span><br><br>The Witch</p>
-        </div>
-        <img class="project-nav__hover" src="images/i-dont-touch-meat/next-witch-hover.svg" alt="">
-      </div>
-    </section>
-
-    <!-- "Reach Out" in Figma: slides up over everything at the end of the page -->
+    <!-- "Reach Out" in Figma: slides up over the work page whenever you scroll down -->
     <section class="project-reach" id="reach-out">
+      <div class="project-reach__gradient" style="--y: 62; --h: 738"></div>
       <div class="project-line project-line--full" style="--y: 0"></div>
 
       <h2 class="project-title" style="--x: 15; --y: 56">REACH OUT</h2>
@@ -106,7 +108,7 @@
       <a class="project-text project-text--contact project-text--email" style="--x: 15; --y: 210; --w: 462.927" href="mailto:Yaelgosling5@gmail.com">Yaelgosling5@gmail.com</a>
       <p class="project-text" style="--x: 720; --y: 191; --w: 414.665">Let’s talk</p>
       <a class="project-text project-text--contact" style="--x: 720; --y: 210; --w: 462.927" href="tel:+972538521501">+972 538521501</a>
-      <p class="project-text" style="--x: 15; --y: 696; --w: 84">Instagram</p>
+      <p class="project-text" style="--x: 15; --y: 755; --w: 84">Instagram</p>
     </section>
 
   </main>

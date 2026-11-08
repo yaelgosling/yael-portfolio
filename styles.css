@@ -14,13 +14,14 @@
   --font-body: "Inter", Arial, sans-serif;     /* project pages */
   --line-height: 1.006;
 
-  /* One Figma pixel on the home and project pages. A 1440 × 768 Figma frame fits in the window */
-  --stage-pixel: min(100vw / 1440, 100svh / 768);
+  /* One Figma pixel on the home and project pages. A 1440 × 800 Figma frame (the project page)
+     fits in the window; the home page (1440 × 768) uses the same size, so the bar matches */
+  --stage-pixel: min(100vw / 1440, 100svh / 800);
   --bar-text-size: calc(12 * var(--stage-pixel));
   --project-text-size: calc(12 * var(--stage-pixel));
   --project-title-size: calc(50 * var(--stage-pixel));
   --project-contact-size: calc(36 * var(--stage-pixel));
-  --project-nav-text-size: calc(6 * var(--stage-pixel));
+  --project-nav-text-size: calc(11.747 * var(--stage-pixel));
   --project-line: max(1px, calc(1 * var(--stage-pixel)));   /* black lines: never thinner than 1 screen pixel */
 
   /* The mouse on project pages: a tiny black dot (6px, the click point is its middle) */
@@ -251,8 +252,8 @@ body.is-sliding-in main {
 
 /* =========================================
    Project pages (first one: "I Don't Touch Meat")
-   Half screens: the information stays on the left half while the pictures
-   scroll up on the right half. At the end, "Reach Out" slides up over everything.
+   One long strip with the information and the pictures that you swipe left and right,
+   and "Reach Out" that slides up over it whenever you scroll down.
    ========================================= */
 
 /* The mouse: a tiny black dot, everywhere on the page (also on links and the video) */
@@ -261,23 +262,43 @@ body.project-page * {
   cursor: var(--cursor-dot);
 }
 
-/* The bar stays at the top of the screen, also while the pictures scroll */
+/* The bar stays still at the top of the screen */
 .site-bar--project {
   position: fixed;
   left: calc(50% + (var(--x) - 720) * var(--stage-pixel));
 }
 
-/* The first screen: stays in place (735 high in Figma) */
-.project-info {
+/* The work page: stays in place while "Reach Out" slides up over it (800 high in Figma) */
+.project-work {
   position: sticky;
   top: 0;
-  width: calc(1440 * var(--stage-pixel));
-  height: calc(735 * var(--stage-pixel));
-  margin: 0 auto;
+  height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
+}
+
+/* The strip ("Frame 7"): the whole width of the window, moves sideways */
+.project-strip {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;   /* swiping to the end doesn't make the browser go back a page */
+  scrollbar-width: none;            /* no scrollbar, like in the design */
+}
+
+.project-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* Everything in the strip. It starts where the 1440 design starts (also on wide screens) */
+.project-strip__track {
+  position: relative;
+  width: calc(var(--w) * var(--stage-pixel));
+  height: 100%;
+  margin-left: calc((100vw - 1440 * var(--stage-pixel)) / 2);
+  background-color: var(--color-white);
 }
 
 /* A piece placed in Figma pixels */
-.project-info__piece,
+.project-strip__piece,
 .project-text {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -285,13 +306,26 @@ body.project-page * {
   width: calc(var(--w) * var(--stage-pixel));
 }
 
-.project-info__piece {
-  height: calc(var(--h) * var(--stage-pixel));
+.project-strip__piece {
   display: block;
+  height: calc(var(--h) * var(--stage-pixel));
 }
 
-.project-info__gradient {
-  background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
+img.project-strip__piece {
+  object-fit: cover;
+}
+
+/* Pictures that Figma crops a little */
+.project-strip__crop {
+  overflow: hidden;
+}
+
+.project-strip__crop img {
+  position: absolute;
+  inset: var(--crop);
+  width: var(--crop-w);
+  height: var(--crop-h);
+  max-width: none;
 }
 
 /* Titles: Instrument Serif 50px */
@@ -305,21 +339,6 @@ body.project-page * {
   line-height: 1.112;
   color: var(--color-black);
   white-space: nowrap;
-}
-
-/* Black lines */
-.project-line {
-  position: absolute;
-  top: calc(var(--y) * var(--stage-pixel));
-  height: var(--project-line);
-  background-color: var(--color-black);
-  z-index: 1;
-}
-
-/* A line across the whole window, also past the 1440 design on wide screens */
-.project-line--full {
-  left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
-  width: 100vw;
 }
 
 /* Project text: Inter Semi Bold 12px */
@@ -347,51 +366,11 @@ body.project-page * {
   font-style: italic;
 }
 
-/* The pictures: the right half, starting just under the bar (y 168 on the first screen)
-   and scrolling up next to the information.
-   When their bottom reaches the bottom of the window they stay, so "Reach Out" can slide over them */
-.project-pictures {
-  position: sticky;
-  top: calc(100vh - 1573 * var(--stage-pixel));
-  z-index: 1;
-  width: calc(720 * var(--stage-pixel));
-  height: calc(1573 * var(--stage-pixel));
-  margin-top: calc((168 - 735) * var(--stage-pixel));   /* moves up onto the first screen */
-  margin-left: 50%;            /* the right half */
-  background-color: var(--color-white);
-}
-
-.project-pictures__piece {
-  position: absolute;
-  display: block;
-  left: calc(var(--x) * var(--stage-pixel));
-  top: calc(var(--y) * var(--stage-pixel));
-  width: calc(var(--w) * var(--stage-pixel));
-  height: calc(var(--h) * var(--stage-pixel));
-}
-
-img.project-pictures__piece {
-  object-fit: cover;
-}
-
-/* Pictures that Figma crops a little */
-.project-pictures__crop {
-  overflow: hidden;
-}
-
-.project-pictures__crop img {
-  position: absolute;
-  inset: var(--crop);
-  width: var(--crop-w);
-  height: var(--crop-h);
-  max-width: none;
-}
-
 .project-video {
   object-fit: cover;
 }
 
-/* The "pause play" button on the video. Clicks go through it to the video */
+/* The "pause play" symbol on the video. Clicks go through it to the video */
 .project-video__play {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -459,15 +438,40 @@ img.project-pictures__piece {
   font-weight: 600;
 }
 
-/* "Reach Out": the last screen, slides up over everything. It is at least as tall
-   as the window, so at the end it reaches the very top */
+/* "Reach Out": slides up over the work page. At least as tall as the window,
+   so at the end it reaches the very top */
 .project-reach {
   position: relative;
   z-index: 3;
   width: calc(1440 * var(--stage-pixel));
-  height: max(calc(735 * var(--stage-pixel)), 100vh);
+  height: max(calc(800 * var(--stage-pixel)), 100vh);
   margin: 0 auto;
   background-color: var(--color-white);
+}
+
+/* The gradient fills the whole width of the window */
+.project-reach__gradient {
+  position: absolute;
+  left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
+  top: calc(var(--y) * var(--stage-pixel));
+  width: 100vw;
+  height: calc(100% - var(--y) * var(--stage-pixel));
+  background: linear-gradient(to bottom, var(--color-white), var(--color-blue));
+}
+
+/* Black lines */
+.project-line {
+  position: absolute;
+  top: calc(var(--y) * var(--stage-pixel));
+  height: var(--project-line);
+  background-color: var(--color-black);
+  z-index: 1;
+}
+
+/* A line across the whole window, also past the 1440 design on wide screens */
+.project-line--full {
+  left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
+  width: 100vw;
 }
 
 
