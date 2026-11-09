@@ -385,7 +385,7 @@ body.home-page {
 .is-index-open .home .site-bar,
 .is-hi-open .home .site-bar {
   transform: translate(
-    calc((569 - 571) * var(--stage-pixel)),
+    calc((569 - 569) * var(--stage-pixel)),
     calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
 }
@@ -569,7 +569,7 @@ html.is-hi-open-page {
 
 .home.is-leaving .site-bar {
   transform: translate(
-    calc((569 - 571) * var(--stage-pixel)),
+    calc((569 - 569) * var(--stage-pixel)),
     calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
 }
@@ -742,7 +742,7 @@ img.project-strip__piece {
   text-decoration: none;
 }
 
-/* Hovering over the email address or Instagram changes it to Instrument Serif italic,
+/* Hovering over the email address, phone number or Instagram changes it to Instrument Serif italic,
    so people know it can be clicked */
 .project-text--email {
   text-decoration: none;
