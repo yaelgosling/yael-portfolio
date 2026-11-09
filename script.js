@@ -149,6 +149,22 @@ if (document.body.classList.contains("project-page")) {
 
 
 /* =========================================
+   Project page: the work arrow points left once the strip reaches the end,
+   and right again once it is back at the start
+   ========================================= */
+document.querySelectorAll(".project-strip").forEach((strip) => {
+  const work = strip.closest(".project-work");
+
+  function updateArrow() {
+    const end = strip.scrollWidth - strip.clientWidth;
+    if (strip.scrollLeft >= end - 2) work.classList.add("is-at-end");
+    if (strip.scrollLeft <= 2) work.classList.remove("is-at-end");
+  }
+  strip.addEventListener("scroll", updateArrow, { passive: true });
+});
+
+
+/* =========================================
    Project page: click the animation to play or pause it
    ========================================= */
 document.querySelectorAll(".project-video").forEach((video) => {

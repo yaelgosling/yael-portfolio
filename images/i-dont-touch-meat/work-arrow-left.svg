@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="38" height="38" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="arrow for wokr" transform="translate(51 0) scale(-1 1)">
+<circle id="Ellipse 6" cx="25.5" cy="25.5" r="25.5" fill="url(#paint0_linear_0_4)"/>
+<path id="Arrow 8" d="M12 24.5C11.1716 24.5 10.5 25.1716 10.5 26C10.5 26.8284 11.1716 27.5 12 27.5V26V24.5ZM12 26V27.5H40V26V24.5H12V26ZM41.0607 27.0607C41.6464 26.4749 41.6464 25.5251 41.0607 24.9393L31.5147 15.3934C30.9289 14.8076 29.9792 14.8076 29.3934 15.3934C28.8076 15.9792 28.8076 16.9289 29.3934 17.5147L37.8787 26L29.3934 34.4853C28.8076 35.0711 28.8076 36.0208 29.3934 36.6066C29.9792 37.1924 30.9289 37.1924 31.5147 36.6066L41.0607 27.0607Z" fill="url(#paint1_linear_0_4)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_4" x1="0" y1="26" x2="51" y2="26" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#5262F0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_4" x1="12" y1="26.5" x2="40" y2="26.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#5262F0"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>

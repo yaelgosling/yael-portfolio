@@ -621,6 +621,20 @@ body.is-sliding-in main {
   height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
 }
 
+/* On the work page the mouse is the "arrow for work": it points right, so people know to
+   swipe sideways. script.js adds "is-at-end" when the strip reaches the end: then it points
+   left, until the strip is back at the start. It is 75% of the Figma size (38 instead of 51).
+   (The hotspot is the middle of the circle.) */
+.project-work,
+.project-work * {
+  cursor: url("images/i-dont-touch-meat/work-arrow.svg") 19 19, e-resize;
+}
+
+.project-work.is-at-end,
+.project-work.is-at-end * {
+  cursor: url("images/i-dont-touch-meat/work-arrow-left.svg") 19 19, w-resize;
+}
+
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
 .project-strip {
   height: 100%;
