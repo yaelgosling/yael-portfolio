@@ -474,8 +474,9 @@ html.is-hi-open-page {
   text-align: right;
 }
 
-/* Instagram, "Email me" and "Let's talk" on the Hi page: Instrument Serif 50px */
+/* Instagram, "Email me" and "Let's talk" on the Hi page: blue Instrument Serif 50px */
 .project-text.hi-page__big {
+  color: var(--color-blue);
   font-family: var(--font-display);
   font-size: var(--project-title-size);
   font-weight: 400;
