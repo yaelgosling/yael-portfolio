@@ -20,7 +20,8 @@
   --bar-text-size: calc(12 * var(--stage-pixel));
   --project-text-size: calc(12 * var(--stage-pixel));
   --project-title-size: calc(50 * var(--stage-pixel));
-  --project-contact-size: calc(36 * var(--stage-pixel));
+  --project-contact-size: calc(24 * var(--stage-pixel));
+  --project-reach-stop: calc(165.32 * var(--stage-pixel));   /* "Reach Out" stops at the top of the video */
   --project-nav-text-size: calc(11.747 * var(--stage-pixel));
   --project-line: 1px;         /* every black line on the site: always exactly 1 pixel thin */
 
@@ -271,7 +272,8 @@ body.home-page {
 }
 
 .site-index__name:hover,
-.site-index__name:focus-visible {
+.site-index__name:focus-visible,
+.site-index__name.is-current {   /* the project you are on (script.js) */
   font-family: var(--font-display);
   font-style: italic;
 }
@@ -472,6 +474,14 @@ html.is-hi-open-page {
   text-align: right;
 }
 
+/* Instagram, "Email me" and "Let's talk" on the Hi page: Instrument Serif 50px */
+.project-text.hi-page__big {
+  font-family: var(--font-display);
+  font-size: var(--project-title-size);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
 /* On hover (or after a click) the email address or number shows instead of the label */
 .hi-page__reveal-value,
 .hi-page__reveal:hover .hi-page__reveal-label,
@@ -513,6 +523,15 @@ html.is-hi-open-page {
   height: var(--ih);
   max-width: none;
   pointer-events: none;
+}
+
+/* script.js moves each drawing and its text with the mouse (--move-x and --move-y, Figma pixels) */
+.hi-doodle__picture,
+.hi-doodle__text {
+  transform: translate(
+    calc(var(--move-x, 0) * var(--stage-pixel)),
+    calc(var(--move-y, 0) * var(--stage-pixel))
+  );
 }
 
 /* The text next to a drawing: hidden until you hover over the drawing */
@@ -715,8 +734,11 @@ img.project-strip__piece {
   list-style: disc;
 }
 
+/* The email address and phone number on "Reach Out": Instrument Serif 24px */
 .project-text--contact {
+  font-family: var(--font-display);
   font-size: var(--project-contact-size);
+  font-weight: 400;
   text-decoration: none;
 }
 
@@ -805,15 +827,27 @@ img.project-strip__piece {
   font-weight: 600;
 }
 
-/* "Reach Out": slides up over the work page. At least as tall as the window,
-   so at the end it reaches the very top */
+/* "Reach Out": slides up over the work page and stops at the top of the video.
+   It is exactly as tall as the window below that line, so the page can't scroll further */
 .project-reach {
   position: relative;
   z-index: 3;
   width: calc(1440 * var(--stage-pixel));
-  height: max(calc(800 * var(--stage-pixel)), 100vh);
+  height: calc(100vh - var(--project-reach-stop));
   margin: 0 auto;
   background-color: var(--color-white);
+}
+
+/* Covers the work page and blurs it. script.js sets --reach-progress from 0 (Reach Out
+   is still down) to 1 (Reach Out is all the way up), so the blur grows up to the
+   same amount as behind the index */
+.project-reach-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
+  -webkit-backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
 }
 
 /* The gradient fills the whole width of the window */

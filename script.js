@@ -1,7 +1,7 @@
 /* =========================================
-   Home page: the frames follow the mouse
+   Things that follow the mouse: the frames on the home page and the drawings on the Hi page
    Like guillaumetomasi.com: everything drifts slowly away from the mouse,
-   and frames further from the middle move more, which gives a feeling of depth.
+   and things further from the middle move more, which gives a feeling of depth.
    ========================================= */
 const home = document.querySelector(".home");
 
@@ -10,22 +10,22 @@ const canMove =
   window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-if (home && canMove) {
-  const STAGE_WIDTH = 1440;    // the "Home New" frame, in Figma pixels
-  const STAGE_HEIGHT = 768;
-  const MAX_MOVE = 160;        // how far (Figma pixels) a frame at the edge can move
-  const EASING = 0.04;         // how quickly frames catch up with the mouse (smaller = smoother)
+const MAX_MOVE = 160;        // how far (Figma pixels) something at the edge can move
+const EASING = 0.04;         // how quickly things catch up with the mouse (smaller = smoother)
 
+// items: [{ element (gets --move-x and --move-y), placed (has --x --y --w --h) }]
+// stageWidth/stageHeight: the Figma frame size. isActive(): whether they should move right now
+function followMouse(items, stageWidth, stageHeight, isActive) {
   // A random number between min and max
   const between = (min, max) => min + Math.random() * (max - min);
 
-  // How much each frame moves: more for frames further from the middle, with a bit of randomness
-  const frames = [...home.querySelectorAll(".home__frames .home-frame")].map((element) => {
-    const read = (name) => parseFloat(element.style.getPropertyValue(name));
+  // How much each one moves: more for things further from the middle, with a bit of randomness
+  const movers = items.map(({ element, placed }) => {
+    const read = (name) => parseFloat(placed.style.getPropertyValue(name));
     const middleX = read("--x") + read("--w") / 2;
     const middleY = read("--y") + read("--h") / 2;
-    const distanceX = Math.abs(middleX - STAGE_WIDTH / 2) / (STAGE_WIDTH / 2);
-    const distanceY = Math.abs(middleY - STAGE_HEIGHT / 2) / (STAGE_HEIGHT / 2);
+    const distanceX = Math.abs(middleX - stageWidth / 2) / (stageWidth / 2);
+    const distanceY = Math.abs(middleY - stageHeight / 2) / (stageHeight / 2);
     return {
       element,
       strengthX: Math.max(0.3, distanceX) * between(0.5, 1.2),
@@ -40,18 +40,18 @@ if (home && canMove) {
   let mouseY = 0;
   let isAnimating = false;
 
-  // Every screen refresh, move each frame a small step towards where it should be
+  // Every screen refresh, move each one a small step towards where it should be
   function animate() {
     let stillMoving = false;
 
-    frames.forEach((frame) => {
-      const targetX = -mouseX * 2 * MAX_MOVE * frame.strengthX;
-      const targetY = -mouseY * 2 * MAX_MOVE * frame.strengthY;
-      frame.moveX += (targetX - frame.moveX) * EASING;
-      frame.moveY += (targetY - frame.moveY) * EASING;
-      frame.element.style.setProperty("--move-x", frame.moveX.toFixed(2));
-      frame.element.style.setProperty("--move-y", frame.moveY.toFixed(2));
-      if (Math.abs(targetX - frame.moveX) > 0.05 || Math.abs(targetY - frame.moveY) > 0.05) {
+    movers.forEach((mover) => {
+      const targetX = -mouseX * 2 * MAX_MOVE * mover.strengthX;
+      const targetY = -mouseY * 2 * MAX_MOVE * mover.strengthY;
+      mover.moveX += (targetX - mover.moveX) * EASING;
+      mover.moveY += (targetY - mover.moveY) * EASING;
+      mover.element.style.setProperty("--move-x", mover.moveX.toFixed(2));
+      mover.element.style.setProperty("--move-y", mover.moveY.toFixed(2));
+      if (Math.abs(targetX - mover.moveX) > 0.05 || Math.abs(targetY - mover.moveY) > 0.05) {
         stillMoving = true;
       }
     });
@@ -69,19 +69,51 @@ if (home && canMove) {
   }
 
   window.addEventListener("pointermove", (event) => {
-    if (document.body.matches(".is-index-open, .is-hi-open")) return;   // the frames stay still behind the index or the Hi page
+    if (!isActive()) return;   // e.g. the home frames stay still behind the index or the Hi page
     mouseX = event.clientX / window.innerWidth - 0.5;
     mouseY = event.clientY / window.innerHeight - 0.5;
     startAnimating();
   });
 
-  // When the mouse leaves the window, the frames drift back to their places
+  // When the mouse leaves the window, everything drifts back to its place
   document.documentElement.addEventListener("mouseleave", () => {
     mouseX = 0;
     mouseY = 0;
     startAnimating();
   });
 }
+
+if (canMove) {
+  // The home frames ("Home New" is 1440 x 768)
+  if (home) {
+    const frames = [...home.querySelectorAll(".home__frames .home-frame")];
+    followMouse(
+      frames.map((frame) => ({ element: frame, placed: frame })),
+      1440, 768,
+      () => !document.body.matches(".is-index-open, .is-hi-open")
+    );
+  }
+
+  // The drawings on the Hi page ("Hi page" is 1440 x 800). Each drawing moves with its text.
+  // The picture of me stays still
+  const doodles = [...document.querySelectorAll(".hi-doodle:not(.hi-doodle--me)")];
+  if (doodles.length) {
+    followMouse(
+      doodles.map((doodle) => ({ element: doodle, placed: doodle.querySelector(".hi-doodle__picture") })),
+      1440, 800,
+      () => document.body.matches(".is-hi-open") && !document.body.matches(".is-index-open")
+    );
+  }
+}
+
+
+/* =========================================
+   Index: the name of the project you are on is italic
+   ========================================= */
+const pageName = (path) => path.replace(/\.html$/, "");   // "/i-dont-touch-meat.html" and "/i-dont-touch-meat" are the same page
+document.querySelectorAll("a.site-index__name").forEach((name) => {
+  if (pageName(name.pathname) === pageName(window.location.pathname)) name.classList.add("is-current");
+});
 
 
 /* =========================================
@@ -161,6 +193,21 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
     if (strip.scrollLeft <= 2) work.classList.remove("is-at-end");
   }
   strip.addEventListener("scroll", updateArrow, { passive: true });
+});
+
+
+/* =========================================
+   Project page: the work page gets more and more blurry while "Reach Out" slides up
+   ========================================= */
+document.querySelectorAll(".project-reach-blur").forEach((blur) => {
+  function updateBlur() {
+    const end = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = end > 0 ? Math.min(window.scrollY / end, 1) : 0;
+    blur.style.setProperty("--reach-progress", progress);
+  }
+  window.addEventListener("scroll", updateBlur, { passive: true });
+  window.addEventListener("resize", updateBlur);
+  updateBlur();
 });
 
 
