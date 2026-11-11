@@ -30,9 +30,13 @@
   --index-blur: 12px;              /* how much the page blurs behind the open index */
   --index-open-time: 0.7s;
   --index-name-size: calc(12 * var(--stage-pixel));
+  --index-hover-name-size: calc(13 * var(--stage-pixel));
+  --index-type-size: calc(8 * var(--stage-pixel));
 
   /* Moving between pages */
   --page-change-time: 0.9s;
+  --roll-time: 0.45s;       /* how long a word in the bar takes to roll */
+  --roll-line: 1.2;         /* the height of one rolling word (times the text size) */
   --page-change-easing: cubic-bezier(0.7, 0, 0.2, 1);
 
   /* Process page: sizes out of a 1440px-wide frame */
@@ -137,6 +141,25 @@ body.home-page {
   visibility: visible;
 }
 
+/* Classic view ("Home New Organise order" in Figma): the frames glide to their tidy
+   places (--classic-x and --classic-y), in the same time and way the pages change */
+.home__frames .home-frame {
+  transition:
+    left var(--page-change-time) var(--page-change-easing),
+    top var(--page-change-time) var(--page-change-easing);
+}
+
+/* Opening the home page in classic view: everything starts in place, without the move */
+.home.is-arriving .home__frames .home-frame,
+.home.is-arriving .site-bar {
+  transition: none;
+}
+
+.home.is-classic .home__frames .home-frame {
+  left: calc(var(--classic-x) * var(--stage-pixel));
+  top: calc(var(--classic-y) * var(--stage-pixel));
+}
+
 /* A frame that opens a project page */
 .home-frame--link {
   cursor: pointer;
@@ -182,8 +205,9 @@ body.home-page {
   transform: translateX(-50%);
 }
 
-/* INDEX and HI are buttons: no button look */
+/* INDEX, CLASSIC VIEW and HI are buttons: no button look */
 .site-bar__index,
+.site-bar__view,
 .site-bar__hi {
   border: 0;
   padding: 0;
@@ -201,9 +225,103 @@ body.home-page {
   justify-content: center;
 }
 
-/* Hovering over a word in the bar (or its box) makes it italic, so people know it can be clicked */
-.site-bar__text:hover,
-.site-bar__text:focus-visible {
+/* Words that roll on hover (script.js builds them): the word moves up and out and the
+   next word comes up from below in italic. The window is one word high; the next word
+   may be longer than the first (an email address), so only the top and bottom are cut */
+.roll {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  height: calc(1em * var(--roll-line));
+  clip-path: inset(0 -100vw);
+}
+
+.roll__track {
+  position: relative;
+  display: block;
+  transition: transform var(--roll-time) var(--page-change-easing);
+}
+
+.roll__word {
+  display: block;
+  height: calc(1em * var(--roll-line));
+  line-height: var(--roll-line);
+  white-space: nowrap;
+}
+
+/* The next word waits below the first one */
+.roll__word--next {
+  position: absolute;
+  top: 100%;
+  font-style: italic;
+}
+
+.roll--center .roll__word--next { left: 50%; transform: translateX(-50%); }
+.roll--start .roll__word--next  { left: 0; }
+.roll--end .roll__word--next    { right: 0; }
+
+/* Rolled: on hover, and while INDEX or HI is open, for the project you are on in the index,
+   and after clicking EMAIL ME or LET'S TALK */
+.roll-host:hover .roll__track,
+.roll-host:focus-visible .roll__track,
+.is-hi-open .site-bar__hi .roll__track,
+.is-index-open .site-bar__index .roll__track,
+.site-index__name.is-current .roll__track,
+.hi-page__reveal.is-showing .roll__track {
+  transform: translateY(calc(-1em * var(--roll-line)));   /* up by one word */
+}
+
+/* EMAIL ME, LET'S TALK and INSTAGRAM (which rolls to the handle): the hover area is as wide as the email address or number,
+   so the mouse can go over it (to click or select it) without it rolling back */
+.hi-page__reveal .roll__track,
+.hi-page__instagram .roll__track {
+  display: grid;
+}
+
+.hi-page__reveal .roll__word--next,
+.hi-page__instagram .roll__word--next {
+  position: static;
+}
+
+.hi-page__reveal .roll--start .roll__track,
+.hi-page__instagram .roll--start .roll__track { justify-items: start; }
+.hi-page__reveal .roll--end .roll__track   { justify-items: end; }
+
+/* CLASSIC VIEW / PLAY VIEW is only there on the home page itself. When the index or the
+   Hi page opens, or a project page slides up, it rolls up like a hover, but no word comes
+   in after it, so it is gone. When the index or Hi page closes, it rolls back down */
+.is-index-open .home .site-bar__view,
+.is-hi-open .home .site-bar__view,
+.home.is-leaving .site-bar__view {
+  pointer-events: none;
+}
+
+.is-index-open .home .site-bar__view .roll__track,
+.is-hi-open .home .site-bar__view .roll__track,
+.home.is-leaving .site-bar__view .roll__track {
+  transform: translateY(calc(-1em * var(--roll-line)));
+}
+
+/* The word that would come in stays hidden: straight away when the view word leaves,
+   and only after the roll back down when it returns (so it never flashes) */
+.site-bar__view .roll__word--next {
+  transition: visibility 0s linear var(--roll-time);
+}
+
+.is-index-open .home .site-bar__view .roll__word--next,
+.is-hi-open .home .site-bar__view .roll__word--next,
+.home.is-leaving .site-bar__view .roll__word--next {
+  visibility: hidden;
+  transition: none;
+}
+
+/* Just after clicking CLASSIC VIEW / PLAY VIEW: the new word stays, still italic */
+.site-bar__view.is-just-switched .roll__track {
+  transform: none;
+  transition: none;
+}
+
+.site-bar__view.is-just-switched .roll__word {
   font-style: italic;
 }
 
@@ -214,11 +332,8 @@ body.home-page {
    Clicking on the blur closes it again (script.js).
    ========================================= */
 
-/* While the index or the Hi page is open, INDEX or HI stays italic */
-.is-hi-open .site-bar__hi,
-.is-index-open .site-bar__index {
-  font-style: italic;
-}
+/* While the index or the Hi page is open, INDEX or HI stays rolled to its italic word
+   (see "the words in the bar roll on hover") */
 
 /* The orange panel under the bar. Closed, it is rolled up to the top */
 .site-index {
@@ -271,12 +386,68 @@ body.home-page {
   white-space: nowrap;
 }
 
-.site-index__name:hover,
-.site-index__name:focus-visible,
-.site-index__name.is-current {   /* the project you are on (script.js) */
+/* The word that rolls in on hover (see "words that roll"): Instrument Serif italic 13px
+   ("open index list hover 2" in Figma) */
+.site-index__name .roll__word--next {
   font-family: var(--font-display);
   font-style: italic;
+  font-size: var(--index-hover-name-size);
+  height: calc(var(--index-name-size) * var(--roll-line));        /* the same height as the window */
+  line-height: calc(var(--index-name-size) * var(--roll-line));
 }
+
+/* Projects that aren't ready yet (site-index__name--soon) don't roll. On hover a tilted
+   black COMING SOON label comes up over the name, the way the words roll up
+   ("open index list hover 1" in Figma: 100 x 25, turned -6.49 degrees).
+   Numbers are Figma pixels from the top left of the name */
+.site-index__name--soon::after {
+  content: "COMING SOON";
+  position: absolute;
+  z-index: 1;
+  left: calc(-4.91 * var(--stage-pixel));
+  top: calc(var(--label-y, 16.97) * var(--stage-pixel));
+  width: calc(100 * var(--stage-pixel));
+  height: calc(25 * var(--stage-pixel));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: var(--index-hover-name-size);
+  font-style: italic;
+  line-height: var(--line-height);
+  transform: rotate(-6.49deg);
+  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
+  transition: clip-path var(--roll-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+.site-index__name--soon:hover::after {
+  clip-path: inset(0);
+}
+
+/* What kind of project it is (Motion, Illustration...): Inter Semi Bold 8px on the right of
+   the row. It stays put on hover */
+.site-index__type {
+  position: absolute;
+  left: 0;
+  right: calc(14 * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel) + var(--project-line));
+  height: calc(var(--h) * var(--stage-pixel) - var(--project-line));
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: var(--font-body);
+  font-size: var(--index-type-size);
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-black);
+  white-space: nowrap;
+  pointer-events: none;            /* hovering it still hovers the row */
+}
+
 
 /* The lime band at the bottom, with the list and grid icons */
 .site-index__band {
@@ -315,6 +486,7 @@ body.home-page {
 
 /* Which view is showing: the list (names and their lines) or the photos */
 .site-index[data-view="photos"] .site-index__name,
+.site-index[data-view="photos"] .site-index__type,
 .site-index[data-view="photos"] .site-index__line--list,
 .site-index[data-view="list"] .site-index__photos {
   display: none;
@@ -379,6 +551,12 @@ body.home-page {
   pointer-events: auto;      /* clicking on the blur closes the index */
 }
 
+/* In classic view the bar glides up to the top of the home page (y 30 in Figma),
+   the same way it moves when the page changes */
+.home.is-classic .site-bar {
+  transform: translateY(calc((30 - var(--y)) * var(--stage-pixel)));
+}
+
 /* On the home page the bar sits in the middle, so the open index wouldn't fit below it:
    the bar moves up to its spot at the top first (the same spot as on the project page).
    The same happens when the Hi page is open */
@@ -386,7 +564,7 @@ body.home-page {
 .is-hi-open .home .site-bar {
   transform: translate(
     calc((569 - 569) * var(--stage-pixel)),
-    calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
+    calc((31 - var(--y)) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
 }
 
@@ -483,22 +661,9 @@ html.is-hi-open-page {
   white-space: nowrap;
 }
 
-/* On hover (or after a click) the email address or number shows instead of the label */
-.hi-page__reveal-value,
-.hi-page__reveal:hover .hi-page__reveal-label,
-.hi-page__reveal:focus-visible .hi-page__reveal-label,
-.hi-page__reveal.is-showing .hi-page__reveal-label {
-  display: none;
-}
-
-.hi-page__reveal:hover .hi-page__reveal-value,
-.hi-page__reveal:focus-visible .hi-page__reveal-value,
-.hi-page__reveal.is-showing .hi-page__reveal-value {
-  display: inline;
-  font-family: var(--font-display);   /* the email address and number: Instrument Serif italic */
-  font-style: italic;
-  font-weight: 400;
-  user-select: all;          /* one click selects all of it */
+/* The email address and number roll in on hover (see "words that roll"): one click selects all of it */
+.hi-page__reveal-value {
+  user-select: all;
   -webkit-user-select: all;
 }
 
@@ -571,7 +736,7 @@ html.is-hi-open-page {
 .home.is-leaving .site-bar {
   transform: translate(
     calc((569 - 569) * var(--stage-pixel)),
-    calc((31 - 333) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
+    calc((31 - var(--y)) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
 }
 
@@ -610,7 +775,8 @@ body.is-sliding-in main {
 
 @media (prefers-reduced-motion: reduce) {
   .page-slide,
-  .home .site-bar {
+  .home .site-bar,
+  .home__frames .home-frame {
     transition: none;
   }
 
@@ -743,16 +909,14 @@ img.project-strip__piece {
   text-decoration: none;
 }
 
-/* Hovering over the email address, phone number or Instagram changes it to Instrument Serif italic,
-   so people know it can be clicked */
+/* Hovering over the email address, phone number or Instagram rolls it to Instrument Serif
+   italic (see "words that roll"), so people know it can be clicked */
 .project-text--email {
   text-decoration: none;
 }
 
-.project-text--email:hover,
-.project-text--email:focus-visible {
+.project-text--email .roll__word--next {
   font-family: var(--font-display);
-  font-style: italic;
   font-weight: 400;
 }
 

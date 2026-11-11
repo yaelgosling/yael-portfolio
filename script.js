@@ -75,22 +75,30 @@ function followMouse(items, stageWidth, stageHeight, isActive) {
     startAnimating();
   });
 
-  // When the mouse leaves the window, everything drifts back to its place
-  document.documentElement.addEventListener("mouseleave", () => {
+  // Everything drifts back to its place
+  function rest() {
     mouseX = 0;
     mouseY = 0;
     startAnimating();
-  });
+  }
+
+  // When the mouse leaves the window
+  document.documentElement.addEventListener("mouseleave", rest);
+
+  return rest;
 }
+
+let restHomeFrames = () => {};   // lets the home frames drift back to their places (set below)
 
 if (canMove) {
   // The home frames ("Home New" is 1440 x 768)
   if (home) {
     const frames = [...home.querySelectorAll(".home__frames .home-frame")];
-    followMouse(
+    restHomeFrames = followMouse(
       frames.map((frame) => ({ element: frame, placed: frame })),
       1440, 768,
-      () => !document.body.matches(".is-index-open, .is-hi-open")
+      // still behind the index or the Hi page, and in classic view (everything tidy)
+      () => !document.body.matches(".is-index-open, .is-hi-open") && !home.classList.contains("is-classic")
     );
   }
 
@@ -105,6 +113,88 @@ if (canMove) {
     );
   }
 }
+
+
+/* =========================================
+   Words that roll on hover (like mason-wong.com): the word moves up and out, and the
+   next word comes up from below in italic. Used in the bar, the index, the Hi page
+   and Reach Out. Each word becomes two words on top of each other, in a window one
+   word high. align: where the next word lines up ("center", "start" or "end")
+   ========================================= */
+function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
+  element.innerHTML = "";
+  element.classList.add("roll-host");
+  const roll = document.createElement("span");
+  roll.className = `roll roll--${align}`;
+  const track = document.createElement("span");
+  track.className = "roll__track";
+  [word, nextWord].forEach((text, index) => {
+    const span = document.createElement("span");
+    span.className = index === 0 ? "roll__word" : `roll__word roll__word--next ${nextClass}`;
+    span.textContent = text;
+    track.append(span);
+  });
+  roll.append(track);
+  element.append(roll);
+  if (!element.hasAttribute("aria-label")) element.setAttribute("aria-label", word);
+}
+
+// The same word again, in italic (or the word in data-roll-next): HOME, INDEX, HI, the names in the index,
+// and the links on Reach Out and the Hi page (Instagram, the email address, the phone number)
+[
+  [".site-bar__text:not(.site-bar__view)", "center"],
+  [".site-index__name:not(.site-index__name--soon)", "start"],   // projects that aren't ready stay still
+  [".project-text--email", "start"],
+].forEach(([selector, align]) => {
+  document.querySelectorAll(selector).forEach((element) => {
+    const word = element.textContent.trim();
+    makeRoll(element, word, element.dataset.rollNext || word, align);   // data-roll-next: a different next word
+  });
+});
+
+// "EMAIL ME" and "LET'S TALK" on the Hi page roll to the email address and the phone number
+document.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
+  const label = reveal.querySelector(".hi-page__reveal-label").textContent.trim();
+  const value = reveal.querySelector(".hi-page__reveal-value").textContent.trim();
+  const align = reveal.classList.contains("hi-page__reveal--right") ? "end" : "start";
+  makeRoll(reveal, label, value, align, "hi-page__reveal-value");
+});
+
+
+/* =========================================
+   Home page: CLASSIC VIEW tidies the frames into rows and moves the bar to the top
+   ("Home New Organise order" in Figma), and PLAY VIEW puts everything back.
+   On hover the word already rolls to the other view, so the click just keeps it there
+   (no jump). The browser remembers the choice while the tab is open.
+   ========================================= */
+document.querySelectorAll(".site-bar__view").forEach((button) => {
+  const label = (classic) => (classic ? "PLAY VIEW" : "CLASSIC VIEW");
+
+  function setClassic(classic) {
+    home.classList.toggle("is-classic", classic);
+    makeRoll(button, label(classic), label(!classic));
+    button.setAttribute("aria-label", label(classic));
+    button.setAttribute("aria-pressed", classic);
+    sessionStorage.setItem("home-view", classic ? "classic" : "play");
+    if (classic) restHomeFrames();   // the frames stop following the mouse
+  }
+
+  button.addEventListener("click", () => {
+    setClassic(!home.classList.contains("is-classic"));
+    // The new word is already showing: it stays (in italic, without rolling back)
+    // until the mouse leaves the button
+    button.classList.add("is-just-switched");
+  });
+  button.addEventListener("mouseleave", () => button.classList.remove("is-just-switched"));
+
+  // Coming back to the home page in classic view: start there, without the move
+  const startClassic = sessionStorage.getItem("home-view") === "classic";
+  if (startClassic) home.classList.add("is-arriving");
+  setClassic(startClassic);
+  if (startClassic) {
+    requestAnimationFrame(() => requestAnimationFrame(() => home.classList.remove("is-arriving")));
+  }
+});
 
 
 /* =========================================
