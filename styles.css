@@ -253,13 +253,15 @@ body.home-page {
 .roll--start .roll__word--next  { left: 0; }
 .roll--end .roll__word--next    { right: 0; }
 
-/* Rolled: on hover, and while WORKS or HI is open, for the project you are on in the index,
+/* Rolled: on hover, and while WORKS or HI is open, HOME while you are on the home page,
+   for the project you are on in the index,
    and after clicking EMAIL ME or LET'S TALK */
 .roll-host:hover .roll__track,
 .roll-host:focus-visible .roll__track,
 .is-hi-open .site-bar__hi .roll__track,
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
+.home .site-bar__text[href="index.html"] .roll__track,
 .hi-page__reveal.is-showing .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));   /* up by one word */
 }
@@ -760,22 +762,18 @@ body.is-sliding-in main {
   height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
 }
 
-/* On the work page the mouse is the "new arrow for scroll", at its Figma size (83 x 64):
+/* On the work page the mouse is the small "new arrow for scroll", at its Figma size (53 x 45):
    it points right, so people know to swipe sideways. script.js adds "is-at-end" when the strip
-   reaches the end: then it points left, until the strip is back at the start. There is a
-   sharper copy for retina screens (1.5 times; browsers refuse mouse pictures over 128 pixels). (The hotspot is the middle of the arrow.) */
+   reaches the end: then it points left, until the strip is back at the start.
+   (The hotspot is the middle of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 41 32, e-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 1.5x) 41 32, e-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 1.5x) 41 32, e-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow-small.svg") 26 22, e-resize;
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 41 32, w-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 1.5x) 41 32, w-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 1.5x) 41 32, w-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow-small-left.svg") 26 22, w-resize;
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */

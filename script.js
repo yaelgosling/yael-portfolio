@@ -431,10 +431,25 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
 
 
 /* =========================================
-   Project page: click the animation to play or pause it
+   Project page: click the animation to play or pause it. If the video isn't all on the
+   screen, the strip glides along so the video sits in the middle (and if "Reach Out" is
+   covering it, the page scrolls back up)
    ========================================= */
 document.querySelectorAll(".project-video").forEach((video) => {
+  const strip = video.closest(".project-strip");
+
+  function bringIntoView() {
+    const box = video.getBoundingClientRect();
+    const view = strip.getBoundingClientRect();
+    if (box.left < view.left || box.right > view.right) {
+      const middle = box.left + box.width / 2;
+      strip.scrollBy({ left: middle - (view.left + view.width / 2), behavior: "smooth" });
+    }
+    if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   video.addEventListener("click", () => {
+    bringIntoView();
     if (video.paused) video.play();
     else video.pause();
   });
