@@ -165,8 +165,10 @@ document.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
    Home page: CLASSIC VIEW tidies the frames into rows and moves the bar to the top
    ("Home New Organise order" in Figma), and PLAY VIEW puts everything back.
    On hover the word already rolls to the other view, so the click just keeps it there
-   (no jump). The browser remembers the choice while the tab is open.
+   (no jump). The home page always opens in play view.
    ========================================= */
+let setHomeView = () => {};   // lets other parts switch the view (set below)
+
 document.querySelectorAll(".site-bar__view").forEach((button) => {
   const label = (classic) => (classic ? "PLAY VIEW" : "CLASSIC VIEW");
 
@@ -175,9 +177,9 @@ document.querySelectorAll(".site-bar__view").forEach((button) => {
     makeRoll(button, label(classic), label(!classic));
     button.setAttribute("aria-label", label(classic));
     button.setAttribute("aria-pressed", classic);
-    sessionStorage.setItem("home-view", classic ? "classic" : "play");
     if (classic) restHomeFrames();   // the frames stop following the mouse
   }
+  setHomeView = setClassic;
 
   button.addEventListener("click", () => {
     setClassic(!home.classList.contains("is-classic"));
@@ -187,13 +189,7 @@ document.querySelectorAll(".site-bar__view").forEach((button) => {
   });
   button.addEventListener("mouseleave", () => button.classList.remove("is-just-switched"));
 
-  // Coming back to the home page in classic view: start there, without the move
-  const startClassic = sessionStorage.getItem("home-view") === "classic";
-  if (startClassic) home.classList.add("is-arriving");
-  setClassic(startClassic);
-  if (startClassic) {
-    requestAnimationFrame(() => requestAnimationFrame(() => home.classList.remove("is-arriving")));
-  }
+  setClassic(false);
 });
 
 
@@ -253,6 +249,85 @@ window.addEventListener("pageshow", () => {
   document.querySelectorAll(".page-slide").forEach((page) => page.classList.remove("is-sliding"));
   if (home) home.classList.remove("is-leaving");
 });
+
+
+/* =========================================
+   Going back to the home page, from any page: the home page waits (already loaded) above
+   the screen and rolls down from the top over the page, while the bar glides down to its
+   spot in the middle. Then the browser opens the home page, always in play view, and
+   CLASSIC VIEW rolls back into the bar.
+   ========================================= */
+const homeLinks = document.querySelectorAll('.site-bar a[href="index.html"]');
+
+// Close the index and the Hi page (they slide away with everything else)
+function closeOverlays() {
+  document.body.classList.remove("is-index-open", "is-hi-open");
+  document.documentElement.classList.remove("is-index-open-page", "is-hi-open-page");
+}
+
+if (home) {
+  // On the home page itself, HOME just closes what is open and goes back to play view
+  homeLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeOverlays();
+      setHomeView(false);
+    });
+  });
+
+  // Arriving back from another page: CLASSIC VIEW starts rolled away and rolls back in
+  if (sessionStorage.getItem("home-slid-back")) {
+    sessionStorage.removeItem("home-slid-back");
+    home.classList.add("is-returning");
+    setTimeout(() => home.classList.remove("is-returning"), 150);
+  }
+} else {
+  homeLinks.forEach((link) => {
+    let behind = null;
+
+    // Load the home page above the screen (as soon as the mouse is over HOME)
+    function prepareHome() {
+      if (behind) return behind;
+      behind = document.createElement("iframe");
+      behind.className = "page-from-top";
+      behind.src = link.href;
+      behind.tabIndex = -1;
+      behind.setAttribute("aria-hidden", "true");
+      behind.ready = new Promise((resolve) => behind.addEventListener("load", resolve, { once: true }));
+      document.body.appendChild(behind);
+      return behind;
+    }
+
+    link.addEventListener("pointerenter", prepareHome);
+    link.addEventListener("focus", prepareHome);
+
+    link.addEventListener("click", async (event) => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
+
+      event.preventDefault();
+      await prepareHome().ready;
+      // The index closes (it is part of the bar); everything else is covered by the home page
+      document.body.classList.remove("is-index-open");
+      document.documentElement.classList.remove("is-index-open-page");
+      document.body.classList.add("is-leaving-home");
+      setTimeout(() => {
+        sessionStorage.setItem("home-slid-back", "yes");
+        window.location.href = link.href;
+      }, PAGE_CHANGE_TIME);
+    });
+  });
+
+  // Coming back with the browser's back button: put everything back
+  window.addEventListener("pageshow", () => document.body.classList.remove("is-leaving-home"));
+}
+
+
+/* =========================================
+   Inside a waiting copy of a page (an iframe), the bar is hidden: the real page's bar
+   is the one you see
+   ========================================= */
+if (window.frameElement) document.documentElement.classList.add("is-preview");
 
 
 /* =========================================
@@ -339,19 +414,6 @@ if (indexButton) {
   });
   blur.addEventListener("click", () => setIndexOpen(false));
 
-  // The two buttons in the band switch between the list and the photos
-  const panel = document.querySelector(".site-index");
-  panel.querySelectorAll(".site-index__view").forEach((button) => {
-    button.addEventListener("click", () => {
-      const view = button.classList.contains("site-index__view--photos") ? "photos" : "list";
-      panel.dataset.view = view;
-      panel.querySelectorAll(".site-index__view").forEach((other) => {
-        const chosen = other === button;
-        other.classList.toggle("is-active", chosen);
-        other.setAttribute("aria-pressed", chosen);
-      });
-    });
-  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setIndexOpen(false);
   });

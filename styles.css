@@ -132,8 +132,7 @@ body.home-page {
   z-index: 1;
 }
 
-.home-frame:has(.home-frame__hover):hover .home-frame__image,
-.home-frame:has(.home-frame__hover):hover .site-index__photo-part {
+.home-frame:has(.home-frame__hover):hover .home-frame__image {
   visibility: hidden;
 }
 
@@ -147,12 +146,6 @@ body.home-page {
   transition:
     left var(--page-change-time) var(--page-change-easing),
     top var(--page-change-time) var(--page-change-easing);
-}
-
-/* Opening the home page in classic view: everything starts in place, without the move */
-.home.is-arriving .home__frames .home-frame,
-.home.is-arriving .site-bar {
-  transition: none;
 }
 
 .home.is-classic .home__frames .home-frame {
@@ -289,16 +282,19 @@ body.home-page {
 
 /* CLASSIC VIEW / PLAY VIEW is only there on the home page itself. When the index or the
    Hi page opens, or a project page slides up, it rolls up like a hover, but no word comes
-   in after it, so it is gone. When the index or Hi page closes, it rolls back down */
+   in after it, so it is gone. When the index or Hi page closes, or when you come back to
+   the home page from another page, it rolls back down */
 .is-index-open .home .site-bar__view,
 .is-hi-open .home .site-bar__view,
-.home.is-leaving .site-bar__view {
+.home.is-leaving .site-bar__view,
+.home.is-returning .site-bar__view {
   pointer-events: none;
 }
 
 .is-index-open .home .site-bar__view .roll__track,
 .is-hi-open .home .site-bar__view .roll__track,
-.home.is-leaving .site-bar__view .roll__track {
+.home.is-leaving .site-bar__view .roll__track,
+.home.is-returning .site-bar__view .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));
 }
 
@@ -310,7 +306,8 @@ body.home-page {
 
 .is-index-open .home .site-bar__view .roll__word--next,
 .is-hi-open .home .site-bar__view .roll__word--next,
-.home.is-leaving .site-bar__view .roll__word--next {
+.home.is-leaving .site-bar__view .roll__word--next,
+.home.is-returning .site-bar__view .roll__word--next {
   visibility: hidden;
   transition: none;
 }
@@ -396,29 +393,26 @@ body.home-page {
   line-height: calc(var(--index-name-size) * var(--roll-line));
 }
 
-/* Projects that aren't ready yet (site-index__name--soon) don't roll. On hover a tilted
-   black COMING SOON label comes up over the name, the way the words roll up
-   ("open index list hover 1" in Figma: 100 x 25, turned -6.49 degrees).
-   Numbers are Figma pixels from the top left of the name */
+/* Projects that aren't ready yet ("open index list hover 2" in Figma): the name stays still,
+   and on hover a straight black COMING SOON label comes up over it, the way the words roll up.
+   The label is as wide as the name (--label-w). Numbers are Figma pixels from the top left
+   of the name */
 .site-index__name--soon::after {
   content: "COMING SOON";
   position: absolute;
   z-index: 1;
   left: calc(-4.91 * var(--stage-pixel));
   top: calc(var(--label-y, 16.97) * var(--stage-pixel));
-  width: calc(100 * var(--stage-pixel));
+  width: calc(var(--label-w) * var(--stage-pixel));
   height: calc(25 * var(--stage-pixel));
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: calc(6.43 * var(--stage-pixel)) 0 0 calc(4.91 * var(--stage-pixel));
   background-color: var(--color-black);
   color: var(--color-white);
   font-family: var(--font-display);
   font-size: var(--index-hover-name-size);
   font-style: italic;
   line-height: var(--line-height);
-  transform: rotate(-6.49deg);
   clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
   transition: clip-path var(--roll-time) var(--page-change-easing);
   pointer-events: none;
@@ -449,7 +443,7 @@ body.home-page {
 }
 
 
-/* The lime band at the bottom, with the list and grid icons */
+/* The lime band at the bottom */
 .site-index__band {
   position: absolute;
   left: 0;
@@ -457,81 +451,6 @@ body.home-page {
   width: 100%;
   height: calc(33 * var(--stage-pixel));
   background-color: var(--color-lime);
-}
-
-/* The two view buttons in the band: black, purple on hover and when chosen */
-.site-index__view {
-  position: absolute;
-  left: calc(var(--x) * var(--stage-pixel));
-  top: calc(var(--y) * var(--stage-pixel));
-  width: calc(12 * var(--stage-pixel));
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--color-black);
-  cursor: pointer;
-}
-
-.site-index__view svg {
-  display: block;
-  width: 100%;
-  fill: currentColor;
-}
-
-.site-index__view:hover,
-.site-index__view:focus-visible,
-.site-index__view.is-active {
-  color: var(--color-blue);
-}
-
-/* Which view is showing: the list (names and their lines) or the photos */
-.site-index[data-view="photos"] .site-index__name,
-.site-index[data-view="photos"] .site-index__type,
-.site-index[data-view="photos"] .site-index__line--list,
-.site-index[data-view="list"] .site-index__photos {
-  display: none;
-}
-
-/* The photos: a column of frames between the top line and the band. Scrolls inside */
-.site-index__photos {
-  position: absolute;
-  left: 0;
-  top: var(--project-line);
-  width: 100%;
-  height: calc(603 * var(--stage-pixel) - var(--project-line));
-  overflow-y: auto;
-  overscroll-behavior: contain;   /* scrolling to the end doesn't scroll the page */
-  scrollbar-width: none;
-}
-
-.site-index__photos::-webkit-scrollbar {
-  display: none;
-}
-
-.site-index__photos-track {
-  position: relative;
-  height: calc(918 * var(--stage-pixel));
-}
-
-/* The frames use the home page frame styles (with the same hover pictures),
-   but they don't follow the mouse here */
-.site-index__photo {
-  transform: none;
-  transition: none;
-}
-
-/* Some frames show only their inner drawing, placed like in Figma */
-.site-index__photo-part {
-  position: absolute;
-  inset: var(--inset);
-  width: auto;
-  height: auto;
-}
-
-.site-index__photo-part img {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* Everything else blurs. The blur sits under the bar and above the page (and above the Hi page) */
@@ -551,10 +470,11 @@ body.home-page {
   pointer-events: auto;      /* clicking on the blur closes the index */
 }
 
-/* In classic view the bar glides up to the top of the home page (y 30 in Figma),
-   the same way it moves when the page changes */
+/* In classic view the bar glides up to the top, the same way it moves when the page changes.
+   It lands in exactly the same spot as on the other pages (y 31 from the top of the window;
+   the home page sits in the middle of the window, so it also moves up by that empty space) */
 .home.is-classic .site-bar {
-  transform: translateY(calc((30 - var(--y)) * var(--stage-pixel)));
+  transform: translateY(calc((31 - var(--y)) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2));
 }
 
 /* On the home page the bar sits in the middle, so the open index wouldn't fit below it:
@@ -738,6 +658,37 @@ html.is-hi-open-page {
     calc((569 - 569) * var(--stage-pixel)),
     calc((31 - var(--y)) * var(--stage-pixel) - (100svh - 768 * var(--stage-pixel)) / 2)
   );
+}
+
+/* Going back to the home page (script.js): the home page waits above the screen and
+   rolls down from the top over the page, like the Hi page rolls up but the other way.
+   Meanwhile the bar glides down to its spot in the middle of the home page */
+.page-from-top {
+  position: fixed;
+  inset: 0;
+  z-index: 5;                       /* over the page, the Hi page and the blur; under the bar (6) */
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-white);
+  pointer-events: none;
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+.is-leaving-home .page-from-top {
+  transform: none;
+  visibility: visible;
+}
+
+.site-bar--project {
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+/* From y 31 at the top to y 312 on the home page, which sits in the middle of the window */
+.is-leaving-home .site-bar--project {
+  transform: translateY(calc((312 - var(--y)) * var(--stage-pixel) + (100svh - 768 * var(--stage-pixel)) / 2));
 }
 
 /* The project page, waiting below the screen on the home page */
