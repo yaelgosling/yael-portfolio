@@ -127,16 +127,17 @@ body.home-page {
   height: 100%;
 }
 
-/* On hover the frame swaps to its hover version, and comes in front of the others */
-.home-frame:hover {
+/* With the mouse exactly on the drawn frame (script.js adds is-hovered), the frame swaps to
+   its hover version and comes in front of the others */
+.home-frame.is-hovered {
   z-index: 1;
 }
 
-.home-frame:has(.home-frame__hover):hover .home-frame__image {
+.home-frame.is-hovered .home-frame__image {
   visibility: hidden;
 }
 
-.home-frame:hover .home-frame__hover {
+.home-frame.is-hovered .home-frame__hover {
   visibility: visible;
 }
 
@@ -153,8 +154,12 @@ body.home-page {
   top: calc(var(--classic-y) * var(--stage-pixel));
 }
 
-/* A frame that opens a project page */
+/* A frame that opens a project page: the pointing hand only on the drawn frame itself */
 .home-frame--link {
+  cursor: default;
+}
+
+.home-frame--link.is-hovered {
   cursor: pointer;
 }
 
@@ -284,19 +289,19 @@ body.home-page {
 
 /* CLASSIC VIEW / PLAY VIEW is only there on the home page itself. When the index or the
    Hi page opens, or a project page slides up, it rolls up like a hover, but no word comes
-   in after it, so it is gone. When the index or Hi page closes, or when you come back to
-   the home page from another page, it rolls back down */
+   in after it, so it is gone. When the index or Hi page closes it rolls back down. Going back
+   to the home page from another page, it rolls down into the bar while the bar glides home */
 .is-index-open .home .site-bar__view,
 .is-hi-open .home .site-bar__view,
 .home.is-leaving .site-bar__view,
-.home.is-returning .site-bar__view {
+.site-bar__view.is-word-away {
   pointer-events: none;
 }
 
 .is-index-open .home .site-bar__view .roll__track,
 .is-hi-open .home .site-bar__view .roll__track,
 .home.is-leaving .site-bar__view .roll__track,
-.home.is-returning .site-bar__view .roll__track {
+.site-bar__view.is-word-away .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));
 }
 
@@ -309,7 +314,7 @@ body.home-page {
 .is-index-open .home .site-bar__view .roll__word--next,
 .is-hi-open .home .site-bar__view .roll__word--next,
 .home.is-leaving .site-bar__view .roll__word--next,
-.home.is-returning .site-bar__view .roll__word--next {
+.site-bar__view.is-word-away .roll__word--next {
   visibility: hidden;
   transition: none;
 }
@@ -690,6 +695,12 @@ html.is-hi-open-page {
   transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
+/* CLASSIC VIEW rolling into the bar while it glides home: as slow as the bar, so they
+   arrive together */
+.is-leaving-home .site-bar__view .roll__track {
+  transition-duration: var(--page-change-time);
+}
+
 /* From y 31 at the top to y 312 on the home page, which sits in the middle of the window */
 .is-leaving-home .site-bar--project {
   transform: translateY(calc((312 - var(--y)) * var(--stage-pixel) + (100svh - 768 * var(--stage-pixel)) / 2));
@@ -993,6 +1004,13 @@ img.project-strip__piece {
   pointer-events: none;
   backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
   -webkit-backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
+}
+
+/* While "Reach Out" is (partly) up: the blur catches the mouse, so the work behind can't be
+   swiped. It shows the normal mouse, and clicking it goes back to the work */
+.is-reach-open .project-reach-blur {
+  pointer-events: auto;
+  cursor: default;
 }
 
 /* The gradient fills the whole width of the window */

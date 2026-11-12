@@ -215,6 +215,66 @@ document.querySelectorAll("a.site-index__name").forEach((name) => {
 
 
 /* =========================================
+   Home page: a frame only changes to its hover version when the mouse is exactly on the
+   drawn frame, not on the empty space around it. Each frame drawing is copied onto a hidden
+   canvas, and the mouse checks whether that spot of the drawing is see-through or not
+   ========================================= */
+if (home && window.matchMedia("(hover: hover)").matches) {
+  const shapes = [...home.querySelectorAll(".home__frames .home-frame")]
+    .filter((frame) => frame.querySelector(".home-frame__hover"))
+    .map((frame) => {
+      const image = frame.querySelector(".home-frame__image");
+      const shape = { frame, canvas: null };
+      const draw = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth * 2;
+        canvas.height = image.naturalHeight * 2;
+        canvas.getContext("2d", { willReadFrequently: true }).drawImage(image, 0, 0, canvas.width, canvas.height);
+        shape.canvas = canvas;
+      };
+      if (image.complete && image.naturalWidth) draw();
+      else image.addEventListener("load", draw, { once: true });
+      return shape;
+    });
+
+  // Is the point (x, y) on the drawing of this frame?
+  function onDrawing({ frame, canvas }, x, y) {
+    if (!canvas) return false;
+    const box = frame.getBoundingClientRect();
+    if (x < box.left || x > box.right || y < box.top || y > box.bottom) return false;
+    const px = Math.floor(((x - box.left) / box.width) * canvas.width);
+    const py = Math.floor(((y - box.top) / box.height) * canvas.height);
+    return canvas.getContext("2d").getImageData(px, py, 1, 1).data[3] > 10;
+  }
+
+  let mouse = null;
+
+  function updateHover() {
+    let hovered = null;
+    const covered =
+      !mouse ||
+      document.body.matches(".is-index-open, .is-hi-open") ||
+      !home.querySelector(".home__frames").contains(document.elementFromPoint(mouse.x, mouse.y));
+    if (!covered) {
+      // The frame drawn last is on top
+      for (let i = shapes.length - 1; i >= 0; i--) {
+        if (onDrawing(shapes[i], mouse.x, mouse.y)) { hovered = shapes[i].frame; break; }
+      }
+    }
+    shapes.forEach(({ frame }) => frame.classList.toggle("is-hovered", frame === hovered));
+  }
+
+  document.addEventListener("pointermove", (event) => {
+    mouse = { x: event.clientX, y: event.clientY };
+    updateHover();
+  });
+  document.documentElement.addEventListener("mouseleave", () => { mouse = null; updateHover(); });
+  // The frames also move by themselves (following the mouse, or into classic view)
+  setInterval(() => { if (mouse) updateHover(); }, 100);
+}
+
+
+/* =========================================
    Home page: clicking a frame opens its project page.
    The project page waits (already loaded) below the screen, slides up over the
    home page while the bar stays where it is, and then the browser opens it.
@@ -241,6 +301,11 @@ document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
   link.addEventListener("focus", prepareSlide);
 
   link.addEventListener("click", async (event) => {
+    // Only a click on the drawn frame itself counts, not on the empty space around it
+    if (window.matchMedia("(hover: hover)").matches && !link.classList.contains("is-hovered")) {
+      event.preventDefault();
+      return;
+    }
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
 
@@ -287,12 +352,8 @@ if (home) {
     });
   });
 
-  // Arriving back from another page: CLASSIC VIEW starts rolled away and rolls back in
-  if (sessionStorage.getItem("home-slid-back")) {
-    sessionStorage.removeItem("home-slid-back");
-    home.classList.add("is-returning");
-    setTimeout(() => home.classList.remove("is-returning"), 150);
-  }
+  // Arriving back from another page: CLASSIC VIEW already rolled in while the bar moved
+  sessionStorage.removeItem("home-slid-back");
 } else {
   homeLinks.forEach((link) => {
     let behind = null;
@@ -323,6 +384,14 @@ if (home) {
       document.body.classList.remove("is-index-open");
       document.documentElement.classList.remove("is-index-open-page");
       document.body.classList.add("is-leaving-home");
+      // CLASSIC VIEW rolls down into the bar while the bar glides to the middle
+      const view = document.createElement("span");
+      view.className = "site-bar__text site-bar__box site-bar__view is-word-away";
+      view.style.setProperty("--x", 0);
+      view.style.setProperty("--y", 35);
+      makeRoll(view, "CLASSIC VIEW", "CLASSIC VIEW");
+      link.closest(".site-bar").appendChild(view);
+      requestAnimationFrame(() => requestAnimationFrame(() => view.classList.remove("is-word-away")));
       setTimeout(() => {
         sessionStorage.setItem("home-slid-back", "yes");
         window.location.href = link.href;
@@ -331,7 +400,10 @@ if (home) {
   });
 
   // Coming back with the browser's back button: put everything back
-  window.addEventListener("pageshow", () => document.body.classList.remove("is-leaving-home"));
+  window.addEventListener("pageshow", () => {
+    document.body.classList.remove("is-leaving-home");
+    document.querySelectorAll(".site-bar__view").forEach((view) => view.remove());
+  });
 }
 
 
@@ -381,7 +453,11 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
     const end = document.documentElement.scrollHeight - window.innerHeight;
     const progress = end > 0 ? Math.min(window.scrollY / end, 1) : 0;
     blur.style.setProperty("--reach-progress", progress);
+    // Once "Reach Out" starts coming up, the work behind it stays still: the blur covers it,
+    // and clicking the blur takes you back down to the work (scrolling back works too)
+    document.body.classList.toggle("is-reach-open", window.scrollY > 2);
   }
+  blur.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   window.addEventListener("scroll", updateBlur, { passive: true });
   window.addEventListener("resize", updateBlur);
   updateBlur();
