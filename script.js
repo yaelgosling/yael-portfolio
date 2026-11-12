@@ -519,6 +519,43 @@ document.querySelectorAll(".project-work").forEach(async (work) => {
 
 
 /* =========================================
+   Project page: the next and previous project frames (once they are links) open that
+   project the same way: its page slides up over this one, while the bar stays where it is
+   ========================================= */
+document.querySelectorAll("a.project-nav").forEach((link) => {
+  let slide = null;
+
+  function prepareSlide() {
+    if (slide) return slide;
+    slide = document.createElement("iframe");
+    slide.className = "page-slide";
+    slide.src = link.href;
+    slide.tabIndex = -1;
+    slide.setAttribute("aria-hidden", "true");
+    slide.ready = new Promise((resolve) => slide.addEventListener("load", resolve, { once: true }));
+    document.body.appendChild(slide);
+    return slide;
+  }
+
+  link.addEventListener("pointerenter", prepareSlide);
+  link.addEventListener("focus", prepareSlide);
+
+  link.addEventListener("click", async (event) => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
+    event.preventDefault();
+    const page = prepareSlide();
+    await page.ready;
+    page.classList.add("is-sliding");
+    setTimeout(() => {
+      sessionStorage.setItem("page-slid-in", "yes");   // the new page doesn't need to slide again
+      window.location.href = link.href;
+    }, PAGE_CHANGE_TIME);
+  });
+});
+
+
+/* =========================================
    Project page: the "flip back button" swipes the strip back to the start by itself,
    speeding up and slowing down like a real swipe
    ========================================= */
@@ -639,17 +676,16 @@ if (indexButton) {
   });
   blur.addEventListener("click", () => setIndexOpen(false));
 
-  // Clicking a project in the list: the index rolls up (like clicking off it) and the project
-  // opens. On the home page the bar stays at the top, the blur stays, and the project page
-  // slides up over it at the same time as the index rolls up (like clicking a frame). On the project you are
+  // Clicking a project in the list: the index rolls up (like clicking off it) and, at the same
+  // time, the project page slides up over everything while the bar and the blur stay
+  // (from the home page or from another project page). On the project you are
   // already on, the index just rolls up
-  const INDEX_OPEN_TIME = 700;   // the same as --index-open-time in styles.css
   document.querySelectorAll("a.site-index__name").forEach((name) => {
     let slide = null;
 
-    // On the home page: load the project page below the screen, ready to slide up
+    // Load the project page below the screen, ready to slide up
     function prepareSlide() {
-      if (!home || slide || name.classList.contains("is-current")) return slide;
+      if (slide || name.classList.contains("is-current")) return slide;
       slide = document.createElement("iframe");
       slide.className = "page-slide";
       slide.src = name.href;
@@ -668,16 +704,10 @@ if (indexButton) {
       event.preventDefault();
       if (name.classList.contains("is-current")) return setIndexOpen(false);
 
-      if (!home) {
-        setIndexOpen(false);
-        setTimeout(() => { window.location.href = name.href; }, INDEX_OPEN_TIME);
-        return;
-      }
-
       const page = prepareSlide();
       await page.ready;                                        // (usually loaded already, on hover)
       document.body.classList.add("is-opening-from-index");   // the blur stays
-      home.classList.add("is-leaving");                        // the bar stays at the top
+      if (home) home.classList.add("is-leaving");              // on the home page the bar stays at the top
       setIndexOpen(false);                                     // the index rolls up...
       page.classList.add("is-sliding");                        // ...while the project page slides up
       setTimeout(() => {
