@@ -773,18 +773,22 @@ body.is-sliding-in main {
   height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
 }
 
-/* On the work page the mouse is the small "new arrow for scroll", at its Figma size (53 x 45):
+/* On the work page the mouse is the small "new arrow for scroll", at its Figma size (53 x 45),
+   made bigger or smaller with the window by script.js (--scroll-arrow-right/-left), so it is
+   always the same size as the flip back button:
    it points right, so people know to swipe sideways. script.js adds "is-at-end" when the strip
    reaches the end: then it points left, until the strip is back at the start.
    (The hotspot is the middle of the arrow.) */
 .project-work,
 .project-work * {
   cursor: url("images/i-dont-touch-meat/scroll-arrow-small.svg") 26 22, e-resize;
+  cursor: var(--scroll-arrow-right, url("images/i-dont-touch-meat/scroll-arrow-small.svg") 26 22, e-resize);
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
   cursor: url("images/i-dont-touch-meat/scroll-arrow-small-left.svg") 26 22, w-resize;
+  cursor: var(--scroll-arrow-left, url("images/i-dont-touch-meat/scroll-arrow-small-left.svg") 26 22, w-resize);
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
@@ -869,8 +873,10 @@ img.project-strip__piece {
 }
 
 .project-work button.project-flip,
-.project-work button.project-flip * {
-  cursor: pointer;
+.project-work button.project-flip *,
+.project-work div.project-nav,
+.project-work div.project-nav * {
+  cursor: pointer;   /* the flip back button and the next / previous project frames */
 }
 
 /* Pictures that Figma crops a little */

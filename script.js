@@ -487,6 +487,38 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
 
 
 /* =========================================
+   Project page: the scroll arrow (the mouse) is always the same size as the flip back
+   button, which grows and shrinks with the window. A mouse picture can't do that by itself,
+   so its drawing is made again at the right size whenever the window changes
+   ========================================= */
+document.querySelectorAll(".project-work").forEach(async (work) => {
+  const files = {
+    right: "images/i-dont-touch-meat/scroll-arrow-small.svg",
+    left: "images/i-dont-touch-meat/scroll-arrow-small-left.svg",
+  };
+  const drawings = {};
+  try {
+    for (const side in files) drawings[side] = await (await fetch(files[side])).text();
+  } catch (error) {
+    return;   // the arrow from styles.css (at its Figma size) is used instead
+  }
+
+  function sizeArrows() {
+    const pixel = Math.min(window.innerWidth / 1440, window.innerHeight / 800);   // like --stage-pixel
+    const width = Math.max(16, Math.round(53 * pixel));
+    const height = Math.max(14, Math.round(45 * pixel));
+    for (const side in drawings) {
+      const svg = drawings[side].replace('width="53" height="45"', `width="${width}" height="${height}"`);
+      const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${Math.round(width / 2)} ${Math.round(height / 2)}`;
+      work.style.setProperty(`--scroll-arrow-${side}`, `${url}, ${side === "right" ? "e-resize" : "w-resize"}`);
+    }
+  }
+  sizeArrows();
+  window.addEventListener("resize", sizeArrows);
+});
+
+
+/* =========================================
    Project page: the "flip back button" swipes the strip back to the start by itself,
    speeding up and slowing down like a real swipe
    ========================================= */
