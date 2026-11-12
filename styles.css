@@ -470,6 +470,12 @@ body.home-page {
   pointer-events: auto;      /* clicking on the blur closes the index */
 }
 
+/* Opening a project from the index on the home page: the blur stays while the index rolls up
+   and the project page slides up over it, so the home page never shows in between */
+.is-opening-from-index .site-index-blur {
+  opacity: 1;
+}
+
 /* In classic view the bar glides up to the top, the same way it moves when the page changes.
    It lands in exactly the same spot as on the other pages (y 31 from the top of the window;
    the home page sits in the middle of the window, so it also moves up by that empty space) */
@@ -695,7 +701,7 @@ html.is-hi-open-page {
 .page-slide {
   position: fixed;
   inset: 0;
-  z-index: 4;                       /* under the bar (5), over the frames */
+  z-index: 5;                       /* under the bar (6), over the frames and the index blur */
   width: 100%;
   height: 100%;
   border: 0;
@@ -760,21 +766,21 @@ body.is-sliding-in main {
 
 /* On the work page the mouse is the "new arrow for scroll": it points right, so people know to
    swipe sideways. script.js adds "is-at-end" when the strip reaches the end: then it points
-   left, until the strip is back at the start. It is 46 x 35 (smaller than in Figma, about the
+   left, until the strip is back at the start. It is 54 x 41 (smaller than in Figma, about the
    size of the play button), with a sharper copy for retina screens. (The hotspot is the middle
    of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 23 17, e-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 23 17, e-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 23 17, e-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 27 20, e-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 27 20, e-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 27 20, e-resize;
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 23 17, w-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 23 17, w-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 23 17, w-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 27 20, w-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 27 20, w-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 27 20, w-resize;
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
@@ -815,6 +821,21 @@ body.is-sliding-in main {
 
 img.project-strip__piece {
   object-fit: cover;
+}
+
+/* The faster pictures, on top of everything in the strip. script.js moves each one
+   sideways a little (--shift, Figma pixels): it is exactly in its Figma place when it is
+   in the middle of the window, and moves faster than the rest while you swipe */
+.project-strip__fast {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;            /* the frames and the video underneath still work */
+}
+
+.project-strip__fast-piece {
+  transform: translateX(calc(var(--shift, 0) * var(--stage-pixel)));
+  will-change: transform;
 }
 
 /* Pictures that Figma crops a little */

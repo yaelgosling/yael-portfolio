@@ -377,6 +377,48 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
 
 
 /* =========================================
+   Project page: the faster pictures ("top faster images" in Figma). While you swipe they
+   move a bit faster than the rest, which gives depth. Each one is exactly in its Figma place
+   when it is in the middle of the window
+   ========================================= */
+const FAST_EXTRA = 0.3;   // how much faster (0.3 = 30% faster than the rest)
+
+document.querySelectorAll(".project-strip").forEach((strip) => {
+  const track = strip.querySelector(".project-strip__track");
+  const pieces = [...strip.querySelectorAll(".project-strip__fast-piece")].map((element) => {
+    const read = (name) => parseFloat(element.style.getPropertyValue(name));
+    return { element, middle: read("--x") + read("--w") / 2 };
+  });
+  if (!pieces.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const trackWidth = parseFloat(track.style.getPropertyValue("--w"));
+  let waiting = false;
+
+  function update() {
+    waiting = false;
+    const pixel = track.offsetWidth / trackWidth;   // one Figma pixel on this screen
+    // The middle of the window, in Figma pixels along the strip
+    const windowMiddle =
+      (strip.getBoundingClientRect().left + strip.clientWidth / 2 - track.getBoundingClientRect().left) / pixel;
+    pieces.forEach(({ element, middle }) => {
+      element.style.setProperty("--shift", (-(windowMiddle - middle) * FAST_EXTRA).toFixed(2));
+    });
+  }
+
+  function requestUpdate() {
+    if (!waiting) {
+      waiting = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  strip.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  update();
+});
+
+
+/* =========================================
    Project page: click the animation to play or pause it
    ========================================= */
 document.querySelectorAll(".project-video").forEach((video) => {
@@ -413,6 +455,57 @@ if (indexButton) {
     setIndexOpen(!document.body.classList.contains("is-index-open"));
   });
   blur.addEventListener("click", () => setIndexOpen(false));
+
+  // Clicking a project in the list: the index rolls up (like clicking off it) and the project
+  // opens. On the home page the bar stays at the top, the blur stays, and the project page
+  // slides up over it at the same time as the index rolls up (like clicking a frame). On the project you are
+  // already on, the index just rolls up
+  const INDEX_OPEN_TIME = 700;   // the same as --index-open-time in styles.css
+  document.querySelectorAll("a.site-index__name").forEach((name) => {
+    let slide = null;
+
+    // On the home page: load the project page below the screen, ready to slide up
+    function prepareSlide() {
+      if (!home || slide || name.classList.contains("is-current")) return slide;
+      slide = document.createElement("iframe");
+      slide.className = "page-slide";
+      slide.src = name.href;
+      slide.tabIndex = -1;
+      slide.setAttribute("aria-hidden", "true");
+      slide.ready = new Promise((resolve) => slide.addEventListener("load", resolve, { once: true }));
+      document.body.appendChild(slide);
+      return slide;
+    }
+
+    name.addEventListener("pointerenter", prepareSlide);
+    name.addEventListener("focus", prepareSlide);
+
+    name.addEventListener("click", async (event) => {
+      if (event.metaKey || event.ctrlKey) return;   // opening in a new tab works as usual
+      event.preventDefault();
+      if (name.classList.contains("is-current")) return setIndexOpen(false);
+
+      if (!home) {
+        setIndexOpen(false);
+        setTimeout(() => { window.location.href = name.href; }, INDEX_OPEN_TIME);
+        return;
+      }
+
+      const page = prepareSlide();
+      await page.ready;                                        // (usually loaded already, on hover)
+      document.body.classList.add("is-opening-from-index");   // the blur stays
+      home.classList.add("is-leaving");                        // the bar stays at the top
+      setIndexOpen(false);                                     // the index rolls up...
+      page.classList.add("is-sliding");                        // ...while the project page slides up
+      setTimeout(() => {
+        sessionStorage.setItem("page-slid-in", "yes");         // it doesn't need to slide again
+        window.location.href = name.href;
+      }, PAGE_CHANGE_TIME);
+    });
+  });
+
+  // Coming back with the browser's back button: put everything back
+  window.addEventListener("pageshow", () => document.body.classList.remove("is-opening-from-index"));
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setIndexOpen(false);

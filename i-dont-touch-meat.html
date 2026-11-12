@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body class="project-page">
 
@@ -69,7 +69,7 @@
     -->
     <section class="project-work">
       <div class="project-strip">
-        <div class="project-strip__track" style="--w: 5589">
+        <div class="project-strip__track" style="--w: 5391">
 
           <!-- The information -->
           <p class="project-text" style="--x: 15; --y: 43; --w: 87">Project</p>
@@ -93,14 +93,8 @@
 
           <!-- The pictures -->
           <img class="project-strip__piece" style="--x: 1827.85; --y: 165.32; --w: 542.981; --h: 305.427" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
-          <img class="project-strip__piece" style="--x: 1945.32; --y: 300.42; --w: 400.971; --h: 225.546" src="images/i-dont-touch-meat/artwork-73.gif" alt="">
-          <img class="project-strip__piece" style="--x: 2881.18; --y: 605.85; --w: 231.615; --h: 130.284" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
           <img class="project-strip__piece" style="--x: 2431.85; --y: 134; --w: 406.594; --h: 635.303" src="images/i-dont-touch-meat/artwork-5.png" alt="">
           <img class="project-strip__piece" style="--x: 3464.82; --y: 515; --w: 444.03; --h: 250.223" src="images/i-dont-touch-meat/still-18-05-02.png" alt="A still from the animation">
-          <img class="project-strip__piece" style="--x: 3211.08; --y: 325.87; --w: 442.73; --h: 249.118" src="images/i-dont-touch-meat/still-18-02-33.png" alt="A still from the animation">
-          <div class="project-strip__piece project-strip__crop" style="--x: 4026.53; --y: 182.95; --w: 443.456; --h: 248.649">
-            <img style="--crop: -0.16% auto auto 0.04%; --crop-w: 99.86%; --crop-h: 100.63%" src="images/i-dont-touch-meat/still-18-03-38.png" alt="A still from the animation">
-          </div>
           <div class="project-strip__piece project-strip__crop" style="--x: 4421.04; --y: 506.97; --w: 443.456; --h: 249.628">
             <img style="--crop: 0.08% auto auto -0.35%; --crop-w: 100.28%; --crop-h: 100.09%" src="images/i-dont-touch-meat/still-18-03-19.png" alt="A still from the animation">
           </div>
@@ -109,7 +103,7 @@
             Next and previous project. On hover they change to their "next page hovers" version.
             They become links once those project pages exist.
           -->
-          <div class="project-strip__piece project-nav" style="--x: 5336.34; --y: 134.98; --w: 177.166; --h: 145.68">
+          <div class="project-strip__piece project-nav" style="--x: 5154.73; --y: 134.98; --w: 177.166; --h: 145.68">
             <div class="project-nav__frame">
               <div class="project-nav__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/i-dont-touch-meat/next-witch-1.svg" alt=""></div>
               <div class="project-nav__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/i-dont-touch-meat/next-witch-2.svg" alt=""></div>
@@ -119,7 +113,7 @@
             <img class="project-nav__hover" src="images/i-dont-touch-meat/next-witch-hover.svg" alt="">
           </div>
 
-          <div class="project-strip__piece project-nav" style="--x: 5230.62; --y: 640.11; --w: 282.912; --h: 134.999">
+          <div class="project-strip__piece project-nav" style="--x: 5049; --y: 640.11; --w: 282.912; --h: 134.999">
             <div class="project-nav__frame">
               <div class="project-nav__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/i-dont-touch-meat/previous-judges-1.svg" alt=""></div>
               <div class="project-nav__layer" style="--inset: 29.62% 8.39% 20.36% 13.24%"><img src="images/i-dont-touch-meat/previous-judges-2.svg" alt=""></div>
@@ -127,6 +121,19 @@
               <p class="project-nav__text" style="--inset: 50.76% 12.46% 34.74% 60.9%">Judges, Chapter 4</p>
             </div>
             <img class="project-nav__hover" src="images/i-dont-touch-meat/previous-judges-hover.svg" alt="">
+          </div>
+
+          <!--
+            "top faster images for frame 8": these sit on top of everything and move a bit faster
+            than the rest when you swipe, which gives the page depth (script.js)
+          -->
+          <div class="project-strip__fast">
+            <img class="project-strip__piece project-strip__fast-piece" style="--x: 1806; --y: 262; --w: 556; --h: 312.75" src="images/i-dont-touch-meat/artwork-73.gif" alt="">
+            <img class="project-strip__piece project-strip__fast-piece" style="--x: 2804; --y: 575; --w: 286.452; --h: 161.129" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
+            <img class="project-strip__piece project-strip__fast-piece" style="--x: 3113; --y: 270.68; --w: 540.809; --h: 304.306" src="images/i-dont-touch-meat/still-18-02-33.png" alt="A still from the animation">
+            <div class="project-strip__piece project-strip__crop project-strip__fast-piece" style="--x: 4026.53; --y: 182.95; --w: 513.732; --h: 288.053">
+              <img style="--crop: -0.16% auto auto 0.04%; --crop-w: 99.86%; --crop-h: 100.63%" src="images/i-dont-touch-meat/still-18-03-38.png" alt="A still from the animation">
+            </div>
           </div>
 
         </div>
@@ -207,7 +214,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=2"></script>
+  <script src="script.js?v=3"></script>
 
 </body>
 </html>
