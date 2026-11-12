@@ -217,20 +217,42 @@ document.querySelectorAll("a.site-index__name").forEach((name) => {
 /* =========================================
    Home page: a frame only changes to its hover version when the mouse is exactly on the
    drawn frame, not on the empty space around it. Each frame drawing is copied onto a hidden
-   canvas, and the mouse checks whether that spot of the drawing is see-through or not
+   canvas to make its outline. Everything inside the outline counts as the frame, also the
+   see-through gaps between the drawn lines and the picture
    ========================================= */
 if (home && window.matchMedia("(hover: hover)").matches) {
   const shapes = [...home.querySelectorAll(".home__frames .home-frame")]
     .filter((frame) => frame.querySelector(".home-frame__hover"))
     .map((frame) => {
       const image = frame.querySelector(".home-frame__image");
-      const shape = { frame, canvas: null };
+      const shape = { frame, outside: null, width: 0, height: 0 };
       const draw = () => {
         const canvas = document.createElement("canvas");
-        canvas.width = image.naturalWidth * 2;
-        canvas.height = image.naturalHeight * 2;
-        canvas.getContext("2d", { willReadFrequently: true }).drawImage(image, 0, 0, canvas.width, canvas.height);
-        shape.canvas = canvas;
+        const width = (canvas.width = Math.round(image.naturalWidth * 2));
+        const height = (canvas.height = Math.round(image.naturalHeight * 2));
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.drawImage(image, 0, 0, width, height);
+        const pixels = context.getImageData(0, 0, width, height).data;
+
+        // Start from the see-through edge of the picture and spread over every see-through
+        // pixel that can be reached from there: that's the outside. The rest is the frame
+        const outside = new Uint8Array(width * height);
+        const queue = [];
+        const visit = (x, y) => {
+          const i = y * width + x;
+          if (!outside[i] && pixels[i * 4 + 3] <= 10) { outside[i] = 1; queue.push(i); }
+        };
+        for (let x = 0; x < width; x++) { visit(x, 0); visit(x, height - 1); }
+        for (let y = 0; y < height; y++) { visit(0, y); visit(width - 1, y); }
+        while (queue.length) {
+          const i = queue.pop();
+          const x = i % width, y = (i - x) / width;
+          if (x > 0) visit(x - 1, y);
+          if (x < width - 1) visit(x + 1, y);
+          if (y > 0) visit(x, y - 1);
+          if (y < height - 1) visit(x, y + 1);
+        }
+        Object.assign(shape, { outside, width, height });
       };
       if (image.complete && image.naturalWidth) draw();
       else image.addEventListener("load", draw, { once: true });
@@ -238,13 +260,13 @@ if (home && window.matchMedia("(hover: hover)").matches) {
     });
 
   // Is the point (x, y) on the drawing of this frame?
-  function onDrawing({ frame, canvas }, x, y) {
-    if (!canvas) return false;
+  function onDrawing({ frame, outside, width, height }, x, y) {
+    if (!outside) return false;
     const box = frame.getBoundingClientRect();
-    if (x < box.left || x > box.right || y < box.top || y > box.bottom) return false;
-    const px = Math.floor(((x - box.left) / box.width) * canvas.width);
-    const py = Math.floor(((y - box.top) / box.height) * canvas.height);
-    return canvas.getContext("2d").getImageData(px, py, 1, 1).data[3] > 10;
+    if (x < box.left || x >= box.right || y < box.top || y >= box.bottom) return false;
+    const px = Math.min(width - 1, Math.floor(((x - box.left) / box.width) * width));
+    const py = Math.min(height - 1, Math.floor(((y - box.top) / box.height) * height));
+    return !outside[py * width + px];
   }
 
   let mouse = null;
