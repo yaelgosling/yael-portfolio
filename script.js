@@ -487,6 +487,32 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
 
 
 /* =========================================
+   Project page: the "flip back button" swipes the strip back to the start by itself,
+   speeding up and slowing down like a real swipe
+   ========================================= */
+document.querySelectorAll(".project-flip").forEach((button) => {
+  const strip = button.closest(".project-strip");
+  const FLIP_TIME = 1400;   // how long the swipe back takes (milliseconds)
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // slow, fast, slow
+
+  button.addEventListener("click", () => {
+    const from = strip.scrollLeft;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      strip.scrollLeft = 0;
+      return;
+    }
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / FLIP_TIME, 1);
+      strip.scrollLeft = from * (1 - ease(t));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+});
+
+
+/* =========================================
    Project page: the faster pictures ("top faster images" in Figma). While you swipe they
    move a bit faster than the rest, which gives depth. Each one is exactly in its Figma place
    when it is in the middle of the window

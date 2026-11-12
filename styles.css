@@ -842,6 +842,37 @@ img.project-strip__piece {
   will-change: transform;
 }
 
+/* The "flip back button" at the end of the strip: white arrow, orange on hover
+   ("flip back button hover"), with the normal pointing hand */
+.project-flip {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.project-flip__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.project-flip__image--hover,
+.project-flip:hover .project-flip__image:not(.project-flip__image--hover),
+.project-flip:focus-visible .project-flip__image:not(.project-flip__image--hover) {
+  visibility: hidden;
+}
+
+.project-flip:hover .project-flip__image--hover,
+.project-flip:focus-visible .project-flip__image--hover {
+  visibility: visible;
+}
+
+.project-work button.project-flip,
+.project-work button.project-flip * {
+  cursor: pointer;
+}
+
 /* Pictures that Figma crops a little */
 .project-strip__crop {
   overflow: hidden;

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body class="project-page">
 
@@ -125,6 +125,12 @@
             <img class="project-nav__hover" src="images/i-dont-touch-meat/previous-judges-hover.svg" alt="">
           </div>
 
+          <!-- "flip back button": swipes the strip back to the start. On hover: "flip back button hover" -->
+          <button class="project-strip__piece project-flip" style="--x: 5252; --y: 437; --w: 53; --h: 45" type="button" aria-label="Back to the start">
+            <img class="project-flip__image" src="images/i-dont-touch-meat/flip-back.svg" alt="">
+            <img class="project-flip__image project-flip__image--hover" src="images/i-dont-touch-meat/flip-back-hover.svg" alt="">
+          </button>
+
           <!--
             "top faster images for frame 8": these sit on top of everything and move a bit faster
             than the rest when you swipe, which gives the page depth (script.js)
@@ -216,7 +222,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=7"></script>
+  <script src="script.js?v=8"></script>
 
 </body>
 </html>
