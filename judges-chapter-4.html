@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="project-html">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Judges, Chapter 4 – Yael Gosling</title>
+
+  <!-- Fonts from Google Fonts: Instrument Serif (titles and menu) and Inter (project text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css?v=11">
+</head>
+<body class="project-page">
+
+  <!-- The menu bar: stays still at the top. Coming from the home page, it moves up to here -->
+  <nav class="site-bar site-bar--project" style="--x: 569; --y: 31" aria-label="Main">
+    <div class="site-bar__block site-bar__block--blue" style="--x: 0; --y: 0"></div>
+    <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
+    <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
+    <a class="site-bar__text site-bar__box" style="--x: 0; --y: 0" href="index.html">HOME</a>
+    <button class="site-bar__text site-bar__box site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index">WORKS</button>
+    <button class="site-bar__text site-bar__box site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page">HI</button>
+    <!-- The index ("open index list" in Figma): opens downwards under the bar.
+         Numbers are Figma pixels from the top left corner of the orange panel -->
+    <div class="site-index" id="site-index">
+      <div class="site-index__line" style="--y: 0"></div>
+      <div class="site-index__line" style="--y: 64"></div>
+      <div class="site-index__line" style="--y: 124"></div>
+      <div class="site-index__line" style="--y: 184"></div>
+      <div class="site-index__line" style="--y: 244"></div>
+      <div class="site-index__line" style="--y: 304"></div>
+      <div class="site-index__line" style="--y: 364"></div>
+      <div class="site-index__line" style="--y: 424"></div>
+      <div class="site-index__line" style="--y: 484"></div>
+      <div class="site-index__line" style="--y: 544"></div>
+      <div class="site-index__line" style="--y: 604"></div>
+      <span class="site-index__name" style="--y: 1; --h: 63">THE WITCH</span>
+      <span class="site-index__type" style="--y: 1; --h: 63" aria-hidden="true">Illustration</span>
+      <a class="site-index__name" style="--y: 64; --h: 60" href="i-dont-touch-meat.html">I DON’T TOUCH MEAT</a>
+      <span class="site-index__type" style="--y: 64; --h: 60" aria-hidden="true">Motion</span>
+      <span class="site-index__name" style="--y: 124; --h: 60">GRUNGE</span>
+      <span class="site-index__type" style="--y: 124; --h: 60" aria-hidden="true">Print. Web</span>
+      <a class="site-index__name" style="--y: 184; --h: 60" href="judges-chapter-4.html">JUDGES, CHAPTER 4</a>
+      <span class="site-index__type" style="--y: 184; --h: 60" aria-hidden="true">Illustration</span>
+      <span class="site-index__name" style="--y: 244; --h: 60">MTV IDENT</span>
+      <span class="site-index__type" style="--y: 244; --h: 60" aria-hidden="true">Motion</span>
+      <span class="site-index__name site-index__name--soon" style="--y: 304; --h: 60; --label-w: 100">BOARD GAMES</span>
+      <span class="site-index__type" style="--y: 304; --h: 60" aria-hidden="true">Object</span>
+      <span class="site-index__name site-index__name--soon" style="--y: 364; --h: 60; --label-w: 100">DAVAR ACHAD</span>
+      <span class="site-index__type" style="--y: 364; --h: 60" aria-hidden="true">Branding</span>
+      <span class="site-index__name site-index__name--soon" style="--y: 424; --h: 60; --label-w: 110.91">TRAVEL JOURNEY</span>
+      <span class="site-index__type" style="--y: 424; --h: 60" aria-hidden="true">Print</span>
+      <span class="site-index__name site-index__name--soon" style="--y: 484; --h: 60; --label-w: 207.91">THE GUIDE FOR THE NEW ISRAELI</span>
+      <span class="site-index__type" style="--y: 484; --h: 60" aria-hidden="true">Motion</span>
+      <span class="site-index__name site-index__name--soon" style="--y: 544; --h: 60; --label-w: 175.91; --label-y: 15.97">PAINTINGS / ILLUSTRATIONS</span>
+      <div class="site-index__band"></div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!--
+      The work page ("new dont touch meat page" in Figma, 1440 × 800).
+      Everything is in one long strip ("Frame 7"): swipe left and right to move it
+      (trackpad, or Shift + mouse wheel). Scrolling down brings up "Reach Out".
+      Numbers are Figma pixels from the strip's top left corner.
+    -->
+    <section class="project-work">
+      <div class="project-strip">
+        <div class="project-strip__track" style="--w: 4889">
+
+          <!-- The information -->
+          <p class="project-text" style="--x: 15; --y: 43; --w: 87">Project</p>
+          <h1 class="project-title" style="--x: 15; --y: 56">JUDGES,<br>CHAPTER 4</h1>
+          <p class="project-text" style="--x: 143; --y: 191; --w: 240">Inspired by Judges Chapter 4, this comic book reimagines the story of Yael and Sisera.<br><br>Traditionally, Yael is celebrated for her decisive act of violence in killing Sisera. I chose to reverse that moment.<br>In this version, Yael spares Sisera, and her hesitation leads to devastating consequences. The change allows me to question heroism, morality, and the fragile line between compassion and destruction in times of war.</p>
+          <p class="project-text" style="--x: 15; --y: 543; --w: 87">Challenges</p>
+          <ul class="project-text project-text--list" style="--x: 134; --y: 543; --w: 434">
+            <li>Finding an interesting way to change a historical story that bring on a new meaning without being clique.</li>
+            <li>This was a new style, so the challenge was understanding what brushes, textures and details to include on a digital drawing.</li>
+          </ul>
+          <p class="project-text" style="--x: 15; --y: 734; --w: 53">Year</p>
+          <p class="project-text" style="--x: 143; --y: 734; --w: 53">2026</p>
+          <p class="project-text" style="--x: 15; --y: 761; --w: 53">Field</p>
+          <p class="project-text" style="--x: 143; --y: 761; --w: 171">Illustration. Print.</p>
+
+          <!-- The comic video ("Comp 1"): click to play or pause -->
+          <video class="project-strip__piece project-video" style="--x: 721; --y: 130.04; --w: 868; --h: 642.963" src="images/judges-chapter-4/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The Judges, Chapter 4 comic. Click to play or pause"></video>
+          <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
+               Over the video it changes to "new pause play hover" (orange) -->
+          <img class="project-video__play" style="--x: 1119; --y: 408.05; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
+          <img class="project-video__play project-video__play--hover" style="--x: 1119; --y: 408.05; --w: 72; --h: 86.906" src="images/project/new-pause-play-hover.svg" alt="">
+
+          <!-- The pictures -->
+          <img class="project-strip__piece" style="--x: 1785; --y: 149; --w: 454; --h: 340.5" src="images/judges-chapter-4/cover-mockup.jpg" alt="The comic's cover">
+          <div class="project-strip__piece project-strip__crop" style="--x: 2435; --y: 293; --w: 454; --h: 340.584">
+            <img style="--crop: -52.02% auto auto -122.47%; --crop-w: 242.2%; --crop-h: 403.55%" src="images/judges-chapter-4/instagram-posts.png" alt="Instagram posts for the comic">
+          </div>
+          <div class="project-strip__piece project-strip__crop" style="--x: 2914; --y: 211; --w: 455.003; --h: 341">
+            <img style="--crop: -259.47% auto auto -19.73%; --crop-w: 242.2%; --crop-h: 403.94%" src="images/judges-chapter-4/instagram-posts.png" alt="Instagram posts for the comic">
+          </div>
+          <img class="project-strip__piece" style="--x: 3640; --y: 149; --w: 818.667; --h: 614" src="images/judges-chapter-4/books-mockup.jpg" alt="Copies of the comic book">
+
+          <!--
+            Next and previous project. On hover they change to their "next page hovers" version.
+            They become links once those project pages exist.
+          -->
+          <div class="project-strip__piece project-nav" style="--x: 4695; --y: 112; --w: 137.49; --h: 269.543">
+            <div class="project-nav__frame">
+              <div class="project-nav__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/judges-chapter-4/next-mtv-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/judges-chapter-4/next-mtv-2.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/judges-chapter-4/next-mtv-3.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/judges-chapter-4/next-mtv-4.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 81.63% 68.36% 13.73% 25.72%"><img src="images/judges-chapter-4/next-mtv-5.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/judges-chapter-4/next-mtv-6.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/judges-chapter-4/next-mtv-7.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img src="images/judges-chapter-4/next-mtv-8.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/judges-chapter-4/next-mtv-9.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img src="images/judges-chapter-4/next-mtv-10.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img src="images/judges-chapter-4/next-mtv-11.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/judges-chapter-4/next-mtv-12.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 86.64% 33.11% 11.86% 62.14%"><img src="images/judges-chapter-4/next-mtv-13.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/judges-chapter-4/next-mtv-14.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img src="images/judges-chapter-4/next-mtv-15.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/judges-chapter-4/next-mtv-16.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/judges-chapter-4/next-mtv-17.svg" alt=""></div>
+              <p class="project-nav__text" style="--inset: 43.04% 24.36% 34.33% 34.91%"><span class="project-nav__label">NEXT PROJECT</span><br><br>MTV Ident</p>
+            </div>
+            <img class="project-nav__hover" src="images/judges-chapter-4/next-mtv-hover.svg" alt="">
+          </div>
+
+          <div class="project-strip__piece project-nav" style="--x: 4676; --y: 604; --w: 155.384; --h: 166.709">
+            <div class="project-nav__frame">
+              <div class="project-nav__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/judges-chapter-4/previous-grunge-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/judges-chapter-4/previous-grunge-2.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/judges-chapter-4/previous-grunge-3.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/judges-chapter-4/previous-grunge-4.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/judges-chapter-4/previous-grunge-5.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/judges-chapter-4/previous-grunge-6.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/judges-chapter-4/previous-grunge-7.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img src="images/judges-chapter-4/previous-grunge-8.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/judges-chapter-4/previous-grunge-9.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/judges-chapter-4/previous-grunge-10.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/judges-chapter-4/previous-grunge-11.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/judges-chapter-4/previous-grunge-12.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/judges-chapter-4/previous-grunge-13.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/judges-chapter-4/previous-grunge-14.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/judges-chapter-4/previous-grunge-15.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/judges-chapter-4/previous-grunge-16.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/judges-chapter-4/previous-grunge-17.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 80.48% 84.32% 16.87% 15.28%"><img src="images/judges-chapter-4/previous-grunge-18.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 31.54% 84.07% 64.04% 15.8%"><img src="images/judges-chapter-4/previous-grunge-19.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 26.06% 84.35% 72.57% 15.29%"><img src="images/judges-chapter-4/previous-grunge-20.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/judges-chapter-4/previous-grunge-21.svg" alt=""></div>
+              <p class="project-nav__text" style="--inset: 35.39% 27.92% 28.02% 32.82%"><span class="project-nav__label">PREVIOUS PROJECT</span><br><br>Grunge</p>
+            </div>
+            <img class="project-nav__hover" src="images/judges-chapter-4/previous-grunge-hover.svg" alt="">
+          </div>
+
+          <!-- "flip back button": swipes the strip back to the start. On hover: "flip back button hover" -->
+          <button class="project-strip__piece project-flip" style="--x: 4768; --y: 439; --w: 53; --h: 45" type="button" aria-label="Back to the start">
+            <img class="project-flip__image" src="images/project/flip-back.svg" alt="">
+            <img class="project-flip__image project-flip__image--hover" src="images/project/flip-back-hover.svg" alt="">
+          </button>
+
+          <!--
+            "Judges chapter 4 top photos": these sit on top of everything and move a bit faster
+            than the rest when you swipe, which gives the page depth (script.js)
+          -->
+          <div class="project-strip__fast">
+            <div class="project-strip__piece project-strip__crop project-strip__fast-piece" style="--x: 2055; --y: 312; --w: 327.159; --h: 480">
+            <img style="--crop: -158.06% auto auto -170.23%; --crop-w: 535.57%; --crop-h: 258.06%" src="images/judges-chapter-4/artwork-479.png" alt="A drawing from the comic">
+          </div>
+            <div class="project-strip__piece project-strip__crop project-strip__fast-piece" style="--x: 3120; --y: 443; --w: 814; --h: 329.802">
+            <img style="--crop: 0% auto auto -96.86%; --crop-w: 196.86%; --crop-h: 343.49%" src="images/judges-chapter-4/artwork-482.png" alt="A drawing from the comic">
+          </div>
+            <div class="project-strip__piece project-strip__crop project-strip__fast-piece" style="--x: 3648; --y: 149; --w: 241; --h: 252.262">
+            <img style="--crop: -20.54% auto auto -514.39%; --crop-w: 655.7%; --crop-h: 442.86%" src="images/judges-chapter-4/spreads-4.png" alt="A spread from the comic">
+          </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Blurs the work page more and more while "Reach Out" slides up (script.js) -->
+    <div class="project-reach-blur" aria-hidden="true"></div>
+
+    <!-- "Reach Out" in Figma: slides up over the work page whenever you scroll down,
+         and stops at the top of the video -->
+    <section class="project-reach" id="reach-out">
+      <div class="project-reach__gradient" style="--y: 62; --h: 574"></div>
+      <div class="project-line project-line--full" style="--y: 0"></div>
+
+      <h2 class="project-title" style="--x: 15; --y: 56">REACH OUT</h2>
+      <p class="project-text" style="--x: 15; --y: 191; --w: 414.665">Email me</p>
+      <a class="project-text project-text--contact project-text--email" style="--x: 15; --y: 210; --w: 462.927" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+      <p class="project-text" style="--x: 720; --y: 191; --w: 414.665">Let’s talk</p>
+      <a class="project-text project-text--contact project-text--email" style="--x: 720; --y: 210; --w: 462.927" href="tel:+972538521501">+972 538521501</a>
+      <p class="project-text" style="--x: 15; --y: 308; --w: 84">Instagram</p>
+      <a class="project-text project-text--contact project-text--email" style="--x: 15; --y: 330; --w: 462.927" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
+    </section>
+
+  </main>
+
+  <!-- The Hi page ("Hi page" in Figma): slides up from the bottom when HI is clicked.
+       Click HI again (or press Escape) to close it -->
+  <section class="hi-page" id="hi-page" aria-label="Hi, I'm Yael" aria-hidden="true">
+    <div class="hi-page__gradient"></div>
+    <div class="project-line project-line--full" style="--y: 0"></div>
+    <div class="hi-page__stage">
+      <h2 class="project-title" style="--x: 15; --y: 56">HIIII I’M YAEL</h2>
+
+      <p class="project-text" style="--x: 15; --y: 212; --w: 87">Background</p>
+      <p class="project-text" style="--x: 134; --y: 212; --w: 216">Born in New Zealand<br>Moved to Australia with family<br>Immigrated to Israel at 18 by myself in 2019<br><br>Currently studying Visual Communication at Bezalel, focusing on illustration and design.<br>My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+
+      <!-- The drawings. Hovering over one shows the text next to it. Each drawing is cut from one sheet -->
+      <div class="hi-doodle hi-doodle--cheese">
+        <div class="hi-doodle__picture" style="--x: 999; --y: 142; --w: 90.625; --h: 70"><img style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text hi-page__nowrap" style="--x: 1079; --y: 142">I love cheese</p>
+      </div>
+      <div class="hi-doodle hi-doodle--cow">
+        <div class="hi-doodle__picture" style="--x: 547; --y: 400; --w: 92.432; --h: 121.338"><img style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text" style="--x: 488; --y: 479; --w: 96">Dancing cows are funny</p>
+      </div>
+      <div class="hi-doodle hi-doodle--drogo">
+        <div class="hi-doodle__picture" style="--x: 115; --y: 593; --w: 93.252; --h: 92.091"><img style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text" style="--x: 213; --y: 625; --w: 96">I have a cat named Drogo who loves plastic bags</p>
+      </div>
+      <div class="hi-doodle hi-doodle--ted-lasso">
+        <div class="hi-doodle__picture" style="--x: 1203; --y: 342; --w: 73; --h: 85.943"><img style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text" style="--x: 1232; --y: 423; --w: 116">Ted Lasso is&nbsp; my favourite tv show</p>
+      </div>
+      <div class="hi-doodle hi-doodle--footy">
+        <div class="hi-doodle__picture" style="--x: 639; --y: 532; --w: 63.439; --h: 53"><img style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text" style="--x: 715; --y: 509; --w: 116">I have played AFL internationally representing Israel</p>
+      </div>
+      <div class="hi-doodle hi-doodle--hand">
+        <div class="hi-doodle__picture" style="--x: 1139; --y: 498; --w: 77.564; --h: 68.236"><img style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
+        <p class="project-text hi-doodle__text" style="--x: 1134; --y: 543; --w: 116">I’m marrrriiiieeedddd</p>
+      </div>
+      <div class="hi-doodle hi-doodle--me">
+        <div class="hi-doodle__picture" style="--x: 647; --y: 120; --w: 145.317; --h: 243.634"><img style="--iw: 586.8%; --ih: 350%; --il: -217.16%; --it: -206.5%" src="images/hi/sheet.png" alt=""></div>
+      </div>
+
+      <a class="project-text project-text--email hi-page__big hi-page__instagram" style="--x: 617; --y: 720; --w: 207" href="https://www.instagram.com/yael.gosling/" data-roll-next="yael.gosling" target="_blank" rel="noopener">INSTAGRAM</a>
+      <!-- "Email me" and "Let's talk" show the email address and phone number on hover.
+           Email: a click opens a new email straight away and also copies the address.
+           Phone: a click starts a call (or asks which app to call with) and also copies the number. Both can also be selected and copied by hand -->
+      <a class="project-text hi-page__reveal hi-page__big" style="--x: 14; --y: 720" href="mailto:yaelgosling5@gmail.com" aria-label="Email: yaelgosling5@gmail.com">
+        <span class="hi-page__reveal-label">EMAIL ME</span>
+        <span class="hi-page__reveal-value">yaelgosling5@gmail.com</span>
+      </a>
+      <a class="project-text hi-page__reveal hi-page__reveal--right hi-page__big" style="--right: 1425; --y: 720" href="tel:+972538521501" aria-label="Phone: +972 538521501">
+        <span class="hi-page__reveal-label">LET’S TALK</span>
+        <span class="hi-page__reveal-value">+972 538521501</span>
+      </a>
+    </div>
+  </section>
+
+  <script src="script.js?v=11"></script>
+
+</body>
+</html>

@@ -493,8 +493,8 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
    ========================================= */
 document.querySelectorAll(".project-work").forEach(async (work) => {
   const files = {
-    right: "images/i-dont-touch-meat/scroll-arrow-small.svg",
-    left: "images/i-dont-touch-meat/scroll-arrow-small-left.svg",
+    right: "images/project/scroll-arrow-small.svg",
+    left: "images/project/scroll-arrow-small-left.svg",
   };
   const drawings = {};
   try {

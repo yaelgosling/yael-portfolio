@@ -781,14 +781,14 @@ body.is-sliding-in main {
    (The hotspot is the middle of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow-small.svg") 26 22, e-resize;
-  cursor: var(--scroll-arrow-right, url("images/i-dont-touch-meat/scroll-arrow-small.svg") 26 22, e-resize);
+  cursor: url("images/project/scroll-arrow-small.svg") 26 22, e-resize;
+  cursor: var(--scroll-arrow-right, url("images/project/scroll-arrow-small.svg") 26 22, e-resize);
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow-small-left.svg") 26 22, w-resize;
-  cursor: var(--scroll-arrow-left, url("images/i-dont-touch-meat/scroll-arrow-small-left.svg") 26 22, w-resize);
+  cursor: url("images/project/scroll-arrow-small-left.svg") 26 22, w-resize;
+  cursor: var(--scroll-arrow-left, url("images/project/scroll-arrow-small-left.svg") 26 22, w-resize);
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
@@ -874,8 +874,8 @@ img.project-strip__piece {
 
 .project-work button.project-flip,
 .project-work button.project-flip *,
-.project-work div.project-nav,
-.project-work div.project-nav * {
+.project-work .project-strip__piece.project-nav,
+.project-work .project-strip__piece.project-nav * {
   cursor: pointer;   /* the flip back button and the next / previous project frames */
 }
 
@@ -972,7 +972,11 @@ img.project-strip__piece {
   cursor: pointer;
 }
 
-/* Previous and next project frames */
+/* Previous and next project frames (a link once that project's page exists) */
+a.project-nav {
+  text-decoration: none;
+}
+
 .project-nav__frame,
 .project-nav__hover {
   position: absolute;
