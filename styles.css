@@ -758,18 +758,23 @@ body.is-sliding-in main {
   height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
 }
 
-/* On the work page the mouse is the "arrow for work": it points right, so people know to
+/* On the work page the mouse is the "new arrow for scroll": it points right, so people know to
    swipe sideways. script.js adds "is-at-end" when the strip reaches the end: then it points
-   left, until the strip is back at the start. It is 75% of the Figma size (38 instead of 51).
-   (The hotspot is the middle of the circle.) */
+   left, until the strip is back at the start. It is 46 x 35 (smaller than in Figma, about the
+   size of the play button), with a sharper copy for retina screens. (The hotspot is the middle
+   of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/i-dont-touch-meat/work-arrow.svg") 19 19, e-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 23 17, e-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 23 17, e-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 23 17, e-resize;
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
-  cursor: url("images/i-dont-touch-meat/work-arrow-left.svg") 19 19, w-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 23 17, w-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 23 17, w-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 23 17, w-resize;
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
@@ -875,7 +880,7 @@ img.project-strip__piece {
   object-fit: cover;
 }
 
-/* The "pause play" symbol on the video. Clicks go through it to the video */
+/* The "new pause play" symbol in the middle of the video. Clicks go through it to the video */
 .project-video__play {
   position: absolute;
   left: calc(var(--x) * var(--stage-pixel));
@@ -888,11 +893,6 @@ img.project-strip__piece {
 
 .project-video.is-playing + .project-video__play {
   opacity: 0;
-}
-
-/* The triangle is drawn pointing up; in the design it is turned to point right */
-.project-video__play--turned {
-  transform: rotate(90deg);
 }
 
 /* Previous and next project frames */
