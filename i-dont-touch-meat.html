@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body class="project-page">
 
@@ -20,7 +20,7 @@
     <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
     <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
     <a class="site-bar__text site-bar__box" style="--x: 0; --y: 0" href="index.html">HOME</a>
-    <button class="site-bar__text site-bar__box site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index">INDEX</button>
+    <button class="site-bar__text site-bar__box site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index">WORKS</button>
     <button class="site-bar__text site-bar__box site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page">HI</button>
     <!-- The index ("open index list" in Figma): opens downwards under the bar.
          Numbers are Figma pixels from the top left corner of the orange panel -->
@@ -88,8 +88,10 @@
 
           <!-- The animation: click to play or pause (with sound) -->
           <video class="project-strip__piece project-video" style="--x: 721; --y: 165.32; --w: 1014.957; --h: 570.913" src="images/i-dont-touch-meat/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Click to play or pause."></video>
-          <!-- The "pause play" symbol in the middle of the video: hidden while it plays -->
+          <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
+               Over the video it changes to "new pause play hover" (orange) -->
           <img class="project-video__play" style="--x: 1192.48; --y: 407.31; --w: 72; --h: 86.943" src="images/i-dont-touch-meat/new-pause-play.png" alt="">
+          <img class="project-video__play project-video__play--hover" style="--x: 1192.48; --y: 407.31; --w: 72; --h: 86.906" src="images/i-dont-touch-meat/new-pause-play-hover.svg" alt="">
 
           <!-- The pictures -->
           <img class="project-strip__piece" style="--x: 1827.85; --y: 165.32; --w: 542.981; --h: 305.427" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
@@ -214,7 +216,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 
 </body>
 </html>

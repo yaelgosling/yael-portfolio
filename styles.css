@@ -198,7 +198,7 @@ body.home-page {
   transform: translateX(-50%);
 }
 
-/* INDEX, CLASSIC VIEW and HI are buttons: no button look */
+/* WORKS, CLASSIC VIEW and HI are buttons: no button look */
 .site-bar__index,
 .site-bar__view,
 .site-bar__hi {
@@ -208,7 +208,7 @@ body.home-page {
   cursor: pointer;
 }
 
-/* HOME, INDEX and HI fill their whole coloured box, with the word in the middle,
+/* HOME, WORKS and HI fill their whole coloured box, with the word in the middle,
    so hovering or clicking anywhere on the box works */
 .site-bar__box {
   width: calc(151 * var(--stage-pixel));
@@ -253,7 +253,7 @@ body.home-page {
 .roll--start .roll__word--next  { left: 0; }
 .roll--end .roll__word--next    { right: 0; }
 
-/* Rolled: on hover, and while INDEX or HI is open, for the project you are on in the index,
+/* Rolled: on hover, and while WORKS or HI is open, for the project you are on in the index,
    and after clicking EMAIL ME or LET'S TALK */
 .roll-host:hover .roll__track,
 .roll-host:focus-visible .roll__track,
@@ -312,24 +312,20 @@ body.home-page {
   transition: none;
 }
 
-/* Just after clicking CLASSIC VIEW / PLAY VIEW: the new word stays, still italic */
-.site-bar__view.is-just-switched .roll__track {
-  transform: none;
-  transition: none;
-}
-
-.site-bar__view.is-just-switched .roll__word {
-  font-style: italic;
+/* Clicking CLASSIC VIEW / PLAY VIEW: the other view's word waits under the italic word,
+   and the word rolls on to it (script.js) */
+.roll__word--after {
+  top: 200%;
 }
 
 
 /* =========================================
    The index ("open index list" in Figma)
-   Clicking INDEX opens the list downwards under the bar, and everything else blurs.
+   Clicking WORKS opens the list downwards under the bar, and everything else blurs.
    Clicking on the blur closes it again (script.js).
    ========================================= */
 
-/* While the index or the Hi page is open, INDEX or HI stays rolled to its italic word
+/* While the index or the Hi page is open, WORKS or HI stays rolled to its italic word
    (see "the words in the bar roll on hover") */
 
 /* The orange panel under the bar. Closed, it is rolled up to the top */
@@ -764,23 +760,22 @@ body.is-sliding-in main {
   height: max(calc(800 * var(--stage-pixel)), 100vh);   /* fills the window, so "Reach Out" waits below */
 }
 
-/* On the work page the mouse is the "new arrow for scroll": it points right, so people know to
-   swipe sideways. script.js adds "is-at-end" when the strip reaches the end: then it points
-   left, until the strip is back at the start. It is 54 x 41 (smaller than in Figma, about the
-   size of the play button), with a sharper copy for retina screens. (The hotspot is the middle
-   of the arrow.) */
+/* On the work page the mouse is the "new arrow for scroll", at its Figma size (83 x 64):
+   it points right, so people know to swipe sideways. script.js adds "is-at-end" when the strip
+   reaches the end: then it points left, until the strip is back at the start. There is a
+   sharper copy for retina screens (1.5 times; browsers refuse mouse pictures over 128 pixels). (The hotspot is the middle of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 27 20, e-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 27 20, e-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 2x) 27 20, e-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow.png") 41 32, e-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 1.5x) 41 32, e-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow.png") 1x, url("images/i-dont-touch-meat/scroll-arrow@2x.png") 1.5x) 41 32, e-resize;
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
-  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 27 20, w-resize;
-  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 27 20, w-resize;
-  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 2x) 27 20, w-resize;
+  cursor: url("images/i-dont-touch-meat/scroll-arrow-left.png") 41 32, w-resize;
+  cursor: -webkit-image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 1.5x) 41 32, w-resize;
+  cursor: image-set(url("images/i-dont-touch-meat/scroll-arrow-left.png") 1x, url("images/i-dont-touch-meat/scroll-arrow-left@2x.png") 1.5x) 41 32, w-resize;
 }
 
 /* The strip ("Frame 7"): the whole width of the window, moves sideways */
@@ -912,8 +907,23 @@ img.project-strip__piece {
   transition: opacity 0.3s ease;
 }
 
-.project-video.is-playing + .project-video__play {
+.project-video.is-playing ~ .project-video__play {
   opacity: 0;
+}
+
+/* Over the video (anywhere on it) the symbol changes to its orange hover version,
+   and the mouse becomes a normal pointing hand, so people see it can be clicked */
+.project-video__play--hover,
+.project-video:hover + .project-video__play {
+  visibility: hidden;
+}
+
+.project-video:hover ~ .project-video__play--hover {
+  visibility: visible;
+}
+
+.project-work video.project-video {
+  cursor: pointer;
 }
 
 /* Previous and next project frames */

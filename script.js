@@ -139,7 +139,7 @@ function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
   if (!element.hasAttribute("aria-label")) element.setAttribute("aria-label", word);
 }
 
-// The same word again, in italic (or the word in data-roll-next): HOME, INDEX, HI, the names in the index,
+// The same word again, in italic (or the word in data-roll-next): HOME, WORKS, HI, the names in the list,
 // and the links on Reach Out and the Hi page (Instagram, the email address, the phone number)
 [
   [".site-bar__text:not(.site-bar__view)", "center"],
@@ -164,17 +164,21 @@ document.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
 /* =========================================
    Home page: CLASSIC VIEW tidies the frames into rows and moves the bar to the top
    ("Home New Organise order" in Figma), and PLAY VIEW puts everything back.
-   On hover the word already rolls to the other view, so the click just keeps it there
-   (no jump). The home page always opens in play view.
+   Like the other words, on hover the word rolls to itself in italic. Clicking rolls it on
+   once more, to the other view's word (also italic, as the mouse is still on it).
+   The home page always opens in play view.
    ========================================= */
 let setHomeView = () => {};   // lets other parts switch the view (set below)
 
 document.querySelectorAll(".site-bar__view").forEach((button) => {
   const label = (classic) => (classic ? "PLAY VIEW" : "CLASSIC VIEW");
+  const ROLL_TIME = 450;   // the same as --roll-time in styles.css
+  let rolling = null;
 
   function setClassic(classic) {
+    clearTimeout(rolling);
     home.classList.toggle("is-classic", classic);
-    makeRoll(button, label(classic), label(!classic));
+    makeRoll(button, label(classic), label(classic));
     button.setAttribute("aria-label", label(classic));
     button.setAttribute("aria-pressed", classic);
     if (classic) restHomeFrames();   // the frames stop following the mouse
@@ -182,12 +186,20 @@ document.querySelectorAll(".site-bar__view").forEach((button) => {
   setHomeView = setClassic;
 
   button.addEventListener("click", () => {
-    setClassic(!home.classList.contains("is-classic"));
-    // The new word is already showing: it stays (in italic, without rolling back)
-    // until the mouse leaves the button
-    button.classList.add("is-just-switched");
+    const classic = !home.classList.contains("is-classic");
+    home.classList.toggle("is-classic", classic);   // the frames and the bar start moving
+    if (classic) restHomeFrames();
+
+    // The word rolls on to the new view's word, then the button is rebuilt for that view
+    const track = button.querySelector(".roll__track");
+    const nextWord = document.createElement("span");
+    nextWord.className = "roll__word roll__word--next roll__word--after";
+    nextWord.textContent = label(classic);
+    track.append(nextWord);
+    track.style.transform = "translateY(calc(-2em * var(--roll-line)))";
+    clearTimeout(rolling);
+    rolling = setTimeout(() => setClassic(classic), ROLL_TIME);
   });
-  button.addEventListener("mouseleave", () => button.classList.remove("is-just-switched"));
 
   setClassic(false);
 });
@@ -435,7 +447,7 @@ document.querySelectorAll(".project-video").forEach((video) => {
 
 
 /* =========================================
-   The index: clicking INDEX opens the list and blurs everything else.
+   The index (WORKS in the bar): clicking WORKS opens the list and blurs everything else.
    Clicking on the blur (or pressing Escape) closes it.
    ========================================= */
 const indexButton = document.querySelector(".site-bar__index");
