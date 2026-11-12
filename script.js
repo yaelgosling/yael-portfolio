@@ -740,6 +740,45 @@ if (hiButton && hiPage) {
 
 
 /* =========================================
+   The reload page ("reload page" in Figma): comes on when the internet goes down, or when
+   nobody has touched the website for an hour. Clicking it reloads the page. It is made
+   straight away (with its picture), so it can still show without internet
+   ========================================= */
+if (!window.frameElement) {
+  const IDLE_TIME = 60 * 60 * 1000;   // one hour, in milliseconds
+
+  const reload = document.createElement("div");
+  reload.className = "reload-page";
+  reload.setAttribute("role", "button");
+  reload.setAttribute("aria-label", "Well shit. Maybe reload the page");
+  reload.innerHTML = `
+    <div class="reload-page__gradient"></div>
+    <div class="reload-page__stage">
+      <p class="project-title" style="--x: 604; --y: 363">WELL SHIT....</p>
+      <div class="reload-page__picture"><img src="images/reload/surprised-me.gif" alt=""></div>
+      <p class="project-text" style="--x: 944; --y: 758; --w: 150">Maybe reload the page...</p>
+    </div>`;
+  document.body.appendChild(reload);
+
+  const show = () => document.body.classList.add("is-reload-showing");
+  reload.addEventListener("click", () => window.location.reload());
+
+  // The internet goes down (and when it comes back, the page can be reloaded)
+  window.addEventListener("offline", show);
+
+  // An hour without any mouse, keyboard, touch or scrolling
+  let idle = setTimeout(show, IDLE_TIME);
+  ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"].forEach((type) => {
+    window.addEventListener(type, () => {
+      if (document.body.classList.contains("is-reload-showing")) return;
+      clearTimeout(idle);
+      idle = setTimeout(show, IDLE_TIME);
+    }, { passive: true, capture: true });
+  });
+}
+
+
+/* =========================================
    Process page: click a date tab to open or close its card
    ========================================= */
 document.querySelectorAll(".card__tab").forEach((tab) => {
