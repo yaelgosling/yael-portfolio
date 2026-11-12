@@ -1125,8 +1125,8 @@ a.project-nav {
 /* The moving picture of me, cut out of a bigger square like in Figma */
 .reload-page__picture {
   position: absolute;
-  left: calc(948 * var(--stage-pixel));
-  top: calc(551 * var(--stage-pixel));
+  left: calc(636 * var(--stage-pixel));
+  top: calc(174 * var(--stage-pixel));
   width: calc(142 * var(--stage-pixel));
   height: calc(206.607 * var(--stage-pixel));
   overflow: hidden;

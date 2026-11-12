@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body class="project-page">
 
@@ -85,8 +85,9 @@
           <p class="project-text" style="--x: 15; --y: 761; --w: 53">Field</p>
           <p class="project-text" style="--x: 143; --y: 761; --w: 171">Illustration. Print.</p>
 
-          <!-- The comic video ("Comp 1"): click to play or pause -->
-          <video class="project-strip__piece project-video" style="--x: 721; --y: 130.04; --w: 868; --h: 642.963" src="images/judges-chapter-4/animation.mp4#t=0.1" preload="metadata" playsinline aria-label="The Judges, Chapter 4 comic. Click to play or pause"></video>
+          <!-- The comic video ("Comp 1"): click to play or pause. The poster (its first frame)
+               shows straight away, so the video does not flicker while it loads -->
+          <video class="project-strip__piece project-video" style="--x: 721; --y: 130.04; --w: 868; --h: 642.963" src="images/judges-chapter-4/animation.mp4#t=0.1" poster="images/judges-chapter-4/animation-poster.jpg" preload="metadata" playsinline aria-label="The Judges, Chapter 4 comic. Click to play or pause"></video>
           <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
                Over the video it changes to "new pause play hover" (orange) -->
           <img class="project-video__play" style="--x: 1119; --y: 408.05; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
