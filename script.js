@@ -1156,14 +1156,23 @@ if (isPhoneHome) {
 }
 
 // WORKS and HI: which one is open (or none)
+// Opening WORKS while HI is open keeps HI behind the list (blurred), and closing the list
+// goes back to HI
 function setPhoneOpen(which) {
   document.querySelectorAll(".phone-works__row.is-tapped").forEach((row) => row.classList.remove("is-tapped"));
+  const hiStaysBehind = which === "works" && document.body.classList.contains("is-phone-hi-open");
   document.body.classList.toggle("is-phone-works-open", which === "works");
-  document.body.classList.toggle("is-phone-hi-open", which === "hi");
+  document.body.classList.toggle("is-phone-hi-open", which === "hi" || hiStaysBehind);
+  document.body.classList.toggle("is-phone-works-over-hi", hiStaysBehind);
   if (!isPhoneHome) return;
   // Like on the computer, everything happens at once: WORKS rolls to italic and the list
   // unrolls while the bar glides up (and the other way round when it closes)
   movePhoneBar(which ? "top" : "middle");
+}
+
+// What shows when the WORKS list closes: HI if it was behind the list, otherwise nothing
+function afterWorks() {
+  return document.body.classList.contains("is-phone-works-over-hi") ? "hi" : null;
 }
 
 function currentPhoneOpen() {
@@ -1175,7 +1184,7 @@ function currentPhoneOpen() {
 document.querySelectorAll(".phone-bar__works").forEach((button) => {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
-    setPhoneOpen(currentPhoneOpen() === "works" ? null : "works");
+    setPhoneOpen(currentPhoneOpen() === "works" ? afterWorks() : "works");
   });
 });
 
@@ -1188,7 +1197,7 @@ document.querySelectorAll(".phone-bar__hi").forEach((button) => {
 
 // Tapping the blur behind the list closes it
 document.querySelectorAll(".phone-works-blur").forEach((blur) => {
-  blur.addEventListener("click", () => setPhoneOpen(null));
+  blur.addEventListener("click", () => setPhoneOpen(afterWorks()));
 });
 
 // A waiting copy of another page, loaded out of sight (an iframe), ready to slide in.
@@ -1223,7 +1232,7 @@ async function phoneOpenProject(href) {
   const page = phonePreparePage(href, "page-slide");
   await phonePageReady(page);
   page.classList.add("is-sliding");
-  document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
+  document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   movePhoneBar("top");
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
@@ -1250,7 +1259,7 @@ phoneWorksRows.forEach((row) => {
     event.preventDefault();
     event.stopPropagation();
     if (isCurrent) {
-      setPhoneOpen(null);   // already here: just close the list
+      setPhoneOpen(null);   // already here: just close the list (and HI, if it was behind)
       return;
     }
     phoneWorksRows.forEach((other) => other.classList.toggle("is-tapped", other === row));
@@ -1282,7 +1291,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     event.preventDefault();
     const page = phonePreparePage(link.href, "page-from-top");
     await phonePageReady(page);
-    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
+    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     document.body.classList.add("is-leaving-home");
     movePhoneBar("middle");
     setTimeout(() => {
@@ -1325,6 +1334,6 @@ window.addEventListener("pageshow", (event) => {
     phoneWaitingPages[href].remove();
     delete phoneWaitingPages[href];
   });
-  document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open");
+  document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   if (phoneBar) phoneBar.style.transform = "";
 });

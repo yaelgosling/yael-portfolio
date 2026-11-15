@@ -266,9 +266,9 @@ body.home-page {
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
 .home .site-bar__text[href="index.html"] .roll__track,
-.phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out */
+body:not(.is-phone-works-over-hi) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out */
 .is-phone-works-open .phone-bar__works .roll__track,          /* phone: WORKS while the list is open */
-.is-phone-hi-open .phone-bar__hi .roll__track,                /* phone: HI while the Hi page is open */
+.is-phone-hi-open:not(.is-phone-works-open) .phone-bar__hi .roll__track,   /* phone: HI while the Hi page is open */
 .hi-page__reveal.is-showing .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));   /* up by one word */
 }
@@ -1665,7 +1665,7 @@ a.project-nav {
 .phone-works-blur {
   position: fixed;
   inset: 0;
-  z-index: 4;
+  z-index: 6;                  /* over the page and the Hi page; the list (6, later) and the bar (7) are over it */
   backdrop-filter: blur(var(--index-blur));
   -webkit-backdrop-filter: blur(var(--index-blur));
   opacity: 0;
@@ -1690,8 +1690,10 @@ a.project-nav {
   background-color: var(--color-orange);
   /* Rolled up into the bar; opening unrolls it downwards */
   clip-path: inset(0 0 100% 0);
-  /* On the home page script.js also moves it with the bar (transform) */
-  transform-origin: 0 0;
+  /* On the home page script.js also moves it with the bar (transform), growing and shrinking
+     from the bar's top left corner (30 above its own top, minus the 2 tucked under), so it
+     always hangs right under the bar */
+  transform-origin: 0 calc(2px - 30 * var(--phone-page-pixel));
   transition:
     clip-path var(--index-open-time) var(--page-change-easing),
     transform var(--page-change-time) var(--page-change-easing);
@@ -1751,12 +1753,12 @@ a.project-nav {
 }
 
 /* Names roll to Instrument Serif italic, like in the index on the computer:
-   the project you are on, and a name you tap */
+   the project you are on (but not when the list opened over the Hi page), and a name you tap */
 .phone-works .roll__word--next {
   font-family: var(--font-display);
 }
 
-.phone-works__row.is-current .roll__track,
+body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 .phone-works__row.is-tapped .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));
 }
