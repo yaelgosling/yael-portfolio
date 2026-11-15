@@ -1449,7 +1449,9 @@ a.project-nav {
      battery): it stays still on the screen and the phone page scrolls inside it */
   body.project-page main {
     position: fixed;
-    inset: 0;
+    inset: 0 0 auto 0;
+    height: 100vh;
+    height: 100lvh;            /* the whole screen, also behind the phone's search bar at the bottom */
     overflow: hidden;
   }
 }
@@ -1468,7 +1470,14 @@ a.project-nav {
   inset: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+}
+
+/* The page shows through behind the phone's search bar at the bottom of the screen. This extra
+   space at the end lets the last things scroll up above the search bar, so they can be read */
+.phone-scroll::after {
+  content: "";
+  display: block;
+  height: calc(100lvh - 100svh);
 }
 
 /* The black line at the top (y 49 in Figma). It stays still; the page scrolls in the box
@@ -1482,6 +1491,7 @@ a.project-nav {
   height: var(--project-line);
   background-color: var(--color-black);
   pointer-events: none;
+  transform: translateZ(0);    /* drawn on its own layer, so phones show it over the scrolling page */
 }
 
 /* Hidden on computers */
@@ -1680,19 +1690,17 @@ a.project-nav {
   background-color: var(--color-orange);
   /* Rolled up into the bar; opening unrolls it downwards */
   clip-path: inset(0 0 100% 0);
-  transition: clip-path var(--index-open-time) var(--page-change-easing);
+  /* On the home page script.js also moves it with the bar (transform) */
+  transform-origin: 0 0;
+  transition:
+    clip-path var(--index-open-time) var(--page-change-easing),
+    transform var(--page-change-time) var(--page-change-easing);
   pointer-events: none;
 }
 
 .is-phone-works-open .phone-works {
   clip-path: inset(0 0 0 0);
   pointer-events: auto;
-}
-
-/* On the home page the bar first glides up to the top, then the list opens under it */
-.home-page.is-phone-works-open .phone-works,
-.home-page.is-phone-works-open .phone-bar__works .roll__track {   /* and WORKS rolls to italic with it */
-  transition-delay: calc(var(--page-change-time) * 0.6);
 }
 
 /* Black lines (positions from the top of the Figma frame, the list starts at 93).
@@ -1797,24 +1805,19 @@ a.project-nav {
    and scrolls by itself. Positions are Figma pixels
    ========================================= */
 .phone-hi {
-  --under-screen: 150px;       /* how far it reaches below the screen (see below) */
   position: fixed;
-  inset: 0 0 calc(-1 * var(--under-screen)) 0;
+  inset: 0 0 auto 0;
+  height: 100vh;
+  height: 100lvh;              /* the whole screen, also behind the phone's search bar at the bottom */
   z-index: 5;                  /* over the page, under the bar */
   overflow: hidden;            /* it scrolls inside (.phone-scroll) */
-  /* White at the top, lime at the bottom, like the page. So the space behind the phone's own
-     buttons at the bottom of the screen, and the bounce when you scroll past the end,
-     show lime instead of a white box */
+  /* White at the top, lime at the bottom, like the page. So the bounce when you scroll past
+     the end shows lime instead of a white box */
   background: linear-gradient(to bottom, var(--color-white) 50%, var(--color-lime) 50%);
   /* Waits below the screen, already drawn (with its pictures ready), so it comes up smoothly */
   transform: translate3d(0, 100%, 0);
   will-change: transform;
   transition: transform var(--page-change-time) var(--page-change-easing);
-}
-
-/* The page scrolls only on the screen itself: the extra lime part below stays under the phone's buttons */
-.phone-hi > .phone-scroll {
-  bottom: var(--under-screen);
 }
 
 .is-phone-hi-open .phone-hi {

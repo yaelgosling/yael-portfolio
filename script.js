@@ -1129,32 +1129,41 @@ function phoneBarSpot(where) {
 }
 
 // Glides the bar to "top" or "middle" (it moves and grows or shrinks to the right size)
+// (On the home page the WORKS list hangs under the bar and travels with it)
 function movePhoneBar(where) {
   if (!phoneBar) return;
   const from = phoneBarSpot(isPhoneHome ? "middle" : "top");   // where it really is
   const to = phoneBarSpot(where);
-  const scale = to.width / from.width;
-  phoneBar.style.transform =
-    `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${scale})`;
+  phoneBar.style.transform = moveFromTo(from, to);
+  if (isPhoneHome) {
+    document.querySelectorAll(".phone-works").forEach((list) => {
+      list.style.transform = moveFromTo(phoneBarSpot("top"), to);   // the list really is at the top
+    });
+  }
+}
+
+// The move (and size change) from one spot to another
+function moveFromTo(from, to) {
+  return `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
+}
+
+// On the home page the closed list waits under the bar in the middle
+if (isPhoneHome) {
+  movePhoneBar("middle");
+  window.addEventListener("resize", () => {
+    if (!document.body.matches(".is-phone-works-open, .is-phone-hi-open")) movePhoneBar("middle");
+  });
 }
 
 // WORKS and HI: which one is open (or none)
 function setPhoneOpen(which) {
-  const wasWorks = document.body.classList.contains("is-phone-works-open");
   document.querySelectorAll(".phone-works__row.is-tapped").forEach((row) => row.classList.remove("is-tapped"));
   document.body.classList.toggle("is-phone-works-open", which === "works");
   document.body.classList.toggle("is-phone-hi-open", which === "hi");
   if (!isPhoneHome) return;
-  if (which) {
-    movePhoneBar("top");
-  } else if (wasWorks) {
-    // the list rolls up into the bar first, then the bar goes back down
-    setTimeout(() => {
-      if (!document.body.matches(".is-phone-works-open, .is-phone-hi-open")) movePhoneBar("middle");
-    }, 350);
-  } else {
-    movePhoneBar("middle");
-  }
+  // Like on the computer, everything happens at once: WORKS rolls to italic and the list
+  // unrolls while the bar glides up (and the other way round when it closes)
+  movePhoneBar(which ? "top" : "middle");
 }
 
 function currentPhoneOpen() {
