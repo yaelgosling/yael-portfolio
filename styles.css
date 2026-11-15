@@ -1376,9 +1376,19 @@ a.project-nav {
   /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
-  /* script.js glides it between the middle of the home page and the top (and back) */
-  transform-origin: 0 0;
-  transition: transform var(--page-change-time) var(--page-change-easing);
+  /* script.js glides it between the middle of the home page and the top (and back):
+     it moves (left, top) and really changes size (--bar-pixel) */
+  transition:
+    left var(--page-change-time) var(--page-change-easing),
+    top var(--page-change-time) var(--page-change-easing),
+    --bar-pixel var(--page-change-time) var(--page-change-easing);
+}
+
+/* --bar-pixel is a length that can glide from one size to another */
+@property --bar-pixel {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
 }
 
 /* On a project page it stays still at the top of the screen */
@@ -1917,7 +1927,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
    Phone: REACH OUT ("phone reach out" in Figma), on the home page and at the end of a project.
    script.js sets --reach-progress from 0 (down, out of sight) to 1 (all the way up) while a
    finger drags it, so it follows the finger and the home page blurs more and more.
-   Positions are Figma pixels (it fits the screen like the home page)
+   Positions are Figma pixels
    ========================================= */
 .phone-reach,
 .phone-reach-blur {
@@ -1942,6 +1952,11 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   }
 }
 
+:root {
+  --reach-time: 0.5s;                                  /* Reach Out finishing its way up or down */
+  --reach-easing: cubic-bezier(0.2, 0.8, 0.2, 1);      /* starts fast (like the finger), then slows */
+}
+
 /* The blur over the page behind (the same amount as behind the index on the computer) */
 .phone-reach-blur {
   position: fixed;
@@ -1951,8 +1966,8 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
   -webkit-backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
   transition:
-    backdrop-filter var(--roll-time) var(--page-change-easing),
-    -webkit-backdrop-filter var(--roll-time) var(--page-change-easing);
+    backdrop-filter var(--reach-time) var(--reach-easing),
+    -webkit-backdrop-filter var(--reach-time) var(--reach-easing);
 }
 
 /* The page itself: white, then white to blue from y 77 to the bottom of the screen */
@@ -1963,11 +1978,11 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   height: 100lvh;              /* also behind the phone's search bar */
   z-index: 9;
   background: linear-gradient(to bottom,
-    var(--color-white) calc((77 - var(--phone-top)) * var(--phone-pixel)),
+    var(--color-white) calc((77 - var(--phone-top)) * var(--phone-page-pixel)),
     var(--color-blue));
   transform: translate3d(0, calc((1 - var(--reach-progress, 0)) * 100%), 0);
   will-change: transform;
-  transition: transform var(--roll-time) var(--page-change-easing);
+  transition: transform var(--reach-time) var(--reach-easing);
 }
 
 /* While the finger drags it, it follows straight away */
@@ -1976,19 +1991,21 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transition: none;
 }
 
+/* Left and right, and the sizes, are the same as on the other phone pages (the full width of
+   the screen), so the text lines up with them. Up and down it squeezes a little on short
+   screens (--reach-y-pixel), so everything fits above the phone's search bar */
 .phone-reach__page {
+  --reach-y-pixel: min(var(--phone-page-pixel), 100svh / (844 - var(--phone-top)));
   position: relative;
-  width: calc(390 * var(--phone-pixel));
   height: 100%;
-  margin: 0 auto;
 }
 
 .phone-reach__title,
 .phone-reach__label,
 .phone-reach__contact {
   position: absolute;
-  left: calc(var(--x) * var(--phone-pixel));
-  top: calc((var(--y) - var(--phone-top)) * var(--phone-pixel));
+  left: calc(var(--x) * var(--phone-page-pixel));
+  top: calc((var(--y) - var(--phone-top)) * var(--reach-y-pixel));
   color: var(--color-black);
   white-space: nowrap;
 }
@@ -1996,7 +2013,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 /* "REACH OUT": Instrument Serif 50px */
 .phone-reach__title {
   font-family: var(--font-display);
-  font-size: calc(50 * var(--phone-pixel));
+  font-size: calc(50 * var(--phone-page-pixel));
   font-weight: 400;
   line-height: 1.112;
 }
@@ -2004,7 +2021,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 /* "Email me" and the others: Inter Semi Bold 14px */
 .phone-reach__label {
   font-family: var(--font-body);
-  font-size: calc(14 * var(--phone-pixel));
+  font-size: calc(14 * var(--phone-page-pixel));
   font-weight: 600;
   line-height: normal;
 }
@@ -2012,7 +2029,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 /* The email address, phone number and Instagram: Instrument Serif 30px */
 .phone-reach__contact {
   font-family: var(--font-display);
-  font-size: calc(30 * var(--phone-pixel));
+  font-size: calc(30 * var(--phone-page-pixel));
   line-height: normal;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;

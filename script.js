@@ -1128,13 +1128,29 @@ function phoneBarSpot(where) {
   };
 }
 
+// Puts the bar at a spot: its place on the screen and its size (--bar-pixel is one Figma
+// pixel of the bar). The bar really changes size (not stretched like a picture), so the words
+// look exactly the same as on the next page and nothing jumps when the page changes
+function placePhoneBar(spot) {
+  phoneBar.style.position = "fixed";
+  phoneBar.style.left = `${spot.left}px`;
+  phoneBar.style.top = `${spot.top}px`;
+  phoneBar.style.setProperty("--bar-pixel", `${spot.width / 300}px`);
+}
+
 // Glides the bar to "top" or "middle" (it moves and grows or shrinks to the right size)
 // (On the home page the WORKS list hangs under the bar and travels with it)
 function movePhoneBar(where) {
   if (!phoneBar) return;
-  const from = phoneBarSpot(isPhoneHome ? "middle" : "top");   // where it really is
+  if (!phoneBar.style.left) {
+    // The first time: start from where it is now, without gliding
+    phoneBar.style.transition = "none";
+    placePhoneBar(phoneBarSpot(isPhoneHome ? "middle" : "top"));
+    phoneBar.offsetWidth;   // (makes the browser take in the start before gliding)
+    phoneBar.style.transition = "";
+  }
   const to = phoneBarSpot(where);
-  phoneBar.style.transform = moveFromTo(from, to);
+  placePhoneBar(to);
   if (isPhoneHome) {
     document.querySelectorAll(".phone-works").forEach((list) => {
       list.style.transform = moveFromTo(phoneBarSpot("top"), to);   // the list really is at the top
@@ -1340,7 +1356,7 @@ window.addEventListener("pageshow", (event) => {
   });
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
     "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
-  if (phoneBar) phoneBar.style.transform = "";
+  if (phoneBar) ["position", "left", "top", "--bar-pixel"].forEach((name) => phoneBar.style.removeProperty(name));
 });
 
 
@@ -1418,6 +1434,21 @@ if (phoneReach) {
     lastTime = now;
     setReach(startProgress + moved / window.innerHeight);
   }, { passive: true });
+
+  // A fling that scrolls on to the end of the project keeps going straight into Reach Out
+  if (projectScroller) {
+    const FLING = 0.6;   // scrolling this fast (pixels per millisecond) when it hits the end
+    let lastTop = projectScroller.scrollTop;
+    let lastScrollTime = performance.now();
+    let scrollSpeed = 0;
+    projectScroller.addEventListener("scroll", () => {
+      const now = performance.now();
+      scrollSpeed = (projectScroller.scrollTop - lastTop) / Math.max(now - lastScrollTime, 1);
+      lastTop = projectScroller.scrollTop;
+      lastScrollTime = now;
+      if (startY === null && progress === 0 && scrollSpeed > FLING && canOpen()) setReach(1);
+    }, { passive: true });
+  }
 
   document.addEventListener("touchend", () => {
     if (dragging) {
