@@ -1121,23 +1121,63 @@ function phoneBarSpot(where) {
   const screenHeight = probe.offsetHeight;
   probe.remove();
   const pixel = Math.min(window.innerWidth / 390, screenHeight / PHONE_HOME_HEIGHT);
-  // The bar is the same size as on the other pages (so it only slides, and its words look
-  // exactly the same on every page). Its middle is where Figma has it: x 195, y 407
-  const middleY = (screenHeight - PHONE_HOME_HEIGHT * pixel) / 2 + (407 - PHONE_HOME_TOP) * pixel;
+  // On the home page the bar is a little smaller (the size of the home page), in its Figma place
   return {
-    left: window.innerWidth / 2 - 150 * page,
-    top: middleY - 15 * page,
-    width: 300 * page,
+    left: (window.innerWidth - 390 * pixel) / 2 + 45 * pixel,
+    top: (screenHeight - PHONE_HOME_HEIGHT * pixel) / 2 + (392 - PHONE_HOME_TOP) * pixel,
+    width: 300 * pixel,
   };
 }
 
-// Glides the bar to "top" or "middle" (it moves and grows or shrinks to the right size)
+// The same speed curve as the pages (--page-change-easing: cubic-bezier(0.7, 0, 0.2, 1))
+function pageEasing(t) {
+  const x1 = 0.7, y1 = 0, x2 = 0.2, y2 = 1;
+  const curve = (a, b, u) => 3 * a * u * (1 - u) * (1 - u) + 3 * b * u * u * (1 - u) + u * u * u;
+  let low = 0, high = 1, u = t;
+  for (let i = 0; i < 20; i++) {          // find the point on the curve for this moment
+    u = (low + high) / 2;
+    if (curve(x1, x2, u) < t) low = u; else high = u;
+  }
+  return curve(y1, y2, u);
+}
+
+// Puts the bar at a spot: its place on the screen and its real size (--bar-pixel is one Figma
+// pixel of the bar). The words are always drawn at their real size, never stretched, so they
+// look exactly the same as on the next page
+let phoneBarNow = null;     // where the bar is right now
+let phoneBarGlide = null;   // the glide that is running
+function placePhoneBar(spot) {
+  phoneBarNow = spot;
+  phoneBar.style.position = "fixed";
+  phoneBar.style.left = `${spot.left}px`;
+  phoneBar.style.top = `${spot.top}px`;
+  phoneBar.style.setProperty("--bar-pixel", `${spot.width / 300}px`);
+}
+
+// Glides the bar to "top" or "middle": it moves and grows or shrinks a little every
+// screen refresh, in the same time and way as the pages slide
 // (On the home page the WORKS list hangs under the bar and travels with it)
-function movePhoneBar(where) {
+function movePhoneBar(where, instant = false) {
   if (!phoneBar) return;
-  const from = phoneBarSpot(isPhoneHome ? "middle" : "top");   // where it really is
+  const from = phoneBarNow || phoneBarSpot(isPhoneHome ? "middle" : "top");   // where it is now
   const to = phoneBarSpot(where);
-  phoneBar.style.transform = moveFromTo(from, to);
+  cancelAnimationFrame(phoneBarGlide);
+  if (instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    placePhoneBar(to);
+  } else {
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min((now - start) / PAGE_CHANGE_TIME, 1);
+      const e = pageEasing(t);
+      placePhoneBar({
+        left: from.left + (to.left - from.left) * e,
+        top: from.top + (to.top - from.top) * e,
+        width: from.width + (to.width - from.width) * e,
+      });
+      if (t < 1) phoneBarGlide = requestAnimationFrame(step);
+    };
+    phoneBarGlide = requestAnimationFrame(step);
+  }
   if (isPhoneHome) {
     document.querySelectorAll(".phone-works").forEach((list) => {
       list.style.transform = moveFromTo(phoneBarSpot("top"), to);   // the list really is at the top
@@ -1152,9 +1192,9 @@ function moveFromTo(from, to) {
 
 // On the home page the closed list waits under the bar in the middle
 if (isPhoneHome) {
-  movePhoneBar("middle");
+  movePhoneBar("middle", true);
   window.addEventListener("resize", () => {
-    if (!document.body.matches(".is-phone-works-open, .is-phone-hi-open")) movePhoneBar("middle");
+    movePhoneBar(document.body.matches(".is-phone-works-open, .is-phone-hi-open") ? "top" : "middle", true);
   });
 }
 
@@ -1219,10 +1259,10 @@ function phonePreparePage(href, kind) {
   return page;
 }
 
-// Waits for a waiting page to load, but never long: it usually loaded already (see below),
-// and if not, it slides in anyway and finishes loading on the way
+// Waits for a waiting page to load (it usually loaded already, see below), so it never slides
+// in half-drawn. If it takes very long, it slides in anyway
 function phonePageReady(page) {
-  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, 150))]);
+  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, 800))]);
 }
 
 // Opens a project: it slides up from the bottom while the bar glides to the top
@@ -1343,7 +1383,12 @@ window.addEventListener("pageshow", (event) => {
   });
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
     "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
-  if (phoneBar) phoneBar.style.transform = "";
+  if (phoneBar) {
+    cancelAnimationFrame(phoneBarGlide);
+    phoneBarNow = null;
+    ["position", "left", "top", "--bar-pixel"].forEach((name) => phoneBar.style.removeProperty(name));
+    if (isPhoneHome) movePhoneBar("middle", true);
+  }
 });
 
 

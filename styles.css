@@ -1364,24 +1364,21 @@ a.project-nav {
 }
 
 /* The phone bar ("phone bar" in Figma). --bar-pixel is one Figma pixel of the bar. On the home
-   page it sits in the middle of the screen, on top, so the frames come out from behind it */
+   page it sits in the middle of the screen, on top, so the frames come out from behind it.
+   On the other pages it is a little bigger, at the top (see .phone-bar--project) */
 .phone-bar {
-  /* Always the same size as on the project pages (one Figma pixel = 1/390 of the screen width),
-     so when it glides between pages it only slides and the words never change.
-     On the home page its middle is at x 195, y 407 like in Figma */
-  --bar-pixel: var(--phone-page-pixel);
+  --bar-pixel: var(--phone-pixel);   /* on the home page: a little smaller, like the home page */
   position: absolute;
-  left: calc(50% - 150 * var(--bar-pixel));
-  top: calc((407 - var(--phone-home-top)) * var(--phone-pixel) - 15 * var(--bar-pixel));
+  left: calc(45 * var(--bar-pixel));
+  top: calc((392 - var(--phone-home-top)) * var(--bar-pixel));
   width: calc(300 * var(--bar-pixel));
   height: calc(30 * var(--bar-pixel));
   z-index: 7;                  /* above everything, also a page sliding in */
   /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
-  /* script.js glides it between the middle of the home page and the top (and back) */
-  transform-origin: 0 0;
-  transition: transform var(--page-change-time) var(--page-change-easing);
+  /* script.js glides it between the middle of the home page and the top (and back), changing
+     its real size on the way (not stretching it), so the words never jump */
 }
 
 /* On a project page it stays still at the top of the screen */
