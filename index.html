@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=41">
+  <link rel="stylesheet" href="styles.css?v=42">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -378,6 +378,21 @@
       <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
       <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
     </nav>
+    <!-- Shrinks the bar to the home page's size before the page is first shown (script.js keeps it so) -->
+    <script>
+      (function () {
+        var bar = document.querySelector(".phone-home .phone-bar");
+        var probe = document.createElement("div");
+        probe.style.cssText = "position:fixed;height:100svh;visibility:hidden";
+        document.body.appendChild(probe);
+        var homePixel = Math.min(window.innerWidth / 390, probe.offsetHeight / 796);
+        probe.remove();
+        var page = window.innerWidth / 390;
+        bar.style.transition = "none";
+        bar.style.transform = "translate(" + 150 * (page - homePixel) + "px, " + 15 * (page - homePixel) +
+          "px) scale(" + homePixel / page + ")";
+      })();
+    </script>
   </div>
 
   <!-- The Hi page ("Hi page" in Figma): slides up from the bottom when HI is clicked.
@@ -516,7 +531,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=35"></script>
+  <script src="script.js?v=36"></script>
 
 </body>
 </html>

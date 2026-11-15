@@ -1129,14 +1129,16 @@ function phoneBarSpot(where) {
   };
 }
 
-// Where the bar really sits before any moving (its own place and size, from the CSS):
-// on the home page in the middle; on the other pages at the top, but drawn at the home page's
-// size and enlarged (see .phone-bar--project). So the words are drawn exactly the same way on
-// every page, and nothing changes when one page takes over from the other
+// Where the bar really sits before any moving (its own place and size, from the CSS): always
+// its full size; on the home page with its middle in the middle of the home bar's place
+// (script.js then shrinks it a little there), on the other pages at the top
 function phoneBarOwnSpot() {
-  if (isPhoneHome) return phoneBarSpot("middle");
-  const top = phoneBarSpot("top");
-  return { left: top.left, top: top.top, width: phoneBarSpot("middle").width };
+  if (!isPhoneHome) return phoneBarSpot("top");
+  const small = phoneBarSpot("middle");
+  const page = window.innerWidth / 390;
+  const middleX = small.left + small.width / 2;
+  const middleY = small.top + small.width / 20;   // (the bar is 300 wide and 30 high)
+  return { left: middleX - 150 * page, top: middleY - 15 * page, width: 300 * page };
 }
 
 // Glides the bar to "top" or "middle": it moves and grows or shrinks (in the same time and way
@@ -1219,7 +1221,7 @@ document.querySelectorAll(".phone-works-blur").forEach((blur) => {
 });
 
 // A waiting copy of another page, loaded out of sight (an iframe), ready to slide in.
-// kind: "page-slide" (waits below the screen) or "page-from-top" (waits above it)
+// kind: "page-slide" (waits below the screen) or "page-behind" (waits behind the page)
 const phoneWaitingPages = {};
 function phonePreparePage(href, kind) {
   if (phoneWaitingPages[href]) return phoneWaitingPages[href];
@@ -1236,8 +1238,8 @@ function phonePreparePage(href, kind) {
 
 // Waits for a waiting page to load (it usually loaded already, see below), so it never slides
 // in half-drawn. If it takes very long, it slides in anyway
-function phonePageReady(page) {
-  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, 800))]);
+function phonePageReady(page, longest = 800) {
+  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, longest))]);
 }
 
 // Opens a project: it slides up from the bottom while the bar glides to the top
@@ -1303,15 +1305,16 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     return;
   }
 
-  // Anywhere else: the home page rolls down from the top while the bar glides to the middle
-  link.addEventListener("touchstart", () => phonePreparePage(link.href, "page-from-top"), { passive: true });
+  // Anywhere else: the project slides down to show the home page (waiting behind it), while
+  // the bar glides to the middle. The opposite of how the project came up
+  link.addEventListener("touchstart", () => phonePreparePage(link.href, "page-behind"), { passive: true });
   link.addEventListener("click", async (event) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
     event.preventDefault();
-    const page = phonePreparePage(link.href, "page-from-top");
-    await phonePageReady(page);
+    const page = phonePreparePage(link.href, "page-behind");
+    await phonePageReady(page, 400);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
-    document.body.classList.add("is-leaving-home", "is-phone-going-home");   // HOME rolls to italic
+    document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
     movePhoneBar("middle");
     setTimeout(() => {
       sessionStorage.setItem("phone-home-back", "yes");
@@ -1331,7 +1334,7 @@ window.addEventListener("load", () => {
       });
     } else {
       document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
-        phonePreparePage(link.href, "page-from-top");
+        phonePreparePage(link.href, "page-behind");
       });
     }
   }, 1500);
