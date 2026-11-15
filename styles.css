@@ -1376,19 +1376,9 @@ a.project-nav {
   /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
-  /* script.js glides it between the middle of the home page and the top (and back):
-     it moves (left, top) and really changes size (--bar-pixel) */
-  transition:
-    left var(--page-change-time) var(--page-change-easing),
-    top var(--page-change-time) var(--page-change-easing),
-    --bar-pixel var(--page-change-time) var(--page-change-easing);
-}
-
-/* --bar-pixel is a length that can glide from one size to another */
-@property --bar-pixel {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 1px;
+  /* script.js glides it between the middle of the home page and the top (and back) */
+  transform-origin: 0 0;
+  transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
 /* On a project page it stays still at the top of the screen */
