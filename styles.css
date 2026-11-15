@@ -56,6 +56,17 @@
 /* =========================================
    General page settings
    ========================================= */
+
+/* When the browser changes page, it keeps showing the old page until the new one is ready,
+   instead of a white flash in between (no extra animation: the pages already slide themselves) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -266,7 +277,7 @@ body.home-page {
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
 .home .site-bar__text[href="index.html"] .roll__track,
-body:not(.is-phone-works-over-hi) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out */
+body:not(.is-phone-works-open):not(.is-phone-hi-open) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out (not while WORKS or HI is open) */
 .is-phone-works-open .phone-bar__works .roll__track,          /* phone: WORKS while the list is open */
 .is-phone-hi-open:not(.is-phone-works-open) .phone-bar__hi .roll__track,   /* phone: HI while the Hi page is open */
 .hi-page__reveal.is-showing .roll__track {
@@ -1335,8 +1346,14 @@ a.project-nav {
 
 /* Coming back home from another page: the frames are already out, with no jump */
 .phone-home.is-instant .phone-frame,
-.phone-home.is-instant .roll__track {
+.phone-home.is-instant .roll__track,
+.is-phone-home-back .phone-frame {
   transition: none;
+}
+
+.is-phone-home-back .phone-frame {
+  opacity: 1;
+  transform: none;
 }
 
 /* A second after the page opens: every frame jumps out to its place, one after the other */

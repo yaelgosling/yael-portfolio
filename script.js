@@ -1324,7 +1324,10 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
   sessionStorage.removeItem("phone-home-back");
   const phoneHomePage = document.querySelector(".phone-home");
   phoneHomePage.classList.add("is-instant", "is-playful");
-  requestAnimationFrame(() => requestAnimationFrame(() => phoneHomePage.classList.remove("is-instant")));
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    phoneHomePage.classList.remove("is-instant");
+    document.documentElement.classList.remove("is-phone-home-back");
+  }));
 }
 
 // Coming back with the browser's back button: put everything back
