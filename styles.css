@@ -1355,6 +1355,9 @@ a.project-nav {
   width: calc(300 * var(--bar-pixel));
   height: calc(30 * var(--bar-pixel));
   z-index: 7;                  /* above everything, also a page sliding in */
+  /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
+  background: linear-gradient(to right,
+    var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
   /* script.js glides it between the middle of the home page and the top (and back) */
   transform-origin: 0 0;
   transition: transform var(--page-change-time) var(--page-change-easing);
@@ -1468,71 +1471,28 @@ a.project-nav {
   -webkit-overflow-scrolling: touch;
 }
 
-/* The top edge (in Figma: the black line at y 49 and the bar under it). It stays still.
-   Things scrolling up start to blur where the bar ends and are gone by the line:
-   three layers blur more and more towards the top, and white covers the very top */
-.phone-top-fade {
+/* The black line at the top (y 49 in Figma). It stays still; the page scrolls in the box
+   right under it, so things disappear as they pass it */
+.phone-top-line {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  height: calc((93 + 6 - var(--phone-top)) * var(--phone-page-pixel));   /* to just under the bar */
   z-index: 3;
-  pointer-events: none;
-}
-
-/* (The bar is from 28% to 88% of this strip) */
-.phone-top-fade__blur {
-  position: absolute;
-  inset: 0;
-}
-
-.phone-top-fade__blur--1 {
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  mask-image: linear-gradient(to top, transparent 0%, black 30%);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-}
-
-.phone-top-fade__blur--2 {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  mask-image: linear-gradient(to top, transparent 15%, black 50%);
-  -webkit-mask-image: linear-gradient(to top, transparent 15%, black 50%);
-}
-
-.phone-top-fade__blur--3 {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  mask-image: linear-gradient(to top, transparent 40%, black 72%);
-  -webkit-mask-image: linear-gradient(to top, transparent 40%, black 72%);
-}
-
-/* Gone by the line: white over the very top */
-.phone-top-fade__white {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, var(--color-white) 14%, transparent 40%);
-}
-
-.phone-top-fade__line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
   height: var(--project-line);
   background-color: var(--color-black);
+  pointer-events: none;
 }
 
 /* Hidden on computers */
 .phone-scroll,
-.phone-top-fade {
+.phone-top-line {
   display: none;
 }
 
 @media (max-width: 700px) {
   .phone-scroll,
-  .phone-top-fade {
+  .phone-top-line {
     display: block;
   }
 }
@@ -1712,9 +1672,10 @@ a.project-nav {
 .phone-works {
   position: fixed;
   left: calc(45 * var(--phone-page-pixel));
-  top: calc((93 - var(--phone-top)) * var(--phone-page-pixel));
+  /* It starts 2 pixels higher, tucked under the bar, so no white line can show between them */
+  top: calc((93 - var(--phone-top)) * var(--phone-page-pixel) - 2px);
   width: calc(300 * var(--phone-page-pixel));
-  height: calc(636 * var(--phone-page-pixel));
+  height: calc(636 * var(--phone-page-pixel) + 2px);
   z-index: 6;                  /* over a page sliding in, under the bar */
   background-color: var(--color-orange);
   /* Rolled up into the bar; opening unrolls it downwards */
@@ -1729,7 +1690,8 @@ a.project-nav {
 }
 
 /* On the home page the bar first glides up to the top, then the list opens under it */
-.home-page.is-phone-works-open .phone-works {
+.home-page.is-phone-works-open .phone-works,
+.home-page.is-phone-works-open .phone-bar__works .roll__track {   /* and WORKS rolls to italic with it */
   transition-delay: calc(var(--page-change-time) * 0.6);
 }
 
@@ -1740,6 +1702,7 @@ a.project-nav {
   left: 0;
   right: 0;
   top: calc((var(--y) - 93) * var(--phone-page-pixel));
+  margin-top: 2px;             /* the 2 pixels tucked under the bar */
   height: var(--project-line);
   background-color: var(--color-black);
 }
@@ -1750,6 +1713,7 @@ a.project-nav {
   left: 0;
   right: 0;
   top: calc((var(--y) - 93) * var(--phone-page-pixel));
+  margin-top: 2px;             /* the 2 pixels tucked under the bar */
   height: calc(var(--h) * var(--phone-page-pixel));
   display: flex;
   align-items: center;
@@ -1774,10 +1738,47 @@ a.project-nav {
   white-space: nowrap;
 }
 
-/* The project you are on: Instrument Serif italic, like in the index on the computer */
-.phone-works__row.is-current .phone-works__name {
+.phone-works__name {
+  position: relative;
+}
+
+/* Names roll to Instrument Serif italic, like in the index on the computer:
+   the project you are on, and a name you tap */
+.phone-works .roll__word--next {
   font-family: var(--font-display);
+}
+
+.phone-works__row.is-current .roll__track,
+.phone-works__row.is-tapped .roll__track {
+  transform: translateY(calc(-1em * var(--roll-line)));
+}
+
+/* Projects that aren't ready: a tap shows COMING SOON over the name, in a black box that
+   comes up from its bottom edge (like "open index list hover 2" on the computer) */
+.phone-works__row--soon .phone-works__name::after {
+  content: "COMING SOON";
+  position: absolute;
+  z-index: 1;
+  left: calc(-4.91 * var(--phone-page-pixel));
+  top: 50%;
+  min-width: calc(100% + 9.82 * var(--phone-page-pixel));
+  height: calc(29 * var(--phone-page-pixel));
+  translate: 0 -50%;
+  box-sizing: border-box;
+  padding: calc(7.5 * var(--phone-page-pixel)) calc(4.91 * var(--phone-page-pixel)) 0;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: calc(15 * var(--phone-page-pixel));
   font-style: italic;
+  line-height: var(--line-height);
+  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
+  transition: clip-path var(--roll-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+.phone-works__row--soon.is-tapped .phone-works__name::after {
+  clip-path: inset(0);
 }
 
 /* The lime strip at the bottom */
@@ -1805,11 +1806,10 @@ a.project-nav {
      buttons at the bottom of the screen, and the bounce when you scroll past the end,
      show lime instead of a white box */
   background: linear-gradient(to bottom, var(--color-white) 50%, var(--color-lime) 50%);
-  transform: translateY(100%);
-  visibility: hidden;
-  transition:
-    transform var(--page-change-time) var(--page-change-easing),
-    visibility 0s var(--page-change-time);
+  /* Waits below the screen, already drawn (with its pictures ready), so it comes up smoothly */
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+  transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
 /* The page scrolls only on the screen itself: the extra lime part below stays under the phone's buttons */
@@ -1818,9 +1818,7 @@ a.project-nav {
 }
 
 .is-phone-hi-open .phone-hi {
-  transform: none;
-  visibility: visible;
-  transition: transform var(--page-change-time) var(--page-change-easing);
+  transform: translate3d(0, 0, 0);
 }
 
 /* The page inside: white at the top to lime at the bottom */

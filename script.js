@@ -1141,6 +1141,7 @@ function movePhoneBar(where) {
 // WORKS and HI: which one is open (or none)
 function setPhoneOpen(which) {
   const wasWorks = document.body.classList.contains("is-phone-works-open");
+  document.querySelectorAll(".phone-works__row.is-tapped").forEach((row) => row.classList.remove("is-tapped"));
   document.body.classList.toggle("is-phone-works-open", which === "works");
   document.body.classList.toggle("is-phone-hi-open", which === "hi");
   if (!isPhoneHome) return;
@@ -1197,6 +1198,12 @@ function phonePreparePage(href, kind) {
   return page;
 }
 
+// Waits for a waiting page to load, but never long: it usually loaded already (see below),
+// and if not, it slides in anyway and finishes loading on the way
+function phonePageReady(page) {
+  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, 150))]);
+}
+
 // Opens a project: it slides up from the bottom while the bar glides to the top
 // (and an open list rolls up into the bar at the same time)
 async function phoneOpenProject(href) {
@@ -1205,7 +1212,7 @@ async function phoneOpenProject(href) {
     return;
   }
   const page = phonePreparePage(href, "page-slide");
-  await page.ready;
+  await phonePageReady(page);
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
   movePhoneBar("top");
@@ -1215,17 +1222,36 @@ async function phoneOpenProject(href) {
   }, PAGE_CHANGE_TIME);
 }
 
-// Projects in the WORKS list
-document.querySelectorAll(".phone-works__row[href]").forEach((row) => {
+// The WORKS list. Names roll to italic (made here, like the words in the bar).
+// A tap: a project with a phone page rolls to italic and opens straight away; a project that
+// isn't ready shows COMING SOON; the others roll to italic
+const phoneWorksRows = [...document.querySelectorAll(".phone-works__row")];
+
+phoneWorksRows.forEach((row) => {
+  const name = row.querySelector(".phone-works__name");
+  const isSoon = row.classList.contains("phone-works__row--soon");
+  if (!isSoon) makeRoll(name, name.textContent, name.textContent, "start");
+
   const href = row.getAttribute("href");
-  const isCurrent = window.location.pathname.endsWith("/" + href);
+  const here = window.location.pathname.replace(/\.html$/, "");
+  const isCurrent = Boolean(href) && here.endsWith("/" + href.replace(/\.html$/, ""));
   row.classList.toggle("is-current", isCurrent);
-  row.addEventListener("touchstart", () => { if (!isCurrent) phonePreparePage(href, "page-slide"); }, { passive: true });
+
   row.addEventListener("click", (event) => {
     event.preventDefault();
-    if (isCurrent) setPhoneOpen(null);   // already here: just close the list
-    else phoneOpenProject(href);
+    event.stopPropagation();
+    if (isCurrent) {
+      setPhoneOpen(null);   // already here: just close the list
+      return;
+    }
+    phoneWorksRows.forEach((other) => other.classList.toggle("is-tapped", other === row));
+    if (href) phoneOpenProject(href);
   });
+});
+
+// Tapping somewhere else in the list puts the names back
+document.querySelectorAll(".phone-works").forEach((list) => {
+  list.addEventListener("click", () => phoneWorksRows.forEach((row) => row.classList.remove("is-tapped")));
 });
 
 // HOME on the phone bar
@@ -1246,7 +1272,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
     event.preventDefault();
     const page = phonePreparePage(link.href, "page-from-top");
-    await page.ready;
+    await phonePageReady(page);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
     document.body.classList.add("is-leaving-home");
     movePhoneBar("middle");
@@ -1255,6 +1281,23 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
       window.location.href = link.href;
     }, PAGE_CHANGE_TIME);
   });
+});
+
+// Get the next pages ready in the background a moment after this one has opened, so a tap
+// changes the page straight away: on the home page the projects, elsewhere the home page
+window.addEventListener("load", () => {
+  if (window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
+  setTimeout(() => {
+    if (isPhoneHome) {
+      document.querySelectorAll(".phone-frame[data-href]").forEach((frame) => {
+        phonePreparePage(frame.dataset.href, "page-slide");
+      });
+    } else {
+      document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
+        phonePreparePage(link.href, "page-from-top");
+      });
+    }
+  }, 1500);
 });
 
 // Arriving back home from another page: the frames are already out (they came out while
