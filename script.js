@@ -1019,10 +1019,11 @@ function flashOrange(element, whenDone) {
 
 // The video: tap to play or pause. If it isn't all on the screen, the page glides so it sits in the middle
 document.querySelectorAll(".phone-video").forEach((video) => {
+  const scroller = video.closest(".phone-scroll");   // the page scrolls inside this box
   video.addEventListener("click", () => {
     const box = video.getBoundingClientRect();
     if (box.top < 0 || box.bottom > window.innerHeight) {
-      window.scrollBy({ top: box.top + box.height / 2 - window.innerHeight / 2, behavior: "smooth" });
+      scroller.scrollBy({ top: box.top + box.height / 2 - window.innerHeight / 2, behavior: "smooth" });
     }
     if (video.paused) flashOrange(video, () => video.play());
     else video.pause();
@@ -1036,20 +1037,21 @@ document.querySelectorAll(".phone-video").forEach((video) => {
 
 // The flip back button: glides back up to the top, speeding up and slowing down (like on the computer)
 document.querySelectorAll(".phone-flip").forEach((button) => {
+  const scroller = button.closest(".phone-scroll");   // the page scrolls inside this box
   const FLIP_TIME = 1400;
   const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // slow, fast, slow
 
   button.addEventListener("click", () => {
     flashOrange(button, () => {
-      const from = window.scrollY;
+      const from = scroller.scrollTop;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        window.scrollTo(0, 0);
+        scroller.scrollTop = 0;
         return;
       }
       const start = performance.now();
       function step(now) {
         const t = Math.min((now - start) / FLIP_TIME, 1);
-        window.scrollTo(0, from * (1 - ease(t)));
+        scroller.scrollTop = from * (1 - ease(t));
         if (t < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
@@ -1086,7 +1088,7 @@ document.querySelectorAll(".phone-project").forEach((page) => {
     }
   }
 
-  window.addEventListener("scroll", requestUpdate, { passive: true });
+  page.closest(".phone-scroll").addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
   document.body.addEventListener("animationend", requestUpdate);   // after the page has slid up
   update();

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="styles.css?v=22">
 </head>
 <body class="home-page">
 
@@ -308,7 +308,7 @@
        Only projects with a phone page are links for now -->
   <div class="phone-works-blur" aria-hidden="true"></div>
   <nav class="phone-works" aria-label="Works">
-      <div class="phone-works__line" style="--y: 94"></div>
+      <div class="phone-works__line" style="--y: 93"></div>
       <div class="phone-works__line" style="--y: 157"></div>
       <div class="phone-works__line" style="--y: 217"></div>
       <div class="phone-works__line" style="--y: 277"></div>
@@ -335,8 +335,8 @@
   <!-- HI on the phone ("phone hi" in Figma): slides up from the bottom, under the bar.
        It scrolls by itself. The drawings move with the finger and when the phone tilts -->
   <section class="phone-hi" aria-label="Hi, I'm Yael">
+    <div class="phone-scroll">
     <div class="phone-hi__page" style="--h: 1438">
-      <div class="phone-project__line" style="--y: 49"></div>
       <h2 class="phone-title phone-hi__title" style="--x: 18; --y: 136">HIIII I’M YAEL</h2>
       <p class="phone-text phone-hi__text" style="--x: 143; --y: 552; --w: 233">Born in New Zealand.<br>Moved to Australia with my family.<br>Immigrated to Israel by myself at 18 in 2019.<br><br>Currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
 
@@ -356,9 +356,21 @@
       <p class="phone-text phone-hi__label" style="--x: 146; --y: 1286">Instagram</p>
       <a class="phone-hi__contact" style="--x: 146; --y: 1301" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
     </div>
+    </div>
+
+    <!-- The top edge: a black line that stays still at the top. Things scrolling up blur away
+         as they reach the bar and are gone by the line, so nothing shows under the phone's
+         time and battery -->
+    <div class="phone-top-fade" aria-hidden="true">
+      <div class="phone-top-fade__blur phone-top-fade__blur--1"></div>
+      <div class="phone-top-fade__blur phone-top-fade__blur--2"></div>
+      <div class="phone-top-fade__blur phone-top-fade__blur--3"></div>
+      <div class="phone-top-fade__white"></div>
+      <div class="phone-top-fade__line"></div>
+    </div>
   </section>
 
-  <script src="script.js?v=19"></script>
+  <script src="script.js?v=20"></script>
 
 </body>
 </html>

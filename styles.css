@@ -1441,6 +1441,14 @@ a.project-nav {
   .phone-bar--project {
     display: block;
   }
+
+  /* The page doesn't scroll as a whole (then nothing can slide under the phone's time and
+     battery): it stays still on the screen and the phone page scrolls inside it */
+  body.project-page main {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
 }
 
 .phone-project {
@@ -1451,14 +1459,82 @@ a.project-nav {
   overflow: hidden;            /* the previous project frame sticks out on the left in Figma */
 }
 
-/* The black line above the bar */
-.phone-project__line {
+/* The box the phone page scrolls in: the whole screen */
+.phone-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The top edge (in Figma: the black line at y 49 and the bar under it). It stays still.
+   Things scrolling up start to blur where the bar ends and are gone by the line:
+   three layers blur more and more towards the top, and white covers the very top */
+.phone-top-fade {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--y) * var(--phone-page-pixel));
+  top: 0;
+  height: calc((93 + 6 - var(--phone-top)) * var(--phone-page-pixel));   /* to just under the bar */
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* (The bar is from 28% to 88% of this strip) */
+.phone-top-fade__blur {
+  position: absolute;
+  inset: 0;
+}
+
+.phone-top-fade__blur--1 {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+}
+
+.phone-top-fade__blur--2 {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  mask-image: linear-gradient(to top, transparent 15%, black 50%);
+  -webkit-mask-image: linear-gradient(to top, transparent 15%, black 50%);
+}
+
+.phone-top-fade__blur--3 {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mask-image: linear-gradient(to top, transparent 40%, black 72%);
+  -webkit-mask-image: linear-gradient(to top, transparent 40%, black 72%);
+}
+
+/* Gone by the line: white over the very top */
+.phone-top-fade__white {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--color-white) 14%, transparent 40%);
+}
+
+.phone-top-fade__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
   height: var(--project-line);
   background-color: var(--color-black);
+}
+
+/* Hidden on computers */
+.phone-scroll,
+.phone-top-fade {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .phone-scroll,
+  .phone-top-fade {
+    display: block;
+  }
 }
 
 /* A piece placed in Figma pixels */
@@ -1657,7 +1733,8 @@ a.project-nav {
   transition-delay: calc(var(--page-change-time) * 0.6);
 }
 
-/* Black lines (positions from the top of the Figma frame, the list starts at 93) */
+/* Black lines (positions from the top of the Figma frame, the list starts at 93).
+   The first one sits right at the top, touching the bar, so there is no gap */
 .phone-works__line {
   position: absolute;
   left: 0;
@@ -1697,8 +1774,9 @@ a.project-nav {
   white-space: nowrap;
 }
 
-/* The project you are on, in italic */
+/* The project you are on: Instrument Serif italic, like in the index on the computer */
 .phone-works__row.is-current .phone-works__name {
+  font-family: var(--font-display);
   font-style: italic;
 }
 
@@ -1718,18 +1796,25 @@ a.project-nav {
    and scrolls by itself. Positions are Figma pixels
    ========================================= */
 .phone-hi {
+  --under-screen: 150px;       /* how far it reaches below the screen (see below) */
   position: fixed;
-  inset: 0;
+  inset: 0 0 calc(-1 * var(--under-screen)) 0;
   z-index: 5;                  /* over the page, under the bar */
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;         /* a finger scrolls it (the home page itself doesn't scroll) */
-  background-color: var(--color-white);
+  overflow: hidden;            /* it scrolls inside (.phone-scroll) */
+  /* White at the top, lime at the bottom, like the page. So the space behind the phone's own
+     buttons at the bottom of the screen, and the bounce when you scroll past the end,
+     show lime instead of a white box */
+  background: linear-gradient(to bottom, var(--color-white) 50%, var(--color-lime) 50%);
   transform: translateY(100%);
   visibility: hidden;
   transition:
     transform var(--page-change-time) var(--page-change-easing),
     visibility 0s var(--page-change-time);
+}
+
+/* The page scrolls only on the screen itself: the extra lime part below stays under the phone's buttons */
+.phone-hi > .phone-scroll {
+  bottom: var(--under-screen);
 }
 
 .is-phone-hi-open .phone-hi {
