@@ -1109,6 +1109,7 @@ const isPhoneHome = Boolean(document.querySelector(".phone-home"));
 const PHONE_TOP = 49;        // like --phone-top in styles.css
 const PHONE_HOME_TOP = 24;   // like --phone-home-top
 const PHONE_HOME_HEIGHT = 796;   // like --phone-home-height
+const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
 // Where the bar sits, in screen pixels: "top" (project pages, WORKS, HI) or "middle" (home page)
 function phoneBarSpot(where) {
@@ -1312,6 +1313,11 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
     event.preventDefault();
     const page = phonePreparePage(link.href, "page-behind");
+    // If the WORKS list is open, it first rolls up into the bar, then the bar goes down
+    if (document.body.classList.contains("is-phone-works-open")) {
+      document.body.classList.remove("is-phone-works-open", "is-phone-works-over-hi");
+      await new Promise((resolve) => setTimeout(resolve, INDEX_OPEN_TIME));
+    }
     await phonePageReady(page, 400);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
