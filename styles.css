@@ -279,6 +279,7 @@ body.home-page {
 .home .site-bar__text[href="index.html"] .roll__track,
 body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-project) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out (not while WORKS or HI is open, or a project slides in) */
 .is-phone-going-home .phone-bar__box--blue .roll__track,     /* phone: HOME rolls to italic while the home page rolls down */
+.is-phone-home-back .phone-bar__box--blue .roll__track,      /* phone: HOME already italic when you arrive back home */
 .is-phone-works-open .phone-bar__works .roll__track,          /* phone: WORKS while the list is open */
 .is-phone-hi-open:not(.is-phone-works-open) .phone-bar__hi .roll__track,   /* phone: HI while the Hi page is open */
 .hi-page__reveal.is-showing .roll__track {
@@ -1348,7 +1349,8 @@ a.project-nav {
 /* Coming back home from another page: the frames are already out, with no jump */
 .phone-home.is-instant .phone-frame,
 .phone-home.is-instant .roll__track,
-.is-phone-home-back .phone-frame {
+.is-phone-home-back .phone-frame,
+.is-phone-home-back .phone-bar .roll__track {
   transition: none;
 }
 
@@ -1365,7 +1367,7 @@ a.project-nav {
 
 /* The phone bar ("phone bar" in Figma). --bar-pixel is one Figma pixel of the bar. On the home
    page it sits in the middle of the screen, on top, so the frames come out from behind it.
-   On the other pages it is a little bigger, at the top (see .phone-bar--project) */
+   On the other pages it is enlarged a little, at the top (see .phone-bar--project) */
 .phone-bar {
   --bar-pixel: var(--phone-pixel);   /* on the home page: a little smaller, like the home page */
   position: absolute;
@@ -1377,15 +1379,20 @@ a.project-nav {
   /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
-  /* script.js glides it between the middle of the home page and the top (and back), changing
-     its real size on the way (not stretching it), so the words never jump */
+  /* script.js glides it between the middle of the home page and the top (and back) */
+  transform-origin: 0 0;
+  transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
 /* On a project page it stays still at the top of the screen */
 .phone-bar--project {
-  --bar-pixel: var(--phone-page-pixel);
+  /* Drawn at the home page's size, then enlarged to the full size by script.js (and the little
+     script right after the bar), exactly like the home page's bar when it reaches the top.
+     So the words look exactly the same on every page and don't jump when the page changes */
+  --bar-pixel: var(--phone-pixel);
   position: fixed;
-  top: calc((63 - var(--phone-top)) * var(--bar-pixel));
+  left: calc(45 * var(--phone-page-pixel));
+  top: calc((63 - var(--phone-top)) * var(--phone-page-pixel));
   display: none;               /* only on phones (see below) */
 }
 

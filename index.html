@@ -10,9 +10,9 @@
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=39">
+  <link rel="stylesheet" href="styles.css?v=41">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -371,11 +371,12 @@
       </div>
     </div>
 
-    <!-- The phone bar ("phone bar" in Figma). Numbers are Figma pixels from its left edge -->
+    <!-- The phone bar ("phone bar" in Figma). Numbers are Figma pixels from its left edge.
+         Each word is written twice (the second one in italic, waiting below) so it can roll -->
     <nav class="phone-bar" aria-label="Main">
-      <a class="phone-bar__box phone-bar__box--blue" style="--x: 0; --w: 100.823" href="index.html">HOME</a>
-      <button class="phone-bar__box phone-bar__box--orange phone-bar__works" style="--x: 100.49; --w: 99.618" type="button">WORKS</button>
-      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi" style="--x: 200.109; --w: 99.89" type="button">HI</button>
+      <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
+      <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
+      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
     </nav>
   </div>
 
@@ -515,7 +516,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=33"></script>
+  <script src="script.js?v=35"></script>
 
 </body>
 </html>
