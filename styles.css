@@ -1249,10 +1249,14 @@ a.project-nav {
    A 390 × 844 phone frame that fits the screen. Positions are Figma pixels.
    The top 49 pixels of every phone frame in Figma are the phone's own strip (time, battery):
    the website starts under it, at the black line, so everything moves up by --phone-top.
+   The home page has no line and its MTV frame reaches up to y 32, so it fits the screen from
+   y 24 to 820 instead (--phone-home-top and --phone-home-height): no frame is cut off.
    ========================================= */
 :root {
   --phone-top: 49;                                  /* the phone's own strip at the top of the Figma frames */
-  --phone-pixel: min(100vw / 390, 100svh / 795);   /* one Figma pixel on the phone home page (844 - 49 high) */
+  --phone-home-top: 24;                             /* where the home page starts in Figma */
+  --phone-home-height: 796;                         /* and how high it is (to y 820) */
+  --phone-pixel: min(100vw / 390, 100svh / 796);   /* one Figma pixel on the phone home page */
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
@@ -1265,11 +1269,6 @@ a.project-nav {
 }
 
 @media (max-width: 700px) {
-  /* A finger moving anywhere on the screen moves the frames instead of the page */
-  body.home-page {
-    touch-action: none;
-  }
-
   /* On phones the computer home page is hidden and the phone one is shown */
   .home {
     display: none;
@@ -1279,7 +1278,7 @@ a.project-nav {
     display: block;
     position: relative;
     width: calc(390 * var(--phone-pixel));
-    height: calc((844 - var(--phone-top)) * var(--phone-pixel));
+    height: calc(var(--phone-home-height) * var(--phone-pixel));
   }
 }
 
@@ -1288,7 +1287,7 @@ a.project-nav {
 .phone-frame {
   position: absolute;
   left: calc(var(--x) * var(--phone-pixel));
-  top: calc((var(--y) - var(--phone-top)) * var(--phone-pixel));
+  top: calc((var(--y) - var(--phone-home-top)) * var(--phone-pixel));
   width: calc(var(--w) * var(--phone-pixel));
   height: calc(var(--h) * var(--phone-pixel));
   opacity: 0;
@@ -1298,10 +1297,12 @@ a.project-nav {
       calc((407 - var(--y) - var(--h) / 2) * var(--phone-pixel))
     )
     scale(0.1);
-  /* script.js moves it with the finger (--move-x and --move-y, Figma pixels) */
+  /* script.js swings it around when the phone tilts or shakes
+     (--move-x and --move-y in Figma pixels, --turn in degrees) */
   translate:
     calc(var(--move-x, 0) * var(--phone-pixel))
     calc(var(--move-y, 0) * var(--phone-pixel));
+  rotate: calc(var(--turn, 0) * 1deg);
   transition:
     transform var(--phone-frames-time) var(--phone-frames-easing),
     opacity 0.2s ease;
@@ -1350,7 +1351,7 @@ a.project-nav {
   --bar-pixel: var(--phone-pixel);
   position: absolute;
   left: calc(45 * var(--bar-pixel));
-  top: calc((392 - var(--phone-top)) * var(--bar-pixel));
+  top: calc((392 - var(--phone-home-top)) * var(--bar-pixel));
   width: calc(300 * var(--bar-pixel));
   height: calc(30 * var(--bar-pixel));
   z-index: 7;                  /* above everything, also a page sliding in */
@@ -1773,8 +1774,8 @@ a.project-nav {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* One drawing, cut from the sheet. script.js moves it with the finger and the tilt
-   (--move-x and --move-y, Figma pixels) */
+/* One drawing, cut from the sheet. script.js swings it around when the phone tilts or shakes
+   (--move-x and --move-y in Figma pixels, --turn in degrees) */
 .phone-doodle {
   position: absolute;
   left: calc(var(--x) * var(--phone-page-pixel));
@@ -1785,6 +1786,7 @@ a.project-nav {
   translate:
     calc(var(--move-x, 0) * var(--phone-page-pixel))
     calc(var(--move-y, 0) * var(--phone-page-pixel));
+  rotate: calc(var(--turn, 0) * 1deg);
 }
 
 .phone-doodle img {
