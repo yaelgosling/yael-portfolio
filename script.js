@@ -87,19 +87,76 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
   // When the mouse leaves the window
   document.documentElement.addEventListener("mouseleave", rest);
 
-  return rest;
+  // Moves everything as if the mouse were at x, y (from -0.5 to 0.5): used by the phone's tilt
+  function moveTo(x, y) {
+    if (!isActive()) return;
+    mouseX = Math.max(-0.5, Math.min(0.5, x));
+    mouseY = Math.max(-0.5, Math.min(0.5, y));
+    startAnimating();
+  }
+
+  return { rest, moveTo };
 }
 
-// The phone home frames move with a finger moving on the screen (the phone frame is 390 x 844).
-// They move the same share of the screen as on the computer: 160 of 1440 → 43 of 390
+// The phone home frames (the phone frame is 390 x 844) move with a finger moving on the screen,
+// and when the phone is tilted, swayed or shaken
+const PHONE_MAX_MOVE = 90;   // how far (Figma pixels) a frame at the edge can move on a phone
+const TILT_FULL = 20;        // tilting the phone this many degrees moves the frames all the way
+const TILT_SETTLE = 0.02;    // how quickly a new way of holding the phone becomes the "still" position
+
 const phoneFrames = [...document.querySelectorAll(".phone-frame")];
-if (phoneFrames.length && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  followMouse(
-    phoneFrames.map((frame) => ({ element: frame, placed: frame })),
-    390, 844,
-    () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful"),   // only after they came out
-    MAX_MOVE * 390 / 1440
-  );
+const phoneDoodles = [...document.querySelectorAll(".phone-doodle:not(.phone-doodle--still)")];
+const phoneMovers = [];   // everything on the phone that moves with the finger and the tilt
+
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (phoneFrames.length) {
+    phoneMovers.push(followMouse(
+      phoneFrames.map((frame) => ({ element: frame, placed: frame })),
+      390, 844,
+      // only after they came out, and not behind WORKS or HI
+      () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
+            !document.body.matches(".is-phone-works-open, .is-phone-hi-open"),
+      PHONE_MAX_MOVE
+    ));
+  }
+
+  // The drawings on the phone Hi page ("phone hi" is 390 x 1438)
+  if (phoneDoodles.length) {
+    phoneMovers.push(followMouse(
+      phoneDoodles.map((doodle) => ({ element: doodle, placed: doodle })),
+      390, 1438,
+      () => document.body.classList.contains("is-phone-hi-open"),
+      PHONE_MAX_MOVE / 2
+    ));
+  }
+
+  // Tilt: the frames slide the way the phone tips, like things on a tray. The way the phone is
+  // held slowly becomes the new "still" position, so swaying and shaking move them, and they
+  // settle back when the phone is held still
+  let stillSideways = null;
+  let stillForwards = null;
+  window.addEventListener("deviceorientation", (event) => {
+    if (event.gamma === null || event.beta === null) return;   // no tilt sensor
+    if (stillSideways === null) {
+      stillSideways = event.gamma;
+      stillForwards = event.beta;
+    }
+    stillSideways += (event.gamma - stillSideways) * TILT_SETTLE;
+    stillForwards += (event.beta - stillForwards) * TILT_SETTLE;
+    // Negative, because the frames move away from the "mouse": this way they slide downhill
+    phoneMovers.forEach((mover) => mover.moveTo(
+      -(event.gamma - stillSideways) / TILT_FULL / 2,
+      -(event.beta - stillForwards) / TILT_FULL / 2
+    ));
+  });
+
+  // iPhones only share the tilt after asking ("Allow motion and orientation access?"),
+  // and only right after a tap, so they ask on the first tap on the screen
+  if (typeof DeviceOrientationEvent !== "undefined" && DeviceOrientationEvent.requestPermission) {
+    document.addEventListener("touchend", () => {
+      DeviceOrientationEvent.requestPermission().catch(() => {});
+    }, { once: true });
+  }
 }
 
 let restHomeFrames = () => {};   // lets the home frames drift back to their places (set below)
@@ -113,7 +170,7 @@ if (canMove) {
       1440, 768,
       // still behind the index or the Hi page, and in classic view (everything tidy)
       () => !document.body.matches(".is-index-open, .is-hi-open") && !home.classList.contains("is-classic")
-    );
+    ).rest;
   }
 
   // The drawings on the Hi page ("Hi page" is 1440 x 800). Each drawing moves with its text.
@@ -842,7 +899,10 @@ document.querySelectorAll(".card__tab").forEach((tab) => {
 const phoneHome = document.querySelector('.phone-home');
 const PHONE_WAIT = 1000;   // how long the blank page shows (milliseconds)
 
-if (phoneHome) {
+if (phoneHome && window.frameElement) {
+  // A waiting copy of the home page (rolling down from the top): the frames are already out
+  phoneHome.classList.add("is-instant", "is-playful");
+} else if (phoneHome) {
   const openedAt = performance.now();
 
   // Waits until the pictures have loaded, but never less than a second after opening
@@ -870,9 +930,10 @@ phoneFramesToTap.forEach((frame) => {
     if (!frame.closest(".phone-home").classList.contains("is-playful")) return;   // still hidden
     event.stopPropagation();
     if (frame.classList.contains("is-tapped") && frame.dataset.href) {
-      window.location.href = frame.dataset.href;
+      phoneOpenProject(frame.dataset.href);
       return;
     }
+    if (frame.dataset.href) phonePreparePage(frame.dataset.href, "page-slide");   // get the page ready
     phoneFramesToTap.forEach((other) => other.classList.toggle("is-tapped", other === frame));
   });
 });
@@ -970,4 +1031,185 @@ document.querySelectorAll(".phone-project").forEach((page) => {
   window.addEventListener("resize", requestUpdate);
   document.body.addEventListener("animationend", requestUpdate);   // after the page has slid up
   update();
+});
+
+
+/* =========================================
+   Phone: moving between pages. Like on the computer, the bar glides between the middle of
+   the home page and the top of the screen while the pages slide:
+   - a project slides up from the bottom (from a frame or from WORKS)
+   - HOME: the home page rolls down from the top
+   - WORKS: the bar goes up and the list opens under it
+   - HI: the Hi page slides up under the bar
+   Closing WORKS or HI on the home page brings the bar back down to the middle
+   ========================================= */
+const phoneBar = document.querySelector(".phone-bar");
+const isPhoneHome = Boolean(document.querySelector(".phone-home"));
+const PHONE_TOP = 49;   // like --phone-top in styles.css
+
+// Where the bar sits, in screen pixels: "top" (project pages, WORKS, HI) or "middle" (home page)
+function phoneBarSpot(where) {
+  const page = window.innerWidth / 390;   // one Figma pixel on a phone page
+  if (where === "top") return { left: 45 * page, top: (63 - PHONE_TOP) * page, width: 300 * page };
+  // The home page fits the screen (like --phone-pixel) and sits in its middle
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;height:100svh;visibility:hidden";
+  document.body.append(probe);
+  const screenHeight = probe.offsetHeight;
+  probe.remove();
+  const pixel = Math.min(window.innerWidth / 390, screenHeight / (844 - PHONE_TOP));
+  return {
+    left: (window.innerWidth - 390 * pixel) / 2 + 45 * pixel,
+    top: (screenHeight - (844 - PHONE_TOP) * pixel) / 2 + (392 - PHONE_TOP) * pixel,
+    width: 300 * pixel,
+  };
+}
+
+// Glides the bar to "top" or "middle" (it moves and grows or shrinks to the right size)
+function movePhoneBar(where) {
+  if (!phoneBar) return;
+  const from = phoneBarSpot(isPhoneHome ? "middle" : "top");   // where it really is
+  const to = phoneBarSpot(where);
+  const scale = to.width / from.width;
+  phoneBar.style.transform =
+    `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${scale})`;
+}
+
+// WORKS and HI: which one is open (or none)
+function setPhoneOpen(which) {
+  const wasWorks = document.body.classList.contains("is-phone-works-open");
+  document.body.classList.toggle("is-phone-works-open", which === "works");
+  document.body.classList.toggle("is-phone-hi-open", which === "hi");
+  if (!isPhoneHome) return;
+  if (which) {
+    movePhoneBar("top");
+  } else if (wasWorks) {
+    // the list rolls up into the bar first, then the bar goes back down
+    setTimeout(() => {
+      if (!document.body.matches(".is-phone-works-open, .is-phone-hi-open")) movePhoneBar("middle");
+    }, 350);
+  } else {
+    movePhoneBar("middle");
+  }
+}
+
+function currentPhoneOpen() {
+  if (document.body.classList.contains("is-phone-works-open")) return "works";
+  if (document.body.classList.contains("is-phone-hi-open")) return "hi";
+  return null;
+}
+
+document.querySelectorAll(".phone-bar__works").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setPhoneOpen(currentPhoneOpen() === "works" ? null : "works");
+  });
+});
+
+document.querySelectorAll(".phone-bar__hi").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setPhoneOpen(currentPhoneOpen() === "hi" ? null : "hi");
+  });
+});
+
+// Tapping the blur behind the list closes it
+document.querySelectorAll(".phone-works-blur").forEach((blur) => {
+  blur.addEventListener("click", () => setPhoneOpen(null));
+});
+
+// A waiting copy of another page, loaded out of sight (an iframe), ready to slide in.
+// kind: "page-slide" (waits below the screen) or "page-from-top" (waits above it)
+const phoneWaitingPages = {};
+function phonePreparePage(href, kind) {
+  if (phoneWaitingPages[href]) return phoneWaitingPages[href];
+  const page = document.createElement("iframe");
+  page.className = kind;
+  page.src = href;
+  page.tabIndex = -1;
+  page.setAttribute("aria-hidden", "true");
+  page.ready = new Promise((resolve) => page.addEventListener("load", resolve, { once: true }));
+  document.body.appendChild(page);
+  phoneWaitingPages[href] = page;
+  return page;
+}
+
+// Opens a project: it slides up from the bottom while the bar glides to the top
+// (and an open list rolls up into the bar at the same time)
+async function phoneOpenProject(href) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.location.href = href;
+    return;
+  }
+  const page = phonePreparePage(href, "page-slide");
+  await page.ready;
+  page.classList.add("is-sliding");
+  document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
+  movePhoneBar("top");
+  setTimeout(() => {
+    sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
+    window.location.href = href;
+  }, PAGE_CHANGE_TIME);
+}
+
+// Projects in the WORKS list
+document.querySelectorAll(".phone-works__row[href]").forEach((row) => {
+  const href = row.getAttribute("href");
+  const isCurrent = window.location.pathname.endsWith("/" + href);
+  row.classList.toggle("is-current", isCurrent);
+  row.addEventListener("touchstart", () => { if (!isCurrent) phonePreparePage(href, "page-slide"); }, { passive: true });
+  row.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (isCurrent) setPhoneOpen(null);   // already here: just close the list
+    else phoneOpenProject(href);
+  });
+});
+
+// HOME on the phone bar
+document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
+  if (isPhoneHome) {
+    // On the home page it just closes WORKS or HI
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setPhoneOpen(null);
+    });
+    return;
+  }
+
+  // Anywhere else: the home page rolls down from the top while the bar glides to the middle
+  link.addEventListener("touchstart", () => phonePreparePage(link.href, "page-from-top"), { passive: true });
+  link.addEventListener("click", async (event) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
+    event.preventDefault();
+    const page = phonePreparePage(link.href, "page-from-top");
+    await page.ready;
+    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open");
+    document.body.classList.add("is-leaving-home");
+    movePhoneBar("middle");
+    setTimeout(() => {
+      sessionStorage.setItem("phone-home-back", "yes");
+      window.location.href = link.href;
+    }, PAGE_CHANGE_TIME);
+  });
+});
+
+// Arriving back home from another page: the frames are already out (they came out while
+// the home page rolled down), so they are there straight away
+if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
+  sessionStorage.removeItem("phone-home-back");
+  const phoneHomePage = document.querySelector(".phone-home");
+  phoneHomePage.classList.add("is-instant", "is-playful");
+  requestAnimationFrame(() => requestAnimationFrame(() => phoneHomePage.classList.remove("is-instant")));
+}
+
+// Coming back with the browser's back button: put everything back
+window.addEventListener("pageshow", (event) => {
+  if (!event.persisted) return;
+  Object.keys(phoneWaitingPages).forEach((href) => {
+    phoneWaitingPages[href].remove();
+    delete phoneWaitingPages[href];
+  });
+  document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open");
+  if (phoneBar) phoneBar.style.transform = "";
 });

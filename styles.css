@@ -261,15 +261,23 @@ body.home-page {
 /* Rolled: on hover, and while WORKS or HI is open, HOME while you are on the home page,
    for the project you are on in the index,
    and after clicking EMAIL ME or LET'S TALK */
-.roll-host:hover .roll__track,
 .roll-host:focus-visible .roll__track,
 .is-hi-open .site-bar__hi .roll__track,
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
 .home .site-bar__text[href="index.html"] .roll__track,
 .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out */
+.is-phone-works-open .phone-bar__works .roll__track,          /* phone: WORKS while the list is open */
+.is-phone-hi-open .phone-bar__hi .roll__track,                /* phone: HI while the Hi page is open */
 .hi-page__reveal.is-showing .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));   /* up by one word */
+}
+
+/* Hover only with a real mouse (on a phone a tap would leave the word stuck in italic) */
+@media (hover: hover) {
+  .roll-host:hover .roll__track {
+    transform: translateY(calc(-1em * var(--roll-line)));
+  }
 }
 
 /* EMAIL ME, LET'S TALK and INSTAGRAM (which rolls to the handle): the hover area is as wide as the email address or number,
@@ -1239,9 +1247,12 @@ a.project-nav {
 /* =========================================
    Phone home page ("phone home blank" and "phone home playful" in Figma)
    A 390 × 844 phone frame that fits the screen. Positions are Figma pixels.
+   The top 49 pixels of every phone frame in Figma are the phone's own strip (time, battery):
+   the website starts under it, at the black line, so everything moves up by --phone-top.
    ========================================= */
 :root {
-  --phone-pixel: min(100vw / 390, 100svh / 844);   /* one Figma pixel on the phone */
+  --phone-top: 49;                                  /* the phone's own strip at the top of the Figma frames */
+  --phone-pixel: min(100vw / 390, 100svh / 795);   /* one Figma pixel on the phone home page (844 - 49 high) */
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
@@ -1268,7 +1279,7 @@ a.project-nav {
     display: block;
     position: relative;
     width: calc(390 * var(--phone-pixel));
-    height: calc(844 * var(--phone-pixel));
+    height: calc((844 - var(--phone-top)) * var(--phone-pixel));
   }
 }
 
@@ -1277,7 +1288,7 @@ a.project-nav {
 .phone-frame {
   position: absolute;
   left: calc(var(--x) * var(--phone-pixel));
-  top: calc(var(--y) * var(--phone-pixel));
+  top: calc((var(--y) - var(--phone-top)) * var(--phone-pixel));
   width: calc(var(--w) * var(--phone-pixel));
   height: calc(var(--h) * var(--phone-pixel));
   opacity: 0;
@@ -1321,6 +1332,12 @@ a.project-nav {
   cursor: pointer;
 }
 
+/* Coming back home from another page: the frames are already out, with no jump */
+.phone-home.is-instant .phone-frame,
+.phone-home.is-instant .roll__track {
+  transition: none;
+}
+
 /* A second after the page opens: every frame jumps out to its place, one after the other */
 .phone-home.is-playful .phone-frame {
   opacity: 1;
@@ -1333,19 +1350,26 @@ a.project-nav {
   --bar-pixel: var(--phone-pixel);
   position: absolute;
   left: calc(45 * var(--bar-pixel));
-  top: calc(392 * var(--bar-pixel));
+  top: calc((392 - var(--phone-top)) * var(--bar-pixel));
   width: calc(300 * var(--bar-pixel));
   height: calc(30 * var(--bar-pixel));
-  z-index: 2;
+  z-index: 7;                  /* above everything, also a page sliding in */
+  /* script.js glides it between the middle of the home page and the top (and back) */
+  transform-origin: 0 0;
+  transition: transform var(--page-change-time) var(--page-change-easing);
 }
 
 /* On a project page it stays still at the top of the screen */
 .phone-bar--project {
   --bar-pixel: var(--phone-page-pixel);
   position: fixed;
-  top: calc(63 * var(--bar-pixel));
-  z-index: 6;
+  top: calc((63 - var(--phone-top)) * var(--bar-pixel));
   display: none;               /* only on phones (see below) */
+}
+
+/* Inside a waiting copy of a page (an iframe) the bar is hidden: the real page's bar is the one you see */
+.is-preview .phone-bar {
+  visibility: hidden;
 }
 
 /* One coloured box with its word in the middle */
@@ -1422,6 +1446,7 @@ a.project-nav {
   position: relative;
   width: 100%;
   height: calc(var(--h) * var(--phone-page-pixel));
+  margin-top: calc(var(--phone-top) * -1 * var(--phone-page-pixel));   /* the website starts at the black line */
   overflow: hidden;            /* the previous project frame sticks out on the left in Figma */
 }
 
@@ -1568,4 +1593,213 @@ a.project-nav {
 .phone-fast-piece {
   transform: translateY(calc(var(--shift, 0) * var(--phone-page-pixel)));
   will-change: transform;
+}
+
+
+/* =========================================
+   Phone: WORKS ("phone works open" in Figma). The bar goes to the top and the list opens
+   downwards under it, over a blur. Positions are Figma pixels
+   ========================================= */
+.phone-works,
+.phone-works-blur,
+.phone-hi {
+  display: none;               /* only on phones */
+}
+
+@media (max-width: 700px) {
+  .phone-works,
+  .phone-works-blur,
+  .phone-hi {
+    display: block;
+  }
+}
+
+/* Blurs the page behind the open list, like the index on the computer. Tapping it closes the list */
+.phone-works-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  backdrop-filter: blur(var(--index-blur));
+  -webkit-backdrop-filter: blur(var(--index-blur));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--index-open-time) var(--page-change-easing);
+}
+
+.is-phone-works-open .phone-works-blur {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The orange list, right under the bar at the top (the bar is 63 to 93 in Figma) */
+.phone-works {
+  position: fixed;
+  left: calc(45 * var(--phone-page-pixel));
+  top: calc((93 - var(--phone-top)) * var(--phone-page-pixel));
+  width: calc(300 * var(--phone-page-pixel));
+  height: calc(636 * var(--phone-page-pixel));
+  z-index: 6;                  /* over a page sliding in, under the bar */
+  background-color: var(--color-orange);
+  /* Rolled up into the bar; opening unrolls it downwards */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--index-open-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+.is-phone-works-open .phone-works {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+
+/* On the home page the bar first glides up to the top, then the list opens under it */
+.home-page.is-phone-works-open .phone-works {
+  transition-delay: calc(var(--page-change-time) * 0.6);
+}
+
+/* Black lines (positions from the top of the Figma frame, the list starts at 93) */
+.phone-works__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc((var(--y) - 93) * var(--phone-page-pixel));
+  height: var(--project-line);
+  background-color: var(--color-black);
+}
+
+/* One row: the name on the left, the kind of project on the right */
+.phone-works__row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc((var(--y) - 93) * var(--phone-page-pixel));
+  height: calc(var(--h) * var(--phone-page-pixel));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(13.97 * var(--phone-page-pixel)) 0 calc(23.29 * var(--phone-page-pixel));
+  color: var(--color-black);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.phone-works__name {
+  font-family: var(--font-body);
+  font-size: calc(14 * var(--phone-page-pixel));
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.phone-works__type {
+  font-family: var(--font-body);
+  font-size: calc(10 * var(--phone-page-pixel));
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The project you are on, in italic */
+.phone-works__row.is-current .phone-works__name {
+  font-style: italic;
+}
+
+/* The lime strip at the bottom */
+.phone-works__band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(33 * var(--phone-page-pixel));
+  background-color: var(--color-lime);
+}
+
+
+/* =========================================
+   Phone: HI ("phone hi" in Figma). Slides up from the bottom under the bar,
+   and scrolls by itself. Positions are Figma pixels
+   ========================================= */
+.phone-hi {
+  position: fixed;
+  inset: 0;
+  z-index: 5;                  /* over the page, under the bar */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;         /* a finger scrolls it (the home page itself doesn't scroll) */
+  background-color: var(--color-white);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform var(--page-change-time) var(--page-change-easing),
+    visibility 0s var(--page-change-time);
+}
+
+.is-phone-hi-open .phone-hi {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+/* The page inside: white at the top to lime at the bottom */
+.phone-hi__page {
+  position: relative;
+  height: calc(var(--h) * var(--phone-page-pixel));
+  margin-top: calc(var(--phone-top) * -1 * var(--phone-page-pixel));   /* the website starts at the black line */
+  background: linear-gradient(to bottom, var(--color-white) calc(var(--phone-top) * var(--phone-page-pixel)), var(--color-lime));
+}
+
+.phone-hi__title {
+  width: calc(227 * var(--phone-page-pixel));
+  white-space: normal;
+}
+
+.phone-hi__text,
+.phone-hi__label {
+  font-size: calc(14 * var(--phone-page-pixel));
+}
+
+.phone-hi__label {
+  white-space: nowrap;
+}
+
+/* The email address, phone number and Instagram: Instrument Serif 30px, blue */
+.phone-hi__contact {
+  position: absolute;
+  left: calc(var(--x) * var(--phone-page-pixel));
+  top: calc(var(--y) * var(--phone-page-pixel));
+  font-family: var(--font-display);
+  font-size: calc(30 * var(--phone-page-pixel));
+  line-height: normal;
+  color: var(--color-blue);
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* One drawing, cut from the sheet. script.js moves it with the finger and the tilt
+   (--move-x and --move-y, Figma pixels) */
+.phone-doodle {
+  position: absolute;
+  left: calc(var(--x) * var(--phone-page-pixel));
+  top: calc(var(--y) * var(--phone-page-pixel));
+  width: calc(var(--w) * var(--phone-page-pixel));
+  height: calc(var(--h) * var(--phone-page-pixel));
+  overflow: hidden;
+  translate:
+    calc(var(--move-x, 0) * var(--phone-page-pixel))
+    calc(var(--move-y, 0) * var(--phone-page-pixel));
+}
+
+.phone-doodle img {
+  position: absolute;
+  left: var(--il);
+  top: var(--it);
+  width: var(--iw);
+  height: var(--ih);
+  max-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-bar,
+  .phone-works,
+  .phone-hi {
+    transition: none;
+  }
 }
