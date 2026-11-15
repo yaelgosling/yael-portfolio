@@ -1121,10 +1121,13 @@ function phoneBarSpot(where) {
   const screenHeight = probe.offsetHeight;
   probe.remove();
   const pixel = Math.min(window.innerWidth / 390, screenHeight / PHONE_HOME_HEIGHT);
+  // The bar is the same size as on the other pages (so it only slides, and its words look
+  // exactly the same on every page). Its middle is where Figma has it: x 195, y 407
+  const middleY = (screenHeight - PHONE_HOME_HEIGHT * pixel) / 2 + (407 - PHONE_HOME_TOP) * pixel;
   return {
-    left: (window.innerWidth - 390 * pixel) / 2 + 45 * pixel,
-    top: (screenHeight - PHONE_HOME_HEIGHT * pixel) / 2 + (392 - PHONE_HOME_TOP) * pixel,
-    width: 300 * pixel,
+    left: window.innerWidth / 2 - 150 * page,
+    top: middleY - 15 * page,
+    width: 300 * page,
   };
 }
 
