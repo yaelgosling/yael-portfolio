@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body class="home-page">
 
@@ -208,23 +208,39 @@
   </main>
 
   <!-- The phone home page: only shown on phones (see the bottom of styles.css).
-       It starts as "phone home blank" in Figma: just the bar.
-       A tap anywhere turns it into "phone home playful": the frames jump out from behind the bar.
+       It starts as "phone home blank" in Figma: just the bar, like a loading page.
+       A second later it turns into "phone home playful": the frames jump out from behind the bar.
+       At the same moment HOME rolls up into italic, like the words in the computer bar.
+       Then a finger moving on the screen moves the frames, like the mouse on the computer.
+       Tapping a frame shows its hover picture; tapping it again opens the project.
        Numbers are Figma pixels in the 390 × 844 phone frame. --order = which frame comes out first -->
   <div class="phone-home">
     <div class="phone-home__frames">
-      <img class="phone-frame" style="--x: 100; --y: 466; --w: 121.22; --h: 99.676; --order: 0" src="images/phone/witch-frame.svg" alt="">
-      <img class="phone-frame" style="--x: 48; --y: 199; --w: 104.076; --h: 111.662; --order: 1" src="images/phone/grunge-frame.svg" alt="">
-      <img class="phone-frame" style="--x: 182; --y: 554; --w: 146.252; --h: 69.789; --order: 2" src="images/phone/judges-frame.svg" alt="">
-      <img class="phone-frame" style="--x: 249; --y: 32; --w: 92.091; --h: 180.54; --order: 3" src="images/phone/mtv-frame.svg" alt="">
-      <img class="phone-frame" style="--x: 96; --y: 676; --w: 118.641; --h: 128.35; --order: 4" src="images/phone/dont-eat-meat-frame.svg" alt="">
+      <!-- Tap a frame: it shows its hover picture (copied by script.js from the computer frame
+           named in data-hover). Tap it again: it opens the project (data-href), once the phone
+           version of that project exists -->
+      <div class="phone-frame" style="--x: 100; --y: 466; --w: 121.22; --h: 99.676; --order: 0" data-hover="images/home/witch-frame.svg">
+        <img class="phone-frame__image" src="images/phone/witch-frame.svg" alt="">
+      </div>
+      <div class="phone-frame" style="--x: 48; --y: 199; --w: 104.076; --h: 111.662; --order: 1" data-hover="images/home/grunge-frame.svg">
+        <img class="phone-frame__image" src="images/phone/grunge-frame.svg" alt="">
+      </div>
+      <div class="phone-frame" style="--x: 182; --y: 554; --w: 146.252; --h: 69.789; --order: 2" data-hover="images/home/judges-frame.svg">
+        <img class="phone-frame__image" src="images/phone/judges-frame.svg" alt="">
+      </div>
+      <div class="phone-frame" style="--x: 249; --y: 32; --w: 92.091; --h: 180.54; --order: 3" data-hover="images/home/mtv-ident-frame.svg">
+        <img class="phone-frame__image" src="images/phone/mtv-frame.svg" alt="">
+      </div>
+      <div class="phone-frame" style="--x: 96; --y: 676; --w: 118.641; --h: 128.35; --order: 4" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
+        <img class="phone-frame__image" src="images/phone/dont-eat-meat-frame.svg" alt="">
+      </div>
     </div>
 
     <!-- The phone bar ("phone bar" in Figma). Numbers are Figma pixels from its left edge -->
     <nav class="phone-bar" aria-label="Main">
       <a class="phone-bar__box phone-bar__box--blue" style="--x: 0; --w: 100.823" href="index.html">HOME</a>
       <button class="phone-bar__box phone-bar__box--orange" style="--x: 100.49; --w: 99.618" type="button">WORKS</button>
-      <button class="phone-bar__box phone-bar__box--lime phone-bar__box--italic" style="--x: 200.109; --w: 99.89" type="button">HI</button>
+      <button class="phone-bar__box phone-bar__box--lime" style="--x: 200.109; --w: 99.89" type="button">HI</button>
     </nav>
   </div>
 
@@ -283,7 +299,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=16"></script>
 
 </body>
 </html>

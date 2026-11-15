@@ -267,6 +267,7 @@ body.home-page {
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
 .home .site-bar__text[href="index.html"] .roll__track,
+.phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out */
 .hi-page__reveal.is-showing .roll__track {
   transform: translateY(calc(-1em * var(--roll-line)));   /* up by one word */
 }
@@ -1241,7 +1242,7 @@ a.project-nav {
    ========================================= */
 :root {
   --phone-pixel: min(100vw / 390, 100svh / 844);   /* one Figma pixel on the phone */
-  --phone-bar-text-size: calc(14 * var(--phone-pixel));
+  --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
   --phone-frames-easing: cubic-bezier(0.34, 1.45, 0.5, 1);   /* goes a little too far, then settles */
@@ -1253,6 +1254,11 @@ a.project-nav {
 }
 
 @media (max-width: 700px) {
+  /* A finger moving anywhere on the screen moves the frames instead of the page */
+  body.home-page {
+    touch-action: none;
+  }
+
   /* On phones the computer home page is hidden and the phone one is shown */
   .home {
     display: none;
@@ -1281,34 +1287,73 @@ a.project-nav {
       calc((407 - var(--y) - var(--h) / 2) * var(--phone-pixel))
     )
     scale(0.1);
+  /* script.js moves it with the finger (--move-x and --move-y, Figma pixels) */
+  translate:
+    calc(var(--move-x, 0) * var(--phone-pixel))
+    calc(var(--move-y, 0) * var(--phone-pixel));
   transition:
     transform var(--phone-frames-time) var(--phone-frames-easing),
     opacity 0.2s ease;
   transition-delay: calc(var(--order) * var(--phone-frames-gap));
 }
 
-/* After the tap: every frame jumps out to its place, one after the other */
+.phone-frame__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tapped: the frame shows its hover picture (the same one as on the computer) and comes
+   in front of the others. The project frames show the pointing hand */
+.phone-frame.is-tapped {
+  z-index: 1;
+}
+
+.phone-frame.is-tapped .phone-frame__image {
+  visibility: hidden;
+}
+
+.phone-frame.is-tapped .home-frame__hover {
+  visibility: visible;
+}
+
+.phone-frame[data-href] {
+  cursor: pointer;
+}
+
+/* A second after the page opens: every frame jumps out to its place, one after the other */
 .phone-home.is-playful .phone-frame {
   opacity: 1;
   transform: none;
 }
 
-/* The bar sits on top, so the frames come out from behind it */
+/* The phone bar ("phone bar" in Figma). --bar-pixel is one Figma pixel: on the home page it
+   sits in the middle of the screen, on top, so the frames come out from behind it */
 .phone-bar {
+  --bar-pixel: var(--phone-pixel);
   position: absolute;
-  left: calc(45 * var(--phone-pixel));
-  top: calc(392 * var(--phone-pixel));
-  width: calc(300 * var(--phone-pixel));
-  height: calc(30 * var(--phone-pixel));
-  z-index: 1;
+  left: calc(45 * var(--bar-pixel));
+  top: calc(392 * var(--bar-pixel));
+  width: calc(300 * var(--bar-pixel));
+  height: calc(30 * var(--bar-pixel));
+  z-index: 2;
+}
+
+/* On a project page it stays still at the top of the screen */
+.phone-bar--project {
+  --bar-pixel: var(--phone-page-pixel);
+  position: fixed;
+  top: calc(63 * var(--bar-pixel));
+  z-index: 6;
+  display: none;               /* only on phones (see below) */
 }
 
 /* One coloured box with its word in the middle */
 .phone-bar__box {
   position: absolute;
   top: 0;
-  left: calc(var(--x) * var(--phone-pixel));
-  width: calc(var(--w) * var(--phone-pixel));
+  left: calc(var(--x) * var(--bar-pixel));
+  width: calc(var(--w) * var(--bar-pixel));
   height: 100%;
   display: flex;
   align-items: center;
@@ -1316,7 +1361,7 @@ a.project-nav {
   border: 0;
   padding: 0;
   font-family: var(--font-display);
-  font-size: var(--phone-bar-text-size);
+  font-size: calc(14 * var(--bar-pixel));
   line-height: var(--line-height);
   color: var(--color-black);
   text-decoration: none;
@@ -1326,7 +1371,6 @@ a.project-nav {
 .phone-bar__box--blue { background-color: var(--color-blue); }
 .phone-bar__box--orange { background-color: var(--color-orange); }
 .phone-bar__box--lime { background-color: var(--color-lime); }
-.phone-bar__box--italic { font-style: italic; }
 
 /* For people who turn off movement: the frames just appear */
 @media (prefers-reduced-motion: reduce) {
@@ -1334,4 +1378,194 @@ a.project-nav {
     transition: opacity 0.3s ease;
     transition-delay: 0s;
   }
+}
+
+
+/* =========================================
+   Phone project page ("phone I dont touch meat" in Figma)
+   One long 390-wide page that scrolls down. Positions are Figma pixels.
+   ========================================= */
+:root {
+  --phone-tap-time: 0.25s;   /* how long the pause play symbol and the flip back arrow stay orange */
+}
+
+/* Phones show a grey square when something is tapped: not here, as things turn orange instead */
+.phone-frame,
+.phone-bar__box,
+.phone-video,
+.phone-flip {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* Hidden on computers */
+.phone-project {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  /* On phones the computer version is hidden and the phone one is shown */
+  .project-work,
+  .project-reach,
+  .project-reach-blur,
+  .site-bar--project {
+    display: none;
+  }
+
+  .phone-project,
+  .phone-bar--project {
+    display: block;
+  }
+}
+
+.phone-project {
+  position: relative;
+  width: 100%;
+  height: calc(var(--h) * var(--phone-page-pixel));
+  overflow: hidden;            /* the previous project frame sticks out on the left in Figma */
+}
+
+/* The black line above the bar */
+.phone-project__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--y) * var(--phone-page-pixel));
+  height: var(--project-line);
+  background-color: var(--color-black);
+}
+
+/* A piece placed in Figma pixels */
+.phone-piece,
+.phone-text,
+.phone-title {
+  position: absolute;
+  left: calc(var(--x) * var(--phone-page-pixel));
+  top: calc(var(--y) * var(--phone-page-pixel));
+}
+
+.phone-piece {
+  display: block;
+  width: calc(var(--w) * var(--phone-page-pixel));
+  height: calc(var(--h) * var(--phone-page-pixel));
+  object-fit: cover;
+}
+
+/* Text: Inter Semi Bold 12px */
+.phone-text {
+  width: calc(var(--w) * var(--phone-page-pixel));
+  font-family: var(--font-body);
+  font-size: calc(12 * var(--phone-page-pixel));
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-black);
+}
+
+.phone-text--list {
+  padding-left: calc(18 * var(--phone-page-pixel));
+  list-style: disc;
+}
+
+/* The title: Instrument Serif 50px */
+.phone-title {
+  font-family: var(--font-display);
+  font-size: calc(50 * var(--phone-page-pixel));
+  font-weight: 400;
+  line-height: 1.112;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* Pictures that Figma crops a little */
+.phone-crop {
+  overflow: hidden;
+}
+
+.phone-crop img {
+  position: absolute;
+  inset: var(--crop);
+  width: var(--crop-w);
+  height: var(--crop-h);
+  max-width: none;
+}
+
+/* The video and its "pause play" symbol. Taps go through the symbol to the video */
+.phone-video {
+  cursor: pointer;
+}
+
+.phone-video__play {
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* The orange one ("new pause play hover") only shows for a moment after a tap */
+.phone-video__play--orange,
+.phone-video.is-tapped + .phone-video__play {
+  visibility: hidden;
+}
+
+.phone-video.is-tapped ~ .phone-video__play--orange {
+  visibility: visible;
+}
+
+/* While the video plays the symbol is hidden */
+.phone-video.is-playing ~ .phone-video__play {
+  opacity: 0;
+}
+
+/* Previous and next project frames */
+.phone-nav__text {
+  position: absolute;
+  inset: var(--inset);
+  font-family: var(--font-display);
+  font-size: calc(10 * var(--phone-page-pixel));
+  line-height: var(--line-height);
+  color: var(--color-orange);
+}
+
+.phone-nav__text--nowrap {
+  white-space: nowrap;
+}
+
+/* The flip back button: the arrow is turned to point up, like in Figma.
+   It turns orange for a moment when tapped */
+.phone-flip {
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.phone-flip__image {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(32.076 * var(--phone-page-pixel));
+  height: calc(27.234 * var(--phone-page-pixel));
+  transform: translate(-50%, -50%) rotate(-96.61deg) scaleY(-1);
+}
+
+.phone-flip__image--orange,
+.phone-flip.is-tapped .phone-flip__image {
+  visibility: hidden;
+}
+
+.phone-flip.is-tapped .phone-flip__image--orange {
+  visibility: visible;
+}
+
+/* The faster pictures, on top of everything. script.js moves each one up or down a little
+   (--shift, Figma pixels): it is exactly in its Figma place when it is in the middle of the
+   screen, and moves faster than the rest while you scroll */
+.phone-project__fast {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;        /* the video and the buttons underneath still work */
+}
+
+.phone-fast-piece {
+  transform: translateY(calc(var(--shift, 0) * var(--phone-page-pixel)));
+  will-change: transform;
 }

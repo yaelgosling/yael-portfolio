@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body class="project-page">
 
@@ -57,6 +57,13 @@
       <span class="site-index__name site-index__name--soon" style="--y: 544; --h: 60; --label-w: 175.91; --label-y: 15.97">PAINTINGS / ILLUSTRATIONS</span>
       <div class="site-index__band"></div>
     </div>
+  </nav>
+
+  <!-- The phone bar ("phone bar" in Figma): only on phones, stays still at the top -->
+  <nav class="phone-bar phone-bar--project" aria-label="Main">
+    <a class="phone-bar__box phone-bar__box--blue" style="--x: 0; --w: 100.823" href="index.html">HOME</a>
+    <button class="phone-bar__box phone-bar__box--orange" style="--x: 100.49; --w: 99.618" type="button">WORKS</button>
+    <button class="phone-bar__box phone-bar__box--lime" style="--x: 200.109; --w: 99.89" type="button">HI</button>
   </nav>
 
   <main>
@@ -149,6 +156,76 @@
       </div>
     </section>
 
+    <!--
+      The phone version ("phone I dont touch meat" in Figma, 390 × 2427): only on phones.
+      One long page that scrolls down. Numbers are Figma pixels from its top left corner.
+    -->
+    <section class="phone-project" style="--h: 2427">
+      <div class="phone-project__line" style="--y: 49"></div>
+
+      <!-- The information -->
+      <p class="phone-text" style="--x: 18; --y: 123; --w: 42">Project</p>
+      <h1 class="phone-title" style="--x: 18; --y: 136">I DON’T<br>TOUCH MEAT</h1>
+      <p class="phone-text" style="--x: 146; --y: 279; --w: 226">‘I Don’t Touch Meat’ is a short animation I created using an audio clip from the Israeli TV show <em>Come Eat with Me</em>, which later became a viral meme in Israel.</p>
+      <p class="phone-text" style="--x: 18; --y: 529; --w: 87">Challenges</p>
+      <ul class="phone-text phone-text--list" style="--x: 128; --y: 529; --w: 243">
+        <li>Finding ways to add a visual twist to the words, giving the humour a second layer of meaning.</li>
+        <li>It was my first time illustrating multiple scenes, so I had to learn how to create a seamless flow between them.</li>
+        <li>Finding an illustration style that worked with the humour of the story. I originally chose a darker colour palette, but realised it didn't quite fit.</li>
+      </ul>
+      <p class="phone-text" style="--x: 18; --y: 751; --w: 53">Year</p>
+      <p class="phone-text" style="--x: 146; --y: 751; --w: 53">2026</p>
+      <p class="phone-text" style="--x: 18; --y: 778; --w: 53">Field</p>
+      <p class="phone-text" style="--x: 146; --y: 778; --w: 171">Motion. Illustration.</p>
+
+      <!-- The animation: tap to play or pause. The "pause play" symbol sits in the middle
+           (the same size next to the video as on the computer). It turns orange for a moment
+           when tapped, then the video starts -->
+      <video class="phone-piece phone-video" style="--x: 18; --y: 821; --w: 354; --h: 199" src="images/i-dont-touch-meat/animation.mp4#t=0.1" poster="images/i-dont-touch-meat/animation-poster.jpg" preload="metadata" playsinline aria-label="The I Don't Touch Meat animation. Tap to play or pause."></video>
+      <img class="phone-piece phone-video__play" style="--x: 182.44; --y: 905.34; --w: 25.11; --h: 30.33" src="images/project/new-pause-play.png" alt="">
+      <img class="phone-piece phone-video__play phone-video__play--orange" style="--x: 182.44; --y: 905.34; --w: 25.11; --h: 30.32" src="images/project/new-pause-play-hover.svg" alt="">
+
+      <!-- The pictures -->
+      <img class="phone-piece" style="--x: 7; --y: 1062; --w: 277.157; --h: 155.901" src="images/i-dont-touch-meat/artwork-71.gif" alt="">
+      <img class="phone-piece" style="--x: 202; --y: 1317; --w: 170.24; --h: 266" src="images/i-dont-touch-meat/artwork-5.png" alt="">
+      <img class="phone-piece" style="--x: 34; --y: 1680; --w: 160.854; --h: 90.646" src="images/i-dont-touch-meat/still-18-05-02.png" alt="A still from the animation">
+      <div class="phone-piece phone-crop" style="--x: 73; --y: 1935; --w: 160.646; --h: 90.43">
+        <img style="--crop: 0.08% auto auto -0.35%; --crop-w: 100.28%; --crop-h: 100.09%" src="images/i-dont-touch-meat/still-18-03-19.png" alt="A still from the animation">
+      </div>
+
+      <!-- Previous and next project (they become links once the phone pages exist) -->
+      <div class="phone-piece phone-nav" style="--x: -22; --y: 2249; --w: 282.912; --h: 134.999">
+        <div class="project-nav__layer" style="--inset: 45.4% 34.61% 16.56% 11.38%"><img src="images/phone/previous-judges-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 48.06% 35.89% 19.06% 12.6%"><img src="images/phone/previous-judges-2.svg" alt=""></div>
+        <p class="phone-nav__text" style="--inset: 57.04% 55.33% 21.93% 18.03%"><span class="project-nav__label">PREVIOUS<br>PROJECT</span></p>
+        <p class="phone-nav__text phone-nav__text--nowrap" style="--inset: 61.48% 38.85% 31.11% 40.3%">Judges, Chapter 4</p>
+      </div>
+      <div class="phone-piece phone-nav" style="--x: 201; --y: 2281; --w: 177.166; --h: 145.68">
+        <div class="project-nav__layer" style="--inset: 4.46% 3.25% 34.1% 30.43%"><img src="images/phone/next-witch-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 7.41% 6.14% 36.59% 32.97%"><img src="images/phone/next-witch-2.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 7.67% 6.36% 36.85% 33.22%"><img src="images/phone/next-witch-3.svg" alt=""></div>
+        <p class="phone-nav__text" style="--inset: 21.97% 18.27% 43.76% 50.24%"><span class="project-nav__label">NEXT PROJECT</span><br><br>The Witch</p>
+      </div>
+
+      <!-- "flip back button": glides back up to the top. It turns orange for a moment when tapped.
+           In Figma the arrow is turned to point up -->
+      <button class="phone-piece phone-flip" style="--x: 180; --y: 2377; --w: 30.748; --h: 34.999" type="button" aria-label="Back to the top">
+        <img class="phone-flip__image" src="images/phone/flip-back.svg" alt="">
+        <img class="phone-flip__image phone-flip__image--orange" src="images/phone/flip-back-orange.svg" alt="">
+      </button>
+
+      <!-- "phone top pictures": on top of everything, they move a bit faster than the rest
+           when you scroll, which gives the page depth (script.js) -->
+      <div class="phone-project__fast">
+        <img class="phone-piece phone-fast-piece" style="--x: 18; --y: 1112; --w: 286.222; --h: 161" src="images/i-dont-touch-meat/artwork-73.gif" alt="">
+        <img class="phone-piece phone-fast-piece" style="--x: 18; --y: 1522; --w: 109; --h: 61" src="images/i-dont-touch-meat/artwork-51.gif" alt="">
+        <img class="phone-piece phone-fast-piece" style="--x: 170; --y: 1725; --w: 202; --h: 113.663" src="images/i-dont-touch-meat/still-18-02-33.png" alt="A still from the animation">
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 102; --y: 2046; --w: 201.531; --h: 113">
+          <img style="--crop: -0.16% auto auto 0.04%; --crop-w: 99.86%; --crop-h: 100.63%" src="images/i-dont-touch-meat/still-18-03-38.png" alt="A still from the animation">
+        </div>
+      </div>
+    </section>
+
     <!-- Blurs the work page more and more while "Reach Out" slides up (script.js) -->
     <div class="project-reach-blur" aria-hidden="true"></div>
 
@@ -224,7 +301,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=16"></script>
 
 </body>
 </html>

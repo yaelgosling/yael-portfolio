@@ -15,7 +15,9 @@ const EASING = 0.04;         // how quickly things catch up with the mouse (smal
 
 // items: [{ element (gets --move-x and --move-y), placed (has --x --y --w --h) }]
 // stageWidth/stageHeight: the Figma frame size. isActive(): whether they should move right now
-function followMouse(items, stageWidth, stageHeight, isActive) {
+// maxMove: how far (Figma pixels) something at the edge can move.
+// Works with a mouse and with a finger moving on the screen
+function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOVE) {
   // A random number between min and max
   const between = (min, max) => min + Math.random() * (max - min);
 
@@ -45,8 +47,8 @@ function followMouse(items, stageWidth, stageHeight, isActive) {
     let stillMoving = false;
 
     movers.forEach((mover) => {
-      const targetX = -mouseX * 2 * MAX_MOVE * mover.strengthX;
-      const targetY = -mouseY * 2 * MAX_MOVE * mover.strengthY;
+      const targetX = -mouseX * 2 * maxMove * mover.strengthX;
+      const targetY = -mouseY * 2 * maxMove * mover.strengthY;
       mover.moveX += (targetX - mover.moveX) * EASING;
       mover.moveY += (targetY - mover.moveY) * EASING;
       mover.element.style.setProperty("--move-x", mover.moveX.toFixed(2));
@@ -86,6 +88,18 @@ function followMouse(items, stageWidth, stageHeight, isActive) {
   document.documentElement.addEventListener("mouseleave", rest);
 
   return rest;
+}
+
+// The phone home frames move with a finger moving on the screen (the phone frame is 390 x 844).
+// They move the same share of the screen as on the computer: 160 of 1440 → 43 of 390
+const phoneFrames = [...document.querySelectorAll(".phone-frame")];
+if (phoneFrames.length && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  followMouse(
+    phoneFrames.map((frame) => ({ element: frame, placed: frame })),
+    390, 844,
+    () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful"),   // only after they came out
+    MAX_MOVE * 390 / 1440
+  );
 }
 
 let restHomeFrames = () => {};   // lets the home frames drift back to their places (set below)
@@ -143,6 +157,7 @@ function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
 // and the links on Reach Out and the Hi page (Instagram, the email address, the phone number)
 [
   [".site-bar__text:not(.site-bar__view)", "center"],
+  [".phone-bar__box", "center"],                                   // the phone bar
   [".site-index__name:not(.site-index__name--soon)", "start"],   // projects that aren't ready stay still
   [".project-text--email", "start"],
 ].forEach(([selector, align]) => {
@@ -822,12 +837,137 @@ document.querySelectorAll(".card__tab").forEach((tab) => {
 
 
 /* ---------- Phone home page ----------
-   It starts blank (only the bar). The first tap anywhere makes the frames jump out
-   from behind the bar ("phone home playful" in Figma) */
+   It starts blank (only the bar), like a loading page. A second after the page opens,
+   the frames jump out from behind the bar ("phone home playful" in Figma) */
 const phoneHome = document.querySelector('.phone-home');
+const PHONE_WAIT = 1000;   // how long the blank page shows (milliseconds)
 
 if (phoneHome) {
-  document.addEventListener('click', function () {
-    phoneHome.classList.add('is-playful');
+  const openedAt = performance.now();
+
+  // Waits until the pictures have loaded, but never less than a second after opening
+  window.addEventListener('load', function () {
+    const waitLeft = Math.max(0, PHONE_WAIT - (performance.now() - openedAt));
+    setTimeout(function () {
+      phoneHome.classList.add('is-playful');
+    }, waitLeft);
   });
 }
+
+
+/* ---------- Phone home page: tapping the frames ----------
+   First tap: the frame shows its hover picture (the same one as on the computer, copied
+   from the computer frame named in data-hover). Second tap: it opens the project (data-href).
+   Tapping anywhere else puts the frame back */
+const phoneFramesToTap = [...document.querySelectorAll(".phone-frame")];
+
+phoneFramesToTap.forEach((frame) => {
+  const computerImage = document.querySelector(`.home-frame__image[src="${frame.dataset.hover}"]`);
+  const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
+  if (hover) frame.append(hover.cloneNode(true));
+
+  frame.addEventListener("click", (event) => {
+    if (!frame.closest(".phone-home").classList.contains("is-playful")) return;   // still hidden
+    event.stopPropagation();
+    if (frame.classList.contains("is-tapped") && frame.dataset.href) {
+      window.location.href = frame.dataset.href;
+      return;
+    }
+    phoneFramesToTap.forEach((other) => other.classList.toggle("is-tapped", other === frame));
+  });
+});
+
+document.addEventListener("click", () => {
+  phoneFramesToTap.forEach((frame) => frame.classList.remove("is-tapped"));
+});
+
+
+/* =========================================
+   Phone project page. There is no hover on a phone, so the pause play symbol and the
+   flip back arrow turn orange for a moment when tapped, and then do their thing
+   ========================================= */
+const PHONE_TAP_TIME = 250;   // how long they stay orange (milliseconds), like --phone-tap-time
+
+// Shows the orange version for a moment, then runs whenDone
+function flashOrange(element, whenDone) {
+  element.classList.add("is-tapped");
+  setTimeout(() => {
+    element.classList.remove("is-tapped");
+    whenDone();
+  }, PHONE_TAP_TIME);
+}
+
+// The video: tap to play or pause. If it isn't all on the screen, the page glides so it sits in the middle
+document.querySelectorAll(".phone-video").forEach((video) => {
+  video.addEventListener("click", () => {
+    const box = video.getBoundingClientRect();
+    if (box.top < 0 || box.bottom > window.innerHeight) {
+      window.scrollBy({ top: box.top + box.height / 2 - window.innerHeight / 2, behavior: "smooth" });
+    }
+    if (video.paused) flashOrange(video, () => video.play());
+    else video.pause();
+  });
+
+  // Hide the symbol while the video plays, show it again when it stops
+  video.addEventListener("play", () => video.classList.add("is-playing"));
+  video.addEventListener("pause", () => video.classList.remove("is-playing"));
+  video.addEventListener("ended", () => video.classList.remove("is-playing"));
+});
+
+// The flip back button: glides back up to the top, speeding up and slowing down (like on the computer)
+document.querySelectorAll(".phone-flip").forEach((button) => {
+  const FLIP_TIME = 1400;
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // slow, fast, slow
+
+  button.addEventListener("click", () => {
+    flashOrange(button, () => {
+      const from = window.scrollY;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        window.scrollTo(0, 0);
+        return;
+      }
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min((now - start) / FLIP_TIME, 1);
+        window.scrollTo(0, from * (1 - ease(t)));
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  });
+});
+
+// The faster pictures: while you scroll they move a bit faster than the rest (FAST_EXTRA, like on
+// the computer). Each one is exactly in its Figma place when it is in the middle of the screen
+document.querySelectorAll(".phone-project").forEach((page) => {
+  const pieces = [...page.querySelectorAll(".phone-fast-piece")].map((element) => {
+    const read = (name) => parseFloat(element.style.getPropertyValue(name));
+    return { element, middle: read("--y") + read("--h") / 2 };
+  });
+  if (!pieces.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let waiting = false;
+
+  function update() {
+    waiting = false;
+    const pixel = page.offsetWidth / 390;   // one Figma pixel on this screen
+    if (!pixel) return;                       // the phone version is hidden (a computer)
+    // The middle of the screen, in Figma pixels down the page
+    const screenMiddle = (window.innerHeight / 2 - page.getBoundingClientRect().top) / pixel;
+    pieces.forEach(({ element, middle }) => {
+      element.style.setProperty("--shift", (-(screenMiddle - middle) * FAST_EXTRA).toFixed(2));
+    });
+  }
+
+  function requestUpdate() {
+    if (!waiting) {
+      waiting = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  document.body.addEventListener("animationend", requestUpdate);   // after the page has slid up
+  update();
+});
