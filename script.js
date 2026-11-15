@@ -819,3 +819,15 @@ document.querySelectorAll(".card__tab").forEach((tab) => {
     card.querySelector(".card__content").hidden = !isOpen;
   });
 });
+
+
+/* ---------- Phone home page ----------
+   It starts blank (only the bar). The first tap anywhere makes the frames jump out
+   from behind the bar ("phone home playful" in Figma) */
+const phoneHome = document.querySelector('.phone-home');
+
+if (phoneHome) {
+  document.addEventListener('click', function () {
+    phoneHome.classList.add('is-playful');
+  });
+}

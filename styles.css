@@ -1233,3 +1233,105 @@ a.project-nav {
     width: 100%;
   }
 }
+
+
+/* =========================================
+   Phone home page ("phone home blank" and "phone home playful" in Figma)
+   A 390 × 844 phone frame that fits the screen. Positions are Figma pixels.
+   ========================================= */
+:root {
+  --phone-pixel: min(100vw / 390, 100svh / 844);   /* one Figma pixel on the phone */
+  --phone-bar-text-size: calc(14 * var(--phone-pixel));
+  --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
+  --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
+  --phone-frames-easing: cubic-bezier(0.34, 1.45, 0.5, 1);   /* goes a little too far, then settles */
+}
+
+/* Hidden on computers */
+.phone-home {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  /* On phones the computer home page is hidden and the phone one is shown */
+  .home {
+    display: none;
+  }
+
+  .phone-home {
+    display: block;
+    position: relative;
+    width: calc(390 * var(--phone-pixel));
+    height: calc(844 * var(--phone-pixel));
+  }
+}
+
+/* One frame. Before the tap it hides small behind the middle of the bar
+   (the bar's middle is at 195, 407 in Figma) */
+.phone-frame {
+  position: absolute;
+  left: calc(var(--x) * var(--phone-pixel));
+  top: calc(var(--y) * var(--phone-pixel));
+  width: calc(var(--w) * var(--phone-pixel));
+  height: calc(var(--h) * var(--phone-pixel));
+  opacity: 0;
+  transform:
+    translate(
+      calc((195 - var(--x) - var(--w) / 2) * var(--phone-pixel)),
+      calc((407 - var(--y) - var(--h) / 2) * var(--phone-pixel))
+    )
+    scale(0.1);
+  transition:
+    transform var(--phone-frames-time) var(--phone-frames-easing),
+    opacity 0.2s ease;
+  transition-delay: calc(var(--order) * var(--phone-frames-gap));
+}
+
+/* After the tap: every frame jumps out to its place, one after the other */
+.phone-home.is-playful .phone-frame {
+  opacity: 1;
+  transform: none;
+}
+
+/* The bar sits on top, so the frames come out from behind it */
+.phone-bar {
+  position: absolute;
+  left: calc(45 * var(--phone-pixel));
+  top: calc(392 * var(--phone-pixel));
+  width: calc(300 * var(--phone-pixel));
+  height: calc(30 * var(--phone-pixel));
+  z-index: 1;
+}
+
+/* One coloured box with its word in the middle */
+.phone-bar__box {
+  position: absolute;
+  top: 0;
+  left: calc(var(--x) * var(--phone-pixel));
+  width: calc(var(--w) * var(--phone-pixel));
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: var(--phone-bar-text-size);
+  line-height: var(--line-height);
+  color: var(--color-black);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.phone-bar__box--blue { background-color: var(--color-blue); }
+.phone-bar__box--orange { background-color: var(--color-orange); }
+.phone-bar__box--lime { background-color: var(--color-lime); }
+.phone-bar__box--italic { font-style: italic; }
+
+/* For people who turn off movement: the frames just appear */
+@media (prefers-reduced-motion: reduce) {
+  .phone-frame {
+    transition: opacity 0.3s ease;
+    transition-delay: 0s;
+  }
+}
