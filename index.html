@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=30">
+  <link rel="stylesheet" href="styles.css?v=33">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -371,7 +371,25 @@
     <div class="phone-top-line" aria-hidden="true"></div>
   </section>
 
-  <script src="script.js?v=25"></script>
+  <!-- REACH OUT on the phone ("phone reach out" in Figma): on the home page swiping up (and on a
+       project page swiping up again at the end) drags it up from the bottom while the page behind
+       blurs more and more (like Reach Out on the computer).
+       Swiping down puts it away. Numbers are Figma pixels in the 390 × 844 phone frame -->
+  <div class="phone-reach-blur" aria-hidden="true"></div>
+  <section class="phone-reach" aria-label="Reach out">
+    <div class="phone-top-line" aria-hidden="true"></div>
+    <div class="phone-reach__page">
+      <h2 class="phone-reach__title" style="--x: 18; --y: 55">REACH OUT</h2>
+      <p class="phone-reach__label" style="--x: 18; --y: 378">Email me</p>
+      <a class="phone-reach__contact" style="--x: 18; --y: 393" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+      <p class="phone-reach__label" style="--x: 146; --y: 534">Let’s talk</p>
+      <a class="phone-reach__contact" style="--x: 146; --y: 550" href="tel:+972538521501">+972 538521501</a>
+      <p class="phone-reach__label" style="--x: 146; --y: 689">Instagram</p>
+      <a class="phone-reach__contact" style="--x: 146; --y: 704" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
+    </div>
+  </section>
+
+  <script src="script.js?v=28"></script>
 
 </body>
 </html>

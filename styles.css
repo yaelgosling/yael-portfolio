@@ -277,7 +277,8 @@ body.home-page {
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
 .home .site-bar__text[href="index.html"] .roll__track,
-body:not(.is-phone-works-open):not(.is-phone-hi-open) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out (not while WORKS or HI is open) */
+body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-project) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out (not while WORKS or HI is open, or a project slides in) */
+.is-phone-going-home .phone-bar__box--blue .roll__track,     /* phone: HOME rolls to italic while the home page rolls down */
 .is-phone-works-open .phone-bar__works .roll__track,          /* phone: WORKS while the list is open */
 .is-phone-hi-open:not(.is-phone-works-open) .phone-bar__hi .roll__track,   /* phone: HI while the Hi page is open */
 .hi-page__reveal.is-showing .roll__track {
@@ -1909,4 +1910,110 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   .phone-hi {
     transition: none;
   }
+}
+
+
+/* =========================================
+   Phone: REACH OUT ("phone reach out" in Figma), on the home page and at the end of a project.
+   script.js sets --reach-progress from 0 (down, out of sight) to 1 (all the way up) while a
+   finger drags it, so it follows the finger and the home page blurs more and more.
+   Positions are Figma pixels (it fits the screen like the home page)
+   ========================================= */
+.phone-reach,
+.phone-reach-blur {
+  display: none;               /* only on phones */
+}
+
+@media (max-width: 700px) {
+  .phone-reach,
+  .phone-reach-blur {
+    display: block;
+  }
+
+  /* On the home page a finger swipe moves Reach Out, not the page */
+  body.home-page,
+  .phone-reach {
+    touch-action: none;
+  }
+
+  /* On a project page the end doesn't bounce, so swiping on brings up Reach Out instead */
+  main > .phone-scroll {
+    overscroll-behavior: none;
+  }
+}
+
+/* The blur over the page behind (the same amount as behind the index on the computer) */
+.phone-reach-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 8;                  /* over everything, also the bar */
+  pointer-events: none;
+  backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
+  -webkit-backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
+  transition:
+    backdrop-filter var(--roll-time) var(--page-change-easing),
+    -webkit-backdrop-filter var(--roll-time) var(--page-change-easing);
+}
+
+/* The page itself: white, then white to blue from y 77 to the bottom of the screen */
+.phone-reach {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 100vh;
+  height: 100lvh;              /* also behind the phone's search bar */
+  z-index: 9;
+  background: linear-gradient(to bottom,
+    var(--color-white) calc((77 - var(--phone-top)) * var(--phone-pixel)),
+    var(--color-blue));
+  transform: translate3d(0, calc((1 - var(--reach-progress, 0)) * 100%), 0);
+  will-change: transform;
+  transition: transform var(--roll-time) var(--page-change-easing);
+}
+
+/* While the finger drags it, it follows straight away */
+.is-phone-reach-dragging .phone-reach,
+.is-phone-reach-dragging .phone-reach-blur {
+  transition: none;
+}
+
+.phone-reach__page {
+  position: relative;
+  width: calc(390 * var(--phone-pixel));
+  height: 100%;
+  margin: 0 auto;
+}
+
+.phone-reach__title,
+.phone-reach__label,
+.phone-reach__contact {
+  position: absolute;
+  left: calc(var(--x) * var(--phone-pixel));
+  top: calc((var(--y) - var(--phone-top)) * var(--phone-pixel));
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* "REACH OUT": Instrument Serif 50px */
+.phone-reach__title {
+  font-family: var(--font-display);
+  font-size: calc(50 * var(--phone-pixel));
+  font-weight: 400;
+  line-height: 1.112;
+}
+
+/* "Email me" and the others: Inter Semi Bold 14px */
+.phone-reach__label {
+  font-family: var(--font-body);
+  font-size: calc(14 * var(--phone-pixel));
+  font-weight: 600;
+  line-height: normal;
+}
+
+/* The email address, phone number and Instagram: Instrument Serif 30px */
+.phone-reach__contact {
+  font-family: var(--font-display);
+  font-size: calc(30 * var(--phone-pixel));
+  line-height: normal;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }

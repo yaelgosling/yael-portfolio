@@ -135,7 +135,7 @@ if (!reducedMotion && phoneFrames.length) {
     items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 24, bottom: 820 }),
     // only after they came out, and not behind WORKS or HI
     isActive: () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
-                    !document.body.matches(".is-phone-works-open, .is-phone-hi-open"),
+                    !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open"),
   });
 }
 
@@ -1233,6 +1233,7 @@ async function phoneOpenProject(href) {
   await phonePageReady(page);
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+  document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
   movePhoneBar("top");
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
@@ -1292,7 +1293,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     const page = phonePreparePage(link.href, "page-from-top");
     await phonePageReady(page);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
-    document.body.classList.add("is-leaving-home");
+    document.body.classList.add("is-leaving-home", "is-phone-going-home");   // HOME rolls to italic
     movePhoneBar("middle");
     setTimeout(() => {
       sessionStorage.setItem("phone-home-back", "yes");
@@ -1337,6 +1338,96 @@ window.addEventListener("pageshow", (event) => {
     phoneWaitingPages[href].remove();
     delete phoneWaitingPages[href];
   });
-  document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+  document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
+    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
   if (phoneBar) phoneBar.style.transform = "";
 });
+
+
+/* =========================================
+   Phone: REACH OUT. On the home page swiping up drags it up from the bottom; on a project page
+   it comes when you keep swiping up at the end of the page. It follows the finger, and the
+   page behind blurs more and more. Let go past a third of the way (or with a
+   quick flick) and it goes all the way up, otherwise back down. Swiping down puts it away
+   ========================================= */
+const phoneReach = document.querySelector(".phone-reach");
+
+const projectScroller = document.querySelector("main > .phone-scroll");   // on a project page
+
+if (phoneReach) {
+  const START_AFTER = 10;   // how far (screen pixels) the finger moves before it counts as a swipe
+  const FLICK = 0.5;        // a flick this fast (pixels per millisecond) opens or closes it anyway
+  let progress = 0;         // 0 = down, 1 = all the way up
+  let startY = null;
+  let startProgress = 0;
+  let dragging = false;
+  let lastY = 0;
+  let lastTime = 0;
+  let speed = 0;
+
+  function setReach(value) {
+    progress = Math.max(0, Math.min(1, value));
+    document.documentElement.style.setProperty("--reach-progress", progress.toFixed(4));
+    document.body.classList.toggle("is-phone-reach-open", progress > 0);
+  }
+
+  // When it can come up: never behind WORKS or HI; on the home page once the frames are out;
+  // on a project page only at the very end of the page
+  function canOpen() {
+    if (document.body.matches(".is-phone-works-open, .is-phone-hi-open")) return false;
+    if (isPhoneHome) return document.querySelector(".phone-home").classList.contains("is-playful");
+    if (projectScroller) {
+      const end = projectScroller.scrollHeight - projectScroller.clientHeight;
+      return projectScroller.scrollTop >= end - 2;
+    }
+    return false;
+  }
+
+  document.addEventListener("touchstart", (event) => {
+    startY = event.touches[0].clientY;
+    startProgress = progress;
+    dragging = false;
+    lastY = startY;
+    lastTime = performance.now();
+    speed = 0;
+  }, { passive: true });
+
+  document.addEventListener("touchmove", (event) => {
+    if (startY === null) return;
+    const y = event.touches[0].clientY;
+    // Not at the end of the project yet: the page scrolls as usual, and counting starts
+    // from the moment it reaches the end
+    if (!dragging && startProgress === 0 && !canOpen()) {
+      startY = y;
+      return;
+    }
+    const moved = startY - y;   // up is positive
+    if (!dragging) {
+      if (Math.abs(moved) < START_AFTER) return;
+      // Down while it is closed, or up while it is open: nothing to do
+      if ((startProgress === 0 && moved < 0) || (startProgress === 1 && moved > 0)) {
+        startY = null;
+        return;
+      }
+      dragging = true;
+      document.body.classList.add("is-phone-reach-dragging");
+    }
+    const now = performance.now();
+    speed = (lastY - y) / Math.max(now - lastTime, 1);
+    lastY = y;
+    lastTime = now;
+    setReach(startProgress + moved / window.innerHeight);
+  }, { passive: true });
+
+  document.addEventListener("touchend", () => {
+    if (dragging) {
+      document.body.classList.remove("is-phone-reach-dragging");
+      let open = progress > (startProgress === 0 ? 1 / 3 : 2 / 3);
+      if (speed > FLICK) open = true;
+      if (speed < -FLICK) open = false;
+      setReach(open ? 1 : 0);
+    }
+    startY = null;
+    dragging = false;
+  });
+}
