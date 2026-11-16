@@ -1270,7 +1270,6 @@ a.project-nav {
   --phone-home-height: 1500;                        /* and where it ends */
   --phone-bar-middle: 422.65;                       /* the middle of the home bar in Figma (y) */
   --phone-pixel: calc(100vw / 390);                 /* one Figma pixel on the phone home page */
-  --phone-reveal-fade: 0.25s;                       /* a frame's work fading in or out on its own */
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
@@ -1354,32 +1353,17 @@ a.project-nav {
   height: 100%;
 }
 
-/* Every few seconds a work frame shows its work on its own (script.js adds is-revealed): its
-   hover picture (the same one as on the computer) fades in over the plain frame, and it comes
-   in front of the others. While it shows, a tap opens the project */
-.phone-frame .phone-frame__image,
-.phone-frame .home-frame__hover {
-  transition: opacity var(--phone-reveal-fade) ease;
+/* The work frames always show their work: their hover picture (the same one as on the
+   computer, added by script.js) instead of the plain frame. A tap opens the project */
+.phone-frame:has(.home-frame__hover) .phone-frame__image {
+  visibility: hidden;
 }
 
 .phone-frame .home-frame__hover {
   visibility: visible;
-  opacity: 0;
 }
 
-.phone-frame.is-revealed {
-  z-index: 1;
-}
-
-.phone-frame.is-revealed .phone-frame__image {
-  opacity: 0;
-}
-
-.phone-frame.is-revealed .home-frame__hover {
-  opacity: 1;
-}
-
-.phone-frame.is-revealed[data-href] {
+.phone-frame[data-href] {
   cursor: pointer;
 }
 

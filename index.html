@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=45">
+  <link rel="stylesheet" href="styles.css?v=46">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -239,9 +239,9 @@
 
       <!-- "phone home over" in Figma: the work frames. While you scroll they move faster than the
            frames under them (script.js sets --shift), like the fast pictures on a project page.
-           Every few seconds one of them shows its work on its own (its hover picture, copied by
-           script.js from the computer frame named in data-hover). While the work shows, tapping
-           the frame opens the project (data-href), once the phone version of that project exists.
+           They always show their work (their hover picture, copied by script.js from the computer
+           frame named in data-hover). Tapping a frame opens the project (data-href), once the phone
+           version of that project exists.
            The frame drawings are written right into the page, so they show from the very first moment -->
       <div class="phone-home__frames">
       <div class="phone-frame phone-frame--over" style="--x: 151; --y: 92; --w: 192.412; --h: 158.216; --order: 1" data-hover="images/home/witch-frame.svg">
@@ -534,7 +534,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=39"></script>
+  <script src="script.js?v=40"></script>
 
 </body>
 </html>

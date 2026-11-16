@@ -974,14 +974,10 @@ if (phoneHome && window.frameElement) {
 }
 
 
-/* ---------- Phone home page: the work frames show their work on their own ----------
-   A work frame shows its work (its hover picture, the same one as on the computer, copied
-   from the computer frame named in data-hover) while it is in the middle part of the screen.
-   As you scroll and it gets close to the top or bottom edge, it fades back to the plain frame.
-   While a frame shows its work, tapping it opens the project (data-href). Tapping a frame
-   that isn't showing its work does nothing */
-const REVEAL_EDGE = 0.12;   // how close to the edge (0.12 = the top and bottom 12% of the screen) it goes back
-
+/* ---------- Phone home page: the work frames ----------
+   They always show their work (their hover picture, the same one as on the computer, copied
+   from the computer frame named in data-hover). Tapping one opens the project (data-href),
+   once the phone version of that project exists */
 const phoneWorkFrames = [...document.querySelectorAll(".phone-frame[data-hover]")];
 
 phoneWorkFrames.forEach((frame) => {
@@ -990,38 +986,11 @@ phoneWorkFrames.forEach((frame) => {
   if (hover) frame.append(hover.cloneNode(true));
 
   frame.addEventListener("click", () => {
-    if (frame.classList.contains("is-revealed") && frame.dataset.href) {
+    if (frame.dataset.href && phoneHome.classList.contains("is-playful")) {
       phoneOpenProject(frame.dataset.href);
     }
   });
 });
-
-if (phoneHome && !window.frameElement && phoneWorkFrames.length) {
-  function updateReveal() {
-    // Only once the frames are out, and not behind WORKS, HI or Reach Out
-    const free = phoneHome.classList.contains("is-playful") &&
-      !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open");
-    const screenHeight = window.innerHeight;
-    phoneWorkFrames.forEach((frame) => {
-      const box = frame.getBoundingClientRect();
-      const middle = box.top + box.height / 2;
-      const inMiddlePart = middle > screenHeight * REVEAL_EDGE && middle < screenHeight * (1 - REVEAL_EDGE);
-      frame.classList.toggle("is-revealed", free && inMiddlePart);
-    });
-  }
-
-  let revealWaiting = false;
-  function requestReveal() {
-    if (!revealWaiting) {
-      revealWaiting = true;
-      requestAnimationFrame(() => { revealWaiting = false; updateReveal(); });
-    }
-  }
-
-  document.querySelector(".phone-home__scroll").addEventListener("scroll", requestReveal, { passive: true });
-  window.addEventListener("resize", requestReveal);
-  setInterval(updateReveal, 250);   // also when the frames come out, sway, or WORKS / HI close
-}
 
 // Scrolling the home page: the work frames ("phone home over") move a bit faster than the
 // drawings under them (FAST_EXTRA, like the fast pictures on a project page). Each one is
