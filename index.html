@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=42">
+  <link rel="stylesheet" href="styles.css?v=45">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -220,17 +220,31 @@
        It starts as "phone home blank" in Figma: just the bar, like a loading page.
        A second later it turns into "phone home playful": the frames jump out from behind the bar.
        At the same moment HOME rolls up into italic, like the words in the computer bar.
-       Then a finger moving on the screen moves the frames, like the mouse on the computer.
-       Tapping a frame shows its hover picture; tapping it again opens the project.
-       Numbers are Figma pixels in the 390 × 844 phone frame. --order = which frame comes out first -->
+       Tilting or shaking the phone moves the frames.
+       The page is "phone home new" in Figma: 1500 high, it scrolls down, with two layers
+       ("phone home over" moves faster than "phone home under") while the bar stays in the middle.
+       Numbers are Figma pixels in the 390 × 1500 phone frame. --order = which frame comes out first -->
   <div class="phone-home">
-    <div class="phone-home__frames">
-      <!-- The frame drawings are written right into the page (not loaded as pictures), so when you
-           come back to the home page they are there from the very first moment, with no flicker.
-           Tap a frame: it shows its hover picture (copied by script.js from the computer frame
-           named in data-hover). Tap it again: it opens the project (data-href), once the phone
-           version of that project exists -->
-      <div class="phone-frame" style="--x: 27; --y: 472; --w: 152.615; --h: 125.492; --order: 0" data-hover="images/home/witch-frame.svg">
+    <!-- The page scrolls down inside this box. The bar is not in it, so it stays still on the screen -->
+    <div class="phone-scroll phone-home__scroll">
+    <div class="phone-home__page">
+      <!-- "phone home under" in Figma: drawings without a work in them. They scroll at the normal speed -->
+      <div class="phone-home__under">
+        <div class="phone-frame phone-frame--under" style="--x: 74; --y: 250; --w: 159; --h: 80.067; --order: 2"><img class="phone-frame__image" src="images/phone/under-oval-lime.svg" alt=""></div>
+        <div class="phone-frame phone-frame--under" style="--x: 211; --y: 516; --w: 149.859; --h: 92.745; --order: 2"><img class="phone-frame__image" src="images/phone/under-wide-orange.svg" alt=""></div>
+        <div class="phone-frame phone-frame--under" style="--x: 92; --y: 932; --w: 81.425; --h: 165.379; --order: 5"><img class="phone-frame__image" src="images/phone/under-tall-orange.svg" alt=""></div>
+        <div class="phone-frame phone-frame--under" style="--x: 29; --y: 1227; --w: 147.304; --h: 77; --order: 7"><img class="phone-frame__image" src="images/phone/under-wide-blue.svg" alt=""></div>
+        <div class="phone-frame phone-frame--under" style="--x: 200; --y: 1251; --w: 118.92; --h: 189.635; --order: 8"><img class="phone-frame__image" src="images/phone/under-tall-lime.svg" alt=""></div>
+      </div>
+
+      <!-- "phone home over" in Figma: the work frames. While you scroll they move faster than the
+           frames under them (script.js sets --shift), like the fast pictures on a project page.
+           Every few seconds one of them shows its work on its own (its hover picture, copied by
+           script.js from the computer frame named in data-hover). While the work shows, tapping
+           the frame opens the project (data-href), once the phone version of that project exists.
+           The frame drawings are written right into the page, so they show from the very first moment -->
+      <div class="phone-home__frames">
+      <div class="phone-frame phone-frame--over" style="--x: 151; --y: 92; --w: 192.412; --h: 158.216; --order: 1" data-hover="images/home/witch-frame.svg">
         <!-- images/phone/witch-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="121.22" height="99.6762" viewBox="0 0 121.22 99.6762" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -246,7 +260,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame" style="--x: 72; --y: 218; --w: 131.031; --h: 140.582; --order: 1" data-hover="images/home/grunge-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 180; --y: 619; --w: 165.199; --h: 177.240; --order: 3" data-hover="images/home/grunge-frame.svg">
         <!-- images/phone/grunge-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="104.076" height="111.662" viewBox="0 0 104.076 111.662" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -281,7 +295,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame" style="--x: 176; --y: 555; --w: 184.131; --h: 87.864; --order: 2" data-hover="images/home/judges-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 36; --y: 810; --w: 255.198; --h: 121.775; --order: 4" data-hover="images/home/judges-frame.svg">
         <!-- images/phone/judges-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="146.252" height="69.7885" viewBox="0 0 146.252 69.7885" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -311,7 +325,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame" style="--x: 241; --y: 27; --w: 115.942; --h: 227.299; --order: 3" data-hover="images/home/mtv-ident-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 158; --y: 957; --w: 161.175; --h: 315.977; --order: 6" data-hover="images/home/mtv-ident-frame.svg">
         <!-- images/phone/mtv-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="92.0905" height="180.54" viewBox="0 0 92.0905 180.54" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -342,7 +356,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame" style="--x: 105; --y: 648; --w: 149.368; --h: 161.592; --order: 4" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
+      <div class="phone-frame phone-frame--over" style="--x: 29; --y: 391; --w: 188.318; --h: 203.730; --order: 0" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
         <!-- images/phone/dont-eat-meat-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="118.641" height="128.35" viewBox="0 0 118.641 128.35" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -369,30 +383,19 @@
         </defs>
         </svg>
       </div>
+      </div>
+    </div>
     </div>
 
-    <!-- The phone bar ("phone bar" in Figma). Numbers are Figma pixels from its left edge.
+    <!-- The phone bar ("phone bar new" in Figma on the home page, is-home-size). Numbers are Figma
+         pixels from its left edge: --x and --w for the smaller bar at the top of the other pages,
+         --x-home and --w-home for the home page.
          Each word is written twice (the second one in italic, waiting below) so it can roll -->
-    <nav class="phone-bar" aria-label="Main">
-      <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
-      <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
-      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
+    <nav class="phone-bar is-home-size" aria-label="Main">
+      <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823; --x-home: 0; --w-home: 104.52" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
+      <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618; --x-home: 104.175; --w-home: 103.271" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
+      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89; --x-home: 207; --w-home: 103.552" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
     </nav>
-    <!-- Shrinks the bar to the home page's size before the page is first shown (script.js keeps it so) -->
-    <script>
-      (function () {
-        var bar = document.querySelector(".phone-home .phone-bar");
-        var probe = document.createElement("div");
-        probe.style.cssText = "position:fixed;height:100svh;visibility:hidden";
-        document.body.appendChild(probe);
-        var homePixel = Math.min(window.innerWidth / 390, probe.offsetHeight / 796);
-        probe.remove();
-        var page = window.innerWidth / 390;
-        bar.style.transition = "none";
-        bar.style.transform = "translate(" + 150 * (page - homePixel) + "px, " + 15 * (page - homePixel) +
-          "px) scale(" + homePixel / page + ")";
-      })();
-    </script>
   </div>
 
   <!-- The Hi page ("Hi page" in Figma): slides up from the bottom when HI is clicked.
@@ -531,7 +534,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=37"></script>
+  <script src="script.js?v=39"></script>
 
 </body>
 </html>

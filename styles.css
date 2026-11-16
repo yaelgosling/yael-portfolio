@@ -1258,18 +1258,19 @@ a.project-nav {
 
 
 /* =========================================
-   Phone home page ("phone home blank" and "phone home playful" in Figma)
-   A 390 × 844 phone frame that fits the screen. Positions are Figma pixels.
+   Phone home page ("phone home new" in Figma)
+   A 390 × 1500 page that fills the width of the screen and scrolls down. Positions are Figma pixels.
    The top 49 pixels of every phone frame in Figma are the phone's own strip (time, battery):
-   the website starts under it, at the black line, so everything moves up by --phone-top.
-   The home page has no line and its MTV frame reaches up to y 32, so it fits the screen from
-   y 24 to 820 instead (--phone-home-top and --phone-home-height): no frame is cut off.
+   the website starts under it, so everything moves up by --phone-top (--phone-home-top).
+   The bar is not part of the scrolling page: it stays still in the middle of the screen.
    ========================================= */
 :root {
   --phone-top: 49;                                  /* the phone's own strip at the top of the Figma frames */
-  --phone-home-top: 24;                             /* where the home page starts in Figma */
-  --phone-home-height: 796;                         /* and how high it is (to y 820) */
-  --phone-pixel: min(100vw / 390, 100svh / 796);   /* one Figma pixel on the phone home page */
+  --phone-home-top: 49;                             /* where the home page starts in Figma */
+  --phone-home-height: 1500;                        /* and where it ends */
+  --phone-bar-middle: 422.65;                       /* the middle of the home bar in Figma (y) */
+  --phone-pixel: calc(100vw / 390);                 /* one Figma pixel on the phone home page */
+  --phone-reveal-fade: 0.25s;                       /* a frame's work fading in or out on its own */
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
@@ -1287,16 +1288,40 @@ a.project-nav {
     display: none;
   }
 
+  /* The home page stays still on the screen and scrolls inside (.phone-home__scroll), so the
+     bar can stay in the middle while the frames go by. (absolute, not fixed: fixed would keep
+     the bar under the blur behind WORKS and HI. The window itself never scrolls here) */
   .phone-home {
     display: block;
-    position: relative;
-    width: calc(390 * var(--phone-pixel));
-    height: calc(var(--phone-home-height) * var(--phone-pixel));
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 100vh;
+    height: 100lvh;            /* the whole screen, also behind the phone's search bar at the bottom */
   }
 }
 
-/* One frame. Before the tap it hides small behind the middle of the bar
-   (the bar's middle is at 195, 407 in Figma) */
+/* The box the home page scrolls in. The end doesn't bounce, so swiping on brings up Reach Out */
+.phone-home__scroll {
+  overscroll-behavior: none;
+  touch-action: pan-y;         /* a finger scrolls the page up and down */
+}
+
+/* The whole scrolling page, as high as in Figma */
+.phone-home__page {
+  position: relative;
+  height: calc((var(--phone-home-height) - var(--phone-home-top)) * var(--phone-pixel));
+  overflow: hidden;            /* frames swaying past an edge are cut, not making the page wider */
+}
+
+/* The two layers: the work frames ("over") on top of the other drawings ("under") */
+.phone-home__under,
+.phone-home__frames {
+  position: absolute;
+  inset: 0;
+}
+
+/* One frame. Before the page opens it hides small behind the middle of the bar
+   (the bar's middle is at 195, --phone-bar-middle in Figma) */
 .phone-frame {
   position: absolute;
   left: calc(var(--x) * var(--phone-pixel));
@@ -1307,14 +1332,15 @@ a.project-nav {
   transform:
     translate(
       calc((195 - var(--x) - var(--w) / 2) * var(--phone-pixel)),
-      calc((407 - var(--y) - var(--h) / 2) * var(--phone-pixel))
+      calc((var(--phone-bar-middle) - var(--y) - var(--h) / 2) * var(--phone-pixel))
     )
     scale(0.1);
   /* script.js swings it around when the phone tilts or shakes
-     (--move-x and --move-y in Figma pixels, --turn in degrees) */
+     (--move-x and --move-y in Figma pixels, --turn in degrees), and moves the work frames
+     up a bit faster while you scroll (--shift, in Figma pixels) */
   translate:
     calc(var(--move-x, 0) * var(--phone-pixel))
-    calc(var(--move-y, 0) * var(--phone-pixel));
+    calc((var(--move-y, 0) + var(--shift, 0)) * var(--phone-pixel));
   rotate: calc(var(--turn, 0) * 1deg);
   transition:
     transform var(--phone-frames-time) var(--phone-frames-easing),
@@ -1328,21 +1354,32 @@ a.project-nav {
   height: 100%;
 }
 
-/* Tapped: the frame shows its hover picture (the same one as on the computer) and comes
-   in front of the others. The project frames show the pointing hand */
-.phone-frame.is-tapped {
+/* Every few seconds a work frame shows its work on its own (script.js adds is-revealed): its
+   hover picture (the same one as on the computer) fades in over the plain frame, and it comes
+   in front of the others. While it shows, a tap opens the project */
+.phone-frame .phone-frame__image,
+.phone-frame .home-frame__hover {
+  transition: opacity var(--phone-reveal-fade) ease;
+}
+
+.phone-frame .home-frame__hover {
+  visibility: visible;
+  opacity: 0;
+}
+
+.phone-frame.is-revealed {
   z-index: 1;
 }
 
-.phone-frame.is-tapped .phone-frame__image {
-  visibility: hidden;
+.phone-frame.is-revealed .phone-frame__image {
+  opacity: 0;
 }
 
-.phone-frame.is-tapped .home-frame__hover {
-  visibility: visible;
+.phone-frame.is-revealed .home-frame__hover {
+  opacity: 1;
 }
 
-.phone-frame[data-href] {
+.phone-frame.is-revealed[data-href] {
   cursor: pointer;
 }
 
@@ -1365,33 +1402,53 @@ a.project-nav {
   transform: none;
 }
 
-/* The phone bar ("phone bar" in Figma). --bar-pixel is one Figma pixel of the bar. On the home
-   page it sits in the middle of the screen, on top, so the frames come out from behind it.
-   On the other pages it is at the top (see .phone-bar--project) */
+/* The phone bar. --bar-pixel is one Figma pixel of the bar. On the home page it sits in the
+   middle of the screen, on top, so the frames come out from behind it, and it is "phone bar new"
+   in Figma (is-home-size: bigger, with bigger words). On the other pages it is "phone bar" at the
+   top (see .phone-bar--project). When it glides between the two, it really changes size on the
+   way (the boxes and the words too), so the words stay sharp */
 .phone-bar {
-  /* Drawn at its full size on every page (like on the project page), with its middle where Figma
-     has it (x 195, y 407 on the home page). On the home page script.js shrinks it a little
-     (transform), and it grows back to exactly this size at the top. So at the top it is
-     exactly the same as on the next page, and the words never change */
   --bar-pixel: var(--phone-page-pixel);
+  --bar-w: 300;                /* "phone bar": 300 × 30, words 14 */
+  --bar-h: 30;
+  --bar-font: 14;
   position: absolute;
-  left: calc(50% - 150 * var(--bar-pixel));
-  top: calc((407 - var(--phone-home-top)) * var(--phone-pixel) - 15 * var(--bar-pixel));
-  width: calc(300 * var(--bar-pixel));
-  height: calc(30 * var(--bar-pixel));
+  /* Its middle is where Figma has it (x 195, y 422.65 on the home page), whatever its size */
+  left: calc(50% - var(--bar-w) / 2 * var(--bar-pixel));
+  top: calc((var(--phone-bar-middle) - var(--phone-home-top)) * var(--phone-pixel) - var(--bar-h) / 2 * var(--bar-pixel));
+  width: calc(var(--bar-w) * var(--bar-pixel));
+  height: calc(var(--bar-h) * var(--bar-pixel));
   z-index: 7;                  /* above everything, also a page sliding in */
   /* The same colours behind the boxes, so no thin white line shows where two boxes meet */
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
-  /* script.js glides it between the middle of the home page and the top (and back) */
-  transform-origin: 0 0;
-  transition: transform var(--page-change-time) var(--page-change-easing);
+  /* script.js glides it between the middle of the home page and the top (and back), and
+     changes its size on the way (is-home-size) */
+  transition:
+    transform var(--page-change-time) var(--page-change-easing),
+    left var(--page-change-time) var(--page-change-easing),
+    top var(--page-change-time) var(--page-change-easing),
+    width var(--page-change-time) var(--page-change-easing),
+    height var(--page-change-time) var(--page-change-easing);
 }
 
-/* On a project page it stays still at the top of the screen */
+/* On the home page: "phone bar new" (310.55 × 35.3, words 18) */
+.phone-bar.is-home-size {
+  --bar-w: 310.55;
+  --bar-h: 35.3;
+  --bar-font: 18;
+}
+
+/* Putting it in place without gliding (script.js) */
+.phone-bar.is-instant,
+.phone-bar.is-instant .phone-bar__box {
+  transition: none;
+}
+
+/* On a project page it stays still at the top of the screen (its middle at y 78 in Figma) */
 .phone-bar--project {
   position: fixed;
-  top: calc((63 - var(--phone-top)) * var(--bar-pixel));
+  top: calc((78 - var(--phone-top)) * var(--bar-pixel) - var(--bar-h) / 2 * var(--bar-pixel));
   display: none;               /* only on phones (see below) */
 }
 
@@ -1402,10 +1459,12 @@ a.project-nav {
 
 /* One coloured box with its word in the middle */
 .phone-bar__box {
+  --box-x: var(--x);
+  --box-w: var(--w);
   position: absolute;
   top: 0;
-  left: calc(var(--x) * var(--bar-pixel));
-  width: calc(var(--w) * var(--bar-pixel));
+  left: calc(var(--box-x) * var(--bar-pixel));
+  width: calc(var(--box-w) * var(--bar-pixel));
   height: 100%;
   display: flex;
   align-items: center;
@@ -1413,12 +1472,23 @@ a.project-nav {
   border: 0;
   padding: 0;
   font-family: var(--font-display);
-  font-size: calc(14 * var(--bar-pixel));
+  font-size: calc(var(--bar-font) * var(--bar-pixel));
   line-height: var(--line-height);
   color: var(--color-black);
   -webkit-text-stroke: calc(0.15 * var(--bar-pixel)) var(--color-black);   /* the 0.15 stroke from Figma */
   text-decoration: none;
   cursor: pointer;
+  /* changes size together with the bar */
+  transition:
+    left var(--page-change-time) var(--page-change-easing),
+    width var(--page-change-time) var(--page-change-easing),
+    font-size var(--page-change-time) var(--page-change-easing);
+}
+
+/* The boxes of "phone bar new" on the home page */
+.phone-bar.is-home-size .phone-bar__box {
+  --box-x: var(--x-home);
+  --box-w: var(--w-home);
 }
 
 .phone-bar__box--blue { background-color: var(--color-blue); }
@@ -1938,8 +2008,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
     display: block;
   }
 
-  /* On the home page a finger swipe moves Reach Out, not the page */
-  body.home-page,
+  /* A finger swipe on Reach Out moves Reach Out, not the page */
   .phone-reach {
     touch-action: none;
   }

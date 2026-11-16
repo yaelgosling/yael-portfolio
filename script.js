@@ -131,8 +131,8 @@ const phoneDoodles = [...document.querySelectorAll(".phone-doodle:not(.phone-doo
 
 if (!reducedMotion && phoneFrames.length) {
   swayGroups.push({
-    // the home page (Figma 390 wide, from y 24 to 820)
-    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 24, bottom: 820 }),
+    // the home page (Figma 390 wide, from y 49 to 1500)
+    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 49, bottom: 1500 }),
     // only after they came out, and not behind WORKS or HI
     isActive: () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
                     !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open"),
@@ -974,32 +974,94 @@ if (phoneHome && window.frameElement) {
 }
 
 
-/* ---------- Phone home page: tapping the frames ----------
-   First tap: the frame shows its hover picture (the same one as on the computer, copied
-   from the computer frame named in data-hover). Second tap: it opens the project (data-href).
-   Tapping anywhere else puts the frame back */
-const phoneFramesToTap = [...document.querySelectorAll(".phone-frame")];
+/* ---------- Phone home page: the work frames show their work on their own ----------
+   A work frame shows its work (its hover picture, the same one as on the computer, copied
+   from the computer frame named in data-hover) while it is in the middle part of the screen.
+   As you scroll and it gets close to the top or bottom edge, it fades back to the plain frame.
+   While a frame shows its work, tapping it opens the project (data-href). Tapping a frame
+   that isn't showing its work does nothing */
+const REVEAL_EDGE = 0.12;   // how close to the edge (0.12 = the top and bottom 12% of the screen) it goes back
 
-phoneFramesToTap.forEach((frame) => {
+const phoneWorkFrames = [...document.querySelectorAll(".phone-frame[data-hover]")];
+
+phoneWorkFrames.forEach((frame) => {
   const computerImage = document.querySelector(`.home-frame__image[src="${frame.dataset.hover}"]`);
   const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
   if (hover) frame.append(hover.cloneNode(true));
 
-  frame.addEventListener("click", (event) => {
-    if (!frame.closest(".phone-home").classList.contains("is-playful")) return;   // still hidden
-    event.stopPropagation();
-    if (frame.classList.contains("is-tapped") && frame.dataset.href) {
+  frame.addEventListener("click", () => {
+    if (frame.classList.contains("is-revealed") && frame.dataset.href) {
       phoneOpenProject(frame.dataset.href);
-      return;
     }
-    if (frame.dataset.href) phonePreparePage(frame.dataset.href, "page-slide");   // get the page ready
-    phoneFramesToTap.forEach((other) => other.classList.toggle("is-tapped", other === frame));
   });
 });
 
-document.addEventListener("click", () => {
-  phoneFramesToTap.forEach((frame) => frame.classList.remove("is-tapped"));
-});
+if (phoneHome && !window.frameElement && phoneWorkFrames.length) {
+  function updateReveal() {
+    // Only once the frames are out, and not behind WORKS, HI or Reach Out
+    const free = phoneHome.classList.contains("is-playful") &&
+      !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open");
+    const screenHeight = window.innerHeight;
+    phoneWorkFrames.forEach((frame) => {
+      const box = frame.getBoundingClientRect();
+      const middle = box.top + box.height / 2;
+      const inMiddlePart = middle > screenHeight * REVEAL_EDGE && middle < screenHeight * (1 - REVEAL_EDGE);
+      frame.classList.toggle("is-revealed", free && inMiddlePart);
+    });
+  }
+
+  let revealWaiting = false;
+  function requestReveal() {
+    if (!revealWaiting) {
+      revealWaiting = true;
+      requestAnimationFrame(() => { revealWaiting = false; updateReveal(); });
+    }
+  }
+
+  document.querySelector(".phone-home__scroll").addEventListener("scroll", requestReveal, { passive: true });
+  window.addEventListener("resize", requestReveal);
+  setInterval(updateReveal, 250);   // also when the frames come out, sway, or WORKS / HI close
+}
+
+// Scrolling the home page: the work frames ("phone home over") move a bit faster than the
+// drawings under them (FAST_EXTRA, like the fast pictures on a project page). Each one is
+// exactly in its Figma place when it is in the middle of the screen; the ones at the very top
+// are in their place when the page starts, and the ones at the very bottom when it ends
+const phoneHomeScroller = document.querySelector(".phone-home__scroll");
+
+if (phoneHomeScroller && !reducedMotion) {
+  const fastFrames = [...document.querySelectorAll(".phone-frame--over")].map((element) => {
+    const read = (name) => parseFloat(element.style.getPropertyValue(name));
+    return { element, middle: read("--y") - 49 + read("--h") / 2 };   // from the top of the page (it starts at y 49)
+  });
+
+  let waiting = false;
+
+  function updateShift() {
+    waiting = false;
+    const pixel = window.innerWidth / 390;   // one Figma pixel on this screen
+    if (!phoneHomeScroller.offsetHeight) return;   // the phone version is hidden (a computer)
+    const scrolled = phoneHomeScroller.scrollTop / pixel;   // in Figma pixels
+    const furthest = (phoneHomeScroller.scrollHeight - phoneHomeScroller.clientHeight) / pixel;
+    const halfScreen = phoneHomeScroller.clientHeight / 2 / pixel;
+    fastFrames.forEach(({ element, middle }) => {
+      // How far down the page is when this frame is in its Figma place
+      const inPlace = Math.max(0, Math.min(furthest, middle - halfScreen));
+      element.style.setProperty("--shift", (-(scrolled - inPlace) * FAST_EXTRA).toFixed(2));
+    });
+  }
+
+  function requestShift() {
+    if (!waiting) {
+      waiting = true;
+      requestAnimationFrame(updateShift);
+    }
+  }
+
+  phoneHomeScroller.addEventListener("scroll", requestShift, { passive: true });
+  window.addEventListener("resize", requestShift);
+  updateShift();
+}
 
 
 /* =========================================
@@ -1107,63 +1169,38 @@ document.querySelectorAll(".phone-project").forEach((page) => {
 const phoneBar = document.querySelector(".phone-bar");
 const isPhoneHome = Boolean(document.querySelector(".phone-home"));
 const PHONE_TOP = 49;        // like --phone-top in styles.css
-const PHONE_HOME_TOP = 24;   // like --phone-home-top
-const PHONE_HOME_HEIGHT = 796;   // like --phone-home-height
+const PHONE_HOME_TOP = 49;   // like --phone-home-top
+const PHONE_BAR_MIDDLE = 422.65;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
-// Where the bar sits, in screen pixels: "top" (project pages, WORKS, HI) or "middle" (home page)
-function phoneBarSpot(where) {
+// How far down the screen the middle of the bar is (screen pixels): "top" (project pages, WORKS,
+// HI) or "middle" (home page)
+function phoneBarMiddle(where) {
   const page = window.innerWidth / 390;   // one Figma pixel on a phone page
-  if (where === "top") return { left: 45 * page, top: (63 - PHONE_TOP) * page, width: 300 * page };
-  // The home page fits the screen (like --phone-pixel) and sits in its middle
-  const probe = document.createElement("div");
-  probe.style.cssText = "position:fixed;height:100svh;visibility:hidden";
-  document.body.append(probe);
-  const screenHeight = probe.offsetHeight;
-  probe.remove();
-  const pixel = Math.min(window.innerWidth / 390, screenHeight / PHONE_HOME_HEIGHT);
-  // On the home page the bar is a little smaller (the size of the home page), in its Figma place
-  return {
-    left: (window.innerWidth - 390 * pixel) / 2 + 45 * pixel,
-    top: (screenHeight - PHONE_HOME_HEIGHT * pixel) / 2 + (392 - PHONE_HOME_TOP) * pixel,
-    width: 300 * pixel,
-  };
+  if (where === "top") return (78 - PHONE_TOP) * page;   // "phone bar" at the top: y 63 to 93
+  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP) * page;
 }
 
-// Where the bar really sits before any moving (its own place and size, from the CSS): always
-// its full size; on the home page with its middle in the middle of the home bar's place
-// (script.js then shrinks it a little there), on the other pages at the top
-function phoneBarOwnSpot() {
-  if (!isPhoneHome) return phoneBarSpot("top");
-  const small = phoneBarSpot("middle");
-  const page = window.innerWidth / 390;
-  const middleX = small.left + small.width / 2;
-  const middleY = small.top + small.width / 20;   // (the bar is 300 wide and 30 high)
-  return { left: middleX - 150 * page, top: middleY - 15 * page, width: 300 * page };
-}
-
-// Glides the bar to "top" or "middle": it moves and grows or shrinks (in the same time and way
-// as the pages slide). instant: no gliding
+// Glides the bar to "top" or "middle" (in the same time and way as the pages slide). On the way
+// it changes size: "phone bar new" in the middle, "phone bar" at the top. instant: no gliding
 // (On the home page the WORKS list hangs under the bar and travels with it)
 function movePhoneBar(where, instant = false) {
   if (!phoneBar) return;
-  const to = phoneBarSpot(where);
-  if (instant) phoneBar.style.transition = "none";
-  phoneBar.style.transform = moveFromTo(phoneBarOwnSpot(), to);
+  if (instant) phoneBar.classList.add("is-instant");
+  phoneBar.classList.toggle("is-home-size", where === "middle");
+  // The bar's own place (from the CSS) is the middle on the home page and the top elsewhere
+  const ownMiddle = phoneBarMiddle(isPhoneHome ? "middle" : "top");
+  phoneBar.style.transform = `translateY(${phoneBarMiddle(where) - ownMiddle}px)`;
   if (instant) {
     phoneBar.offsetWidth;   // (makes the browser take it in before gliding is switched back on)
-    phoneBar.style.transition = "";
+    phoneBar.classList.remove("is-instant");
   }
   if (isPhoneHome) {
     document.querySelectorAll(".phone-works").forEach((list) => {
-      list.style.transform = moveFromTo(phoneBarSpot("top"), to);   // the list really is at the top
+      // the list really is at the top
+      list.style.transform = `translateY(${phoneBarMiddle(where) - phoneBarMiddle("top")}px)`;
     });
   }
-}
-
-// The move (and size change) from one spot to another
-function moveFromTo(from, to) {
-  return `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`;
 }
 
 // Put the bar in its place (and on the home page the closed list under it in the middle)
@@ -1372,14 +1409,14 @@ window.addEventListener("pageshow", (event) => {
 
 
 /* =========================================
-   Phone: REACH OUT. On the home page swiping up drags it up from the bottom; on a project page
-   it comes when you keep swiping up at the end of the page. It follows the finger, and the
+   Phone: REACH OUT. It comes when you keep swiping up at the end of the page (the home page or
+   a project page). It follows the finger, and the
    page behind blurs more and more. Let go past a third of the way (or with a
    quick flick) and it goes all the way up, otherwise back down. Swiping down puts it away
    ========================================= */
 const phoneReach = document.querySelector(".phone-reach");
 
-const projectScroller = document.querySelector("main > .phone-scroll");   // on a project page
+const projectScroller = document.querySelector("main > .phone-scroll, .phone-home__scroll");   // the box the page scrolls in
 
 if (phoneReach) {
   const START_AFTER = 10;   // how far (screen pixels) the finger moves before it counts as a swipe
@@ -1399,10 +1436,10 @@ if (phoneReach) {
   }
 
   // When it can come up: never behind WORKS or HI; on the home page once the frames are out;
-  // on a project page only at the very end of the page
+  // and only at the very end of the page
   function canOpen() {
     if (document.body.matches(".is-phone-works-open, .is-phone-hi-open")) return false;
-    if (isPhoneHome) return document.querySelector(".phone-home").classList.contains("is-playful");
+    if (isPhoneHome && !document.querySelector(".phone-home").classList.contains("is-playful")) return false;
     if (projectScroller) {
       const end = projectScroller.scrollHeight - projectScroller.clientHeight;
       return projectScroller.scrollTop >= end - 2;
@@ -1422,7 +1459,7 @@ if (phoneReach) {
   document.addEventListener("touchmove", (event) => {
     if (startY === null) return;
     const y = event.touches[0].clientY;
-    // Not at the end of the project yet: the page scrolls as usual, and counting starts
+    // Not at the end of the page yet: the page scrolls as usual, and counting starts
     // from the moment it reaches the end
     if (!dragging && startProgress === 0 && !canOpen()) {
       startY = y;
