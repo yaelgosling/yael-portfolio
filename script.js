@@ -1142,24 +1142,36 @@ const PHONE_HOME_TOP = 49;   // like --phone-home-top
 const PHONE_BAR_MIDDLE = 422.65;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
-// How far down the screen the middle of the bar is (screen pixels): "top" (project pages, WORKS,
-// HI) or "middle" (home page)
-function phoneBarMiddle(where) {
-  const page = window.innerWidth / 390;   // one Figma pixel on a phone page
-  if (where === "top") return (78 - PHONE_TOP) * page;   // "phone bar" at the top: y 63 to 93
-  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP) * page;
+// The bar's two sizes, in Figma pixels: "phone bar new" (home page, and while WORKS is open)
+// and "phone bar" (the top of the project pages)
+const BAR_NEW_HEIGHT = 35.3;
+const BAR_OLD_HEIGHT = 30;
+
+// Which size the bar is in a spot: "phone bar new" in the middle, on the home page, and while
+// WORKS is open; otherwise "phone bar"
+function phoneBarIsNew(where) {
+  return where === "middle" || isPhoneHome || document.body.classList.contains("is-phone-works-open");
 }
 
-// Glides the bar to "top" or "middle" (in the same time and way as the pages slide). On the way
-// it changes size: "phone bar new" in the middle, "phone bar" at the top. instant: no gliding
-// (On the home page the WORKS list hangs under the bar and travels with it)
-function movePhoneBar(where, instant = false) {
+// Where the top edge of the bar is (screen pixels) in a spot: "top" (y 63 in Figma, on every
+// page) or "middle" (the home page: its middle at y 422.65)
+function phoneBarTop(where, isNew) {
+  const page = window.innerWidth / 390;   // one Figma pixel on a phone page
+  if (where === "top") return (63 - PHONE_TOP) * page;
+  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP) * page - (isNew ? BAR_NEW_HEIGHT : BAR_OLD_HEIGHT) / 2 * page;
+}
+
+// Glides the bar to "top" or "middle" (in the same time and way as the pages slide), and
+// changes its size on the way when it needs to. isNew: which size (normally phoneBarIsNew).
+// instant: no gliding. (On the home page the WORKS list hangs under the bar and travels with it)
+function movePhoneBar(where, instant = false, isNew = phoneBarIsNew(where)) {
   if (!phoneBar) return;
   if (instant) phoneBar.classList.add("is-instant");
-  phoneBar.classList.toggle("is-home-size", where === "middle");
-  // The bar's own place (from the CSS) is the middle on the home page and the top elsewhere
-  const ownMiddle = phoneBarMiddle(isPhoneHome ? "middle" : "top");
-  phoneBar.style.transform = `translateY(${phoneBarMiddle(where) - ownMiddle}px)`;
+  phoneBar.classList.toggle("is-new-size", isNew);
+  // The bar's own place (from the CSS): on the home page its middle is in the middle spot,
+  // on the other pages its top edge is at the top spot
+  const ownTop = isPhoneHome ? phoneBarTop("middle", isNew) : phoneBarTop("top");
+  phoneBar.style.transform = `translateY(${phoneBarTop(where, isNew) - ownTop}px)`;
   if (instant) {
     phoneBar.offsetWidth;   // (makes the browser take it in before gliding is switched back on)
     phoneBar.classList.remove("is-instant");
@@ -1167,7 +1179,7 @@ function movePhoneBar(where, instant = false) {
   if (isPhoneHome) {
     document.querySelectorAll(".phone-works").forEach((list) => {
       // the list really is at the top
-      list.style.transform = `translateY(${phoneBarMiddle(where) - phoneBarMiddle("top")}px)`;
+      list.style.transform = `translateY(${phoneBarTop(where, isNew) - phoneBarTop("top")}px)`;
     });
   }
 }
@@ -1191,7 +1203,11 @@ function setPhoneOpen(which) {
   document.body.classList.toggle("is-phone-works-open", which === "works");
   document.body.classList.toggle("is-phone-hi-open", which === "hi" || hiStaysBehind);
   document.body.classList.toggle("is-phone-works-over-hi", hiStaysBehind);
-  if (!isPhoneHome) return;
+  // On a project page the bar stays at the top, but grows to "phone bar new" while WORKS is open
+  if (!isPhoneHome) {
+    movePhoneBar("top");
+    return;
+  }
   // Like on the computer, everything happens at once: WORKS rolls to italic and the list
   // unrolls while the bar glides up (and the other way round when it closes)
   movePhoneBar(which ? "top" : "middle");
@@ -1261,7 +1277,7 @@ async function phoneOpenProject(href) {
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
-  movePhoneBar("top");
+  movePhoneBar("top", false, false);   // it becomes "phone bar", like on the project page
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
     window.location.href = href;
@@ -1269,8 +1285,8 @@ async function phoneOpenProject(href) {
 }
 
 // The WORKS list. Names roll to italic (made here, like the words in the bar).
-// A tap: a project with a phone page rolls to italic and opens straight away; a project that
-// isn't ready shows COMING SOON; the others roll to italic
+// A tap ("phone works click new"): a project rolls to italic, and if it has a phone page it opens
+// straight away; a project that isn't ready shows its "Coming Soon" box
 const phoneWorksRows = [...document.querySelectorAll(".phone-works__row")];
 
 phoneWorksRows.forEach((row) => {
@@ -1295,7 +1311,7 @@ phoneWorksRows.forEach((row) => {
   });
 });
 
-// Tapping somewhere else in the list puts the names back
+// Tapping somewhere else in the list rolls the names back
 document.querySelectorAll(".phone-works").forEach((list) => {
   list.addEventListener("click", () => phoneWorksRows.forEach((row) => row.classList.remove("is-tapped")));
 });

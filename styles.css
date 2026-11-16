@@ -1387,10 +1387,10 @@ a.project-nav {
 }
 
 /* The phone bar. --bar-pixel is one Figma pixel of the bar. On the home page it sits in the
-   middle of the screen, on top, so the frames come out from behind it, and it is "phone bar new"
-   in Figma (is-home-size: bigger, with bigger words). On the other pages it is "phone bar" at the
-   top (see .phone-bar--project). When it glides between the two, it really changes size on the
-   way (the boxes and the words too), so the words stay sharp */
+   middle of the screen, on top, so the frames come out from behind it. On the home page and
+   while WORKS is open it is "phone bar new" in Figma (is-new-size: bigger, with bigger words);
+   on the project pages it is "phone bar" at the top (see .phone-bar--project). When it changes,
+   it really changes size on the way (the boxes and the words too), so the words stay sharp */
 .phone-bar {
   --bar-pixel: var(--phone-page-pixel);
   --bar-w: 300;                /* "phone bar": 300 × 30, words 14 */
@@ -1407,7 +1407,7 @@ a.project-nav {
   background: linear-gradient(to right,
     var(--color-blue) 0 33.6%, var(--color-orange) 33.6% 66.7%, var(--color-lime) 66.7%);
   /* script.js glides it between the middle of the home page and the top (and back), and
-     changes its size on the way (is-home-size) */
+     changes its size on the way (is-new-size) */
   transition:
     transform var(--page-change-time) var(--page-change-easing),
     left var(--page-change-time) var(--page-change-easing),
@@ -1416,8 +1416,8 @@ a.project-nav {
     height var(--page-change-time) var(--page-change-easing);
 }
 
-/* On the home page: "phone bar new" (310.55 × 35.3, words 18) */
-.phone-bar.is-home-size {
+/* "phone bar new" (310.55 × 35.3, words 18) */
+.phone-bar.is-new-size {
   --bar-w: 310.55;
   --bar-h: 35.3;
   --bar-font: 18;
@@ -1429,10 +1429,10 @@ a.project-nav {
   transition: none;
 }
 
-/* On a project page it stays still at the top of the screen (its middle at y 78 in Figma) */
+/* On a project page it stays still at the top of the screen (its top at y 63 in Figma) */
 .phone-bar--project {
   position: fixed;
-  top: calc((78 - var(--phone-top)) * var(--bar-pixel) - var(--bar-h) / 2 * var(--bar-pixel));
+  top: calc((63 - var(--phone-top)) * var(--bar-pixel));
   display: none;               /* only on phones (see below) */
 }
 
@@ -1469,8 +1469,8 @@ a.project-nav {
     font-size var(--page-change-time) var(--page-change-easing);
 }
 
-/* The boxes of "phone bar new" on the home page */
-.phone-bar.is-home-size .phone-bar__box {
+/* The boxes of "phone bar new" */
+.phone-bar.is-new-size .phone-bar__box {
   --box-x: var(--x-home);
   --box-w: var(--w-home);
 }
@@ -1757,22 +1757,21 @@ a.project-nav {
   pointer-events: auto;
 }
 
-/* The orange list, right under the bar at the top (the bar is 63 to 93 in Figma) */
+/* The orange list ("phone works new" in Figma), right under the bar at the top (the bar is
+   "phone bar new" then: 63 to 98.3, and 39.72 from the left like the bar) */
 .phone-works {
   position: fixed;
-  left: calc(45 * var(--phone-page-pixel));
+  left: calc(39.72 * var(--phone-page-pixel));
   /* It starts 2 pixels higher, tucked under the bar, so no white line can show between them */
-  top: calc((93 - var(--phone-top)) * var(--phone-page-pixel) - 2px);
-  width: calc(300 * var(--phone-page-pixel));
+  top: calc((98.3 - var(--phone-top)) * var(--phone-page-pixel) - 2px);
+  width: calc(311 * var(--phone-page-pixel));
   height: calc(636 * var(--phone-page-pixel) + 2px);
   z-index: 6;                  /* over a page sliding in, under the bar */
   background-color: var(--color-orange);
   /* Rolled up into the bar; opening unrolls it downwards */
   clip-path: inset(0 0 100% 0);
-  /* On the home page script.js also moves it with the bar (transform), growing and shrinking
-     from the bar's top left corner (30 above its own top, minus the 2 tucked under), so it
-     always hangs right under the bar */
-  transform-origin: 0 calc(2px - 30 * var(--phone-page-pixel));
+  /* On the home page script.js also moves it with the bar (transform), so it always hangs
+     right under the bar */
   transition:
     clip-path var(--index-open-time) var(--page-change-easing),
     transform var(--page-change-time) var(--page-change-easing);
@@ -1807,7 +1806,7 @@ a.project-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 calc(13.97 * var(--phone-page-pixel)) 0 calc(17.29 * var(--phone-page-pixel));   /* names start at x 62.29 */
+  padding: 0 calc(14.49 * var(--phone-page-pixel)) 0 calc(17.93 * var(--phone-page-pixel));   /* like "phone works new" */
   color: var(--color-black);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -1815,9 +1814,9 @@ a.project-nav {
 
 .phone-works__name {
   font-family: var(--font-body);
-  font-size: calc(14 * var(--phone-page-pixel));
-  font-weight: 400;
-  letter-spacing: -0.01em;     /* -0.14px at 14px, like in Figma */
+  font-size: calc(15 * var(--phone-page-pixel));
+  font-weight: 500;            /* Inter Medium */
+  letter-spacing: -0.01em;     /* -0.15px at 15px, like in Figma */
   white-space: nowrap;
 }
 
@@ -1832,10 +1831,15 @@ a.project-nav {
   position: relative;
 }
 
-/* Names roll to Instrument Serif italic, like in the index on the computer:
-   the project you are on (but not when the list opened over the Hi page), and a name you tap */
+/* A tapped project rolls to Instrument Serif italic 16 ("phone works click new"), and so is the
+   project you are on (but not when the list opened over the Hi page).
+   The rolled word keeps the same height as the first one (15 high), so the row doesn't move */
 .phone-works .roll__word--next {
   font-family: var(--font-display);
+  font-size: calc(16 / 15 * 1em);
+  letter-spacing: -0.01em;
+  height: calc(15 / 16 * 1em * var(--roll-line));
+  line-height: calc(15 / 16 * var(--roll-line));
 }
 
 body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
@@ -1843,24 +1847,27 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transform: translateY(calc(-1em * var(--roll-line)));
 }
 
-/* Projects that aren't ready: a tap shows COMING SOON over the name, in a black box that
-   comes up from its bottom edge (like "open index list hover 2" on the computer) */
+/* Projects that aren't ready: a tap shows a black "Coming Soon" box over the name, coming up
+   from its bottom edge ("phone works click new"). Its width (--soon-w) is the one in Figma */
 .phone-works__row--soon .phone-works__name::after {
-  content: "COMING SOON";
+  content: "Coming Soon";
   position: absolute;
   z-index: 1;
-  left: calc(-4.91 * var(--phone-page-pixel));
+  left: 0;
   top: 50%;
-  min-width: calc(100% + 9.82 * var(--phone-page-pixel));
-  height: calc(29 * var(--phone-page-pixel));
+  width: calc(var(--soon-w) * var(--phone-page-pixel));
+  height: calc(25 * var(--phone-page-pixel));
   translate: 0 -50%;
   box-sizing: border-box;
-  padding: calc(7.5 * var(--phone-page-pixel)) calc(4.91 * var(--phone-page-pixel)) 0;
+  display: flex;
+  align-items: center;
+  padding: 0 calc(9 * var(--phone-page-pixel));
   background-color: var(--color-black);
   color: var(--color-white);
   font-family: var(--font-display);
-  font-size: calc(15 * var(--phone-page-pixel));
+  font-size: calc(16 * var(--phone-page-pixel));
   font-style: italic;
+  letter-spacing: 0;
   line-height: var(--line-height);
   clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
   transition: clip-path var(--roll-time) var(--page-change-easing);
