@@ -608,7 +608,18 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
   window.addEventListener("wheel", (event) => {
     if (!strip.offsetWidth) return;                                 // the phone version is showing
     if (event.ctrlKey) return;                                      // zooming with the trackpad
-    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;    // a sideways swipe: as before
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      // A sideways swipe moves the strip as before. At the end of the strip, swiping on to the
+      // right brings up "Reach Out" from the bottom; once it's up, swiping left puts it away again
+      const sideways = event.deltaX * (event.deltaMode === 1 ? 40 : 1);
+      const end = strip.scrollWidth - strip.clientWidth;
+      const reachOpen = window.scrollY > 2;
+      if (reachOpen || (sideways > 0 && strip.scrollLeft >= end - 2)) {
+        event.preventDefault();
+        window.scrollBy(0, sideways);
+      }
+      return;
+    }
     if (window.scrollY > 2) return;                                 // Reach Out is open: the page scrolls
 
     // How far: trackpads give pixels, some mice give lines (about 40 pixels each)

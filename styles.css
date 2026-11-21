@@ -1021,6 +1021,16 @@ a.project-nav {
   visibility: visible;
 }
 
+/* A "coming soon" frame: not a link yet, and it has no hover version, so it stays as it is */
+.project-work .project-strip__piece.project-nav--soon,
+.project-work .project-strip__piece.project-nav--soon * {
+  cursor: default;
+}
+
+.project-nav--soon:hover .project-nav__frame {
+  visibility: visible;
+}
+
 .project-nav__layer {
   position: absolute;
   inset: var(--inset);
