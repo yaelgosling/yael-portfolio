@@ -960,6 +960,39 @@ img.project-strip__piece {
   font-weight: 400;
 }
 
+/* The COPIED label on Reach Out ("Group 19" in Figma): a black box with white Instrument Serif
+   italic, over the email address or phone number. It rolls up the same way as COMING SOON in the index.
+   It covers the whole address or number (script.js sets its width), so nothing shows
+   behind it. Numbers are Figma pixels from the top left of the address */
+.project-reach__copied {
+  position: absolute;
+  left: calc(-7 * var(--stage-pixel));
+  top: 0;
+  width: calc(202 * var(--stage-pixel));
+  height: calc(100% + 2 * var(--stage-pixel));
+  box-sizing: border-box;
+  padding: calc(10 * var(--stage-pixel)) 0 0 calc(14 * var(--stage-pixel));
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: var(--index-hover-name-size);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.006;
+  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
+  transition: clip-path var(--roll-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+.project-reach__copy.is-copied .project-reach__copied {
+  clip-path: inset(0);
+}
+
+/* Reach Out went away: the label disappears at once, without rolling */
+.project-reach__copy.is-resetting .project-reach__copied {
+  transition: none;
+}
+
 .project-video {
   object-fit: cover;
 }

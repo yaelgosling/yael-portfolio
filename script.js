@@ -278,9 +278,59 @@ function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
   [".project-text--email", "start"],
 ].forEach(([selector, align]) => {
   document.querySelectorAll(selector).forEach((element) => {
+    const copied = element.querySelector(".project-reach__copied");   // the COPIED label stays (see below)
+    if (copied) copied.remove();
     const word = element.textContent.trim();
     makeRoll(element, word, element.dataset.rollNext || word, align);   // data-roll-next: a different next word
+    if (copied) element.append(copied);
   });
+});
+
+/* Reach Out: clicking the email address copies it instead of opening an email.
+   The phone number works the same way (on the computer a phone link would only open FaceTime;
+   the phone version of the page still calls the number).
+   A black COPIED label rolls up over it (like COMING SOON in the index) and covers it.
+   It rolls back down when one of the other links is clicked (the email, the phone number or
+   Instagram), and it's gone whenever Reach Out is opened again */
+document.querySelectorAll(".project-reach__copy").forEach((link) => {
+  const reach = link.closest(".project-reach");
+  const copied = link.querySelector(".project-reach__copied");
+
+  // The label is as wide as the address or number (the wider, italic one), so nothing shows behind it
+  function fitLabel() {
+    const words = [...link.querySelectorAll(".roll__word")];
+    const widest = Math.max(...words.map((word) => word.scrollWidth));
+    copied.style.width = `${widest + 22}px`;   // a little extra for the italic letters' tails
+  }
+  fitLabel();
+  document.fonts.ready.then(fitLabel);
+  window.addEventListener("resize", fitLabel);
+
+  link.addEventListener("click", async (event) => {
+    event.preventDefault();
+    const value = link.getAttribute("aria-label");   // the address or number, as it's written on the page
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch (error) {
+      // Copying isn't allowed here: it can still be selected and copied by hand
+    }
+    link.classList.add("is-copied");
+  });
+
+  // Clicking one of the other links (email, phone number, Instagram) rolls this label back down
+  reach.querySelectorAll(".project-text--email").forEach((other) => {
+    if (other !== link) other.addEventListener("click", () => link.classList.remove("is-copied"));
+  });
+
+  // Once Reach Out is all the way down again, the label is gone (without rolling),
+  // so it's never there when Reach Out comes back up
+  window.addEventListener("scroll", () => {
+    if (window.scrollY <= 2 && link.classList.contains("is-copied")) {
+      link.classList.add("is-resetting");
+      link.classList.remove("is-copied");
+      requestAnimationFrame(() => requestAnimationFrame(() => link.classList.remove("is-resetting")));
+    }
+  }, { passive: true });
 });
 
 // "EMAIL ME" and "LET'S TALK" on the Hi page roll to the email address and the phone number
