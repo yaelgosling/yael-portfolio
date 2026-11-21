@@ -165,6 +165,46 @@ body.home-page {
   top: calc(var(--classic-y) * var(--stage-pixel));
 }
 
+/* Classic view: the projects show their pictures straight away ("Home New Organise order").
+   On hover a project's frame is empty, with its name in it ("Home New Organise order hover"),
+   and a click opens the project. The frames that are coming soon stay as they are */
+.home-frame__classic {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.home.is-classic .home-frame:has(.home-frame__classic) .home-frame__image {
+  visibility: hidden;
+}
+
+.home.is-classic .home-frame:has(.home-frame__classic) .home-frame__hover {
+  visibility: visible;
+}
+
+.home.is-classic .home-frame.is-hovered .home-frame__hover {
+  visibility: hidden;
+}
+
+.home.is-classic .home-frame.is-hovered .home-frame__classic {
+  visibility: visible;
+}
+
+/* The project's name in the empty frame: orange Instrument Serif */
+.home-frame__name {
+  position: absolute;
+  inset: var(--inset);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: calc(var(--size) * var(--stage-pixel));
+  line-height: 1.006;
+  color: var(--color-orange);
+}
+
+.home-frame__name--nowrap {
+  white-space: nowrap;
+}
+
 /* A frame that opens a project page: the pointing hand only on the drawn frame itself */
 .home-frame--link {
   cursor: default;
@@ -519,6 +559,17 @@ body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-proj
   );
 }
 
+/* Project pages: no scrollbar on the side. With one, the page was a little narrower, so the bar
+   (and everything else) sat a little to the left of where it is on the home page, and jumped
+   when the scrollbar went away (opening WORKS or HI). The page still scrolls to "Reach Out" */
+html.project-html {
+  scrollbar-width: none;
+}
+
+html.project-html::-webkit-scrollbar {
+  display: none;
+}
+
 /* While the index or the Hi page is open the page doesn't scroll (so "Reach Out" can't come up).
    It's set on the body, not on html: on html it made the work page behind "Reach Out" jump
    (it stopped sticking to the top of the window) */
@@ -698,13 +749,28 @@ html.is-hi-open-page body {
   pointer-events: none;
 }
 
-/* script.js moves each drawing and its text with the mouse (--move-x and --move-y, Figma pixels) */
+/* script.js moves each drawing and its text with the mouse (--move-x and --move-y, Figma pixels).
+   Some drawings are turned a little, like in Figma (--rotate) */
 .hi-doodle__picture,
 .hi-doodle__text {
   transform: translate(
     calc(var(--move-x, 0) * var(--stage-pixel)),
     calc(var(--move-y, 0) * var(--stage-pixel))
-  );
+  ) rotate(var(--rotate, 0deg));
+}
+
+/* The hover drawing ("Hi page hover"): hidden until you hover over the drawing (script.js adds
+   is-hovered). Then only the hover drawing shows, in place of the normal one */
+.hi-doodle__picture--hover {
+  visibility: hidden;
+}
+
+.hi-doodle.is-hovered .hi-doodle__picture:not(.hi-doodle__picture--hover) {
+  opacity: 0;
+}
+
+.hi-doodle.is-hovered .hi-doodle__picture--hover {
+  visibility: visible;
 }
 
 /* The text next to a drawing: hidden until you hover over the drawing */
@@ -714,7 +780,7 @@ html.is-hi-open-page body {
   transition: opacity 0.3s ease;
 }
 
-.hi-doodle:hover .hi-doodle__text {
+.hi-doodle.is-hovered .hi-doodle__text {
   opacity: 1;
 }
 
@@ -2259,5 +2325,48 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 
   body.project-page.is-phone-going-home main {
     transform: translate3d(0, 100%, 0);
+  }
+}
+
+
+/* =========================================
+   The bar on whole pixels
+   On every page and in every state (home page, project page, WORKS or HI open, classic view,
+   moving between pages) the bar lands on exactly the same whole pixel. Without this it landed
+   on a fraction of a pixel, and the browser drew its words a little differently on the home
+   page (where the bar is slid into place) than on the project pages, so they jumped a tiny bit.
+   (Only in browsers that can round; others keep the positions above)
+   ========================================= */
+@supports (top: round(1.5px, 1px)) {
+  /* Project pages: x 569, y 31 */
+  .site-bar--project {
+    left: round(calc(50% + (var(--x) - 720) * var(--stage-pixel)), 1px);
+    top: round(calc(var(--y) * var(--stage-pixel)), 1px);
+  }
+
+  /* Going home: from the top down to its spot in the middle of the home page */
+  .is-leaving-home .site-bar--project {
+    transform: translateY(calc(
+      round(calc(50svh + (312 - 384) * var(--stage-pixel)), 1px) -
+      round(calc(var(--y) * var(--stage-pixel)), 1px)
+    ));
+  }
+
+  /* Home page: in the middle of the window (the home page is 768 high, so its middle is at 384) */
+  .home .site-bar {
+    position: fixed;
+    left: round(calc(50% + (var(--x) - 720) * var(--stage-pixel)), 1px);
+    top: round(calc(50svh + (var(--y) - 384) * var(--stage-pixel)), 1px);
+  }
+
+  /* Home page: up to the same spot as on the project pages (y 31) */
+  .home.is-classic .site-bar,
+  .home.is-leaving .site-bar,
+  .is-index-open .home .site-bar,
+  .is-hi-open .home .site-bar {
+    transform: translateY(calc(
+      round(calc(31 * var(--stage-pixel)), 1px) -
+      round(calc(50svh + (var(--y) - 384) * var(--stage-pixel)), 1px)
+    ));
   }
 }

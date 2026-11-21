@@ -46,6 +46,7 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
     let stillMoving = false;
 
     movers.forEach((mover) => {
+      if (mover.element.classList.contains("is-hovered")) return;   // stays still while the mouse is on it
       const targetX = -mouseX * 2 * maxMove * mover.strengthX;
       const targetY = -mouseY * 2 * maxMove * mover.strengthY;
       mover.moveX += (targetX - mover.moveX) * EASING;
@@ -235,6 +236,21 @@ if (canMove) {
   // The drawings on the Hi page ("Hi page" is 1440 x 800). Each drawing moves with its text.
   // The picture of me stays still
   const doodles = [...document.querySelectorAll(".hi-doodle:not(.hi-doodle--me)")];
+
+  // Hovering over a drawing: it changes to its hover drawing, shows its text and stops moving
+  // (so it doesn't slide out from under the mouse). It stays like that until the mouse leaves
+  // both the drawing and its hover drawing
+  doodles.forEach((doodle) => {
+    const pictures = [...doodle.querySelectorAll(".hi-doodle__picture")];
+    const normal = pictures.find((picture) => !picture.classList.contains("hi-doodle__picture--hover"));
+    normal.addEventListener("pointerenter", () => doodle.classList.add("is-hovered"));
+    pictures.forEach((picture) => {
+      picture.addEventListener("pointerleave", (event) => {
+        if (!pictures.some((other) => other.contains(event.relatedTarget))) doodle.classList.remove("is-hovered");
+      });
+    });
+  });
+
   if (doodles.length) {
     followMouse(
       doodles.map((doodle) => ({ element: doodle, placed: doodle.querySelector(".hi-doodle__picture") })),
@@ -486,6 +502,22 @@ if (home && window.matchMedia("(hover: hover)").matches) {
    ========================================= */
 const PAGE_CHANGE_TIME = 900;  // the same as --page-change-time in styles.css
 
+// Runs `then` once the bar has really finished gliding (and that last spot is on the screen),
+// so the next page takes over from the bar exactly where it stops. (A timer alone could go off
+// a moment before the bar's last tiny step, and then the words jumped a tiny bit)
+function whenBarArrives(bar, then) {
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    requestAnimationFrame(() => requestAnimationFrame(then));
+  };
+  bar.addEventListener("transitionend", (event) => {
+    if (event.target === bar && event.propertyName === "transform") finish();
+  });
+  setTimeout(finish, PAGE_CHANGE_TIME + 250);   // just in case
+}
+
 document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
   let slide = null;
 
@@ -519,10 +551,10 @@ document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
     await page.ready;
     page.classList.add("is-sliding");
     home.classList.add("is-leaving");     // the bar moves up to its spot on the project page
-    setTimeout(() => {
+    whenBarArrives(home.querySelector(".site-bar"), () => {
       sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
       window.location.href = link.href;
-    }, PAGE_CHANGE_TIME);
+    });
   });
 });
 
@@ -597,10 +629,10 @@ if (home) {
       makeRoll(view, "CLASSIC VIEW", "CLASSIC VIEW");
       link.closest(".site-bar").appendChild(view);
       requestAnimationFrame(() => requestAnimationFrame(() => view.classList.remove("is-word-away")));
-      setTimeout(() => {
+      whenBarArrives(link.closest(".site-bar"), () => {
         sessionStorage.setItem("home-slid-back", "yes");
         window.location.href = link.href;
-      }, PAGE_CHANGE_TIME);
+      });
     });
   });
 
@@ -706,6 +738,40 @@ document.querySelectorAll(".project-reach-blur").forEach((blur) => {
   window.addEventListener("scroll", updateBlur, { passive: true });
   window.addEventListener("resize", updateBlur);
   updateBlur();
+});
+
+
+/* =========================================
+   Project page (computer): refreshing the page keeps you where you were. The strip stays at
+   the same place, and "Reach Out" is only up if it was up before. (The browser's own way of
+   doing this got it wrong and brought "Reach Out" up.) Coming to the page from another page,
+   it starts at the beginning as usual
+   ========================================= */
+document.querySelectorAll(".project-strip").forEach((strip) => {
+  if (!strip.offsetWidth) return;   // the phone version is showing
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  const key = `place:${location.pathname}`;
+
+  // Just before the page goes away (refresh, or going to another page): remember the place
+  window.addEventListener("pagehide", () => {
+    try {
+      sessionStorage.setItem(key, JSON.stringify({ strip: strip.scrollLeft, reach: window.scrollY > 2 }));
+    } catch (error) {
+      // Can't remember it here (private window): a refresh starts at the beginning
+    }
+  });
+
+  let place = null;
+  const navigation = performance.getEntriesByType("navigation")[0];
+  if (navigation && navigation.type === "reload") {
+    try {
+      place = JSON.parse(sessionStorage.getItem(key));
+    } catch (error) {
+      place = null;
+    }
+  }
+  strip.scrollLeft = place ? place.strip : 0;
+  window.scrollTo(0, place && place.reach ? document.documentElement.scrollHeight : 0);
 });
 
 
