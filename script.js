@@ -715,6 +715,9 @@ document.querySelectorAll(".project-work").forEach(async (work) => {
   const files = {
     right: "images/project/scroll-arrow-small.svg",
     left: "images/project/scroll-arrow-small-left.svg",
+    // Over the pictures and videos: the same arrow, just the outline (no white inside)
+    "right-outline": "images/project/scroll-arrow-small-outline.svg",
+    "left-outline": "images/project/scroll-arrow-small-left-outline.svg",
   };
   const drawings = {};
   try {
@@ -730,7 +733,7 @@ document.querySelectorAll(".project-work").forEach(async (work) => {
     for (const side in drawings) {
       const svg = drawings[side].replace('width="53" height="45"', `width="${width}" height="${height}"`);
       const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${Math.round(width / 2)} ${Math.round(height / 2)}`;
-      work.style.setProperty(`--scroll-arrow-${side}`, `${url}, ${side === "right" ? "e-resize" : "w-resize"}`);
+      work.style.setProperty(`--scroll-arrow-${side}`, `${url}, ${side.startsWith("right") ? "e-resize" : "w-resize"}`);
     }
   }
   sizeArrows();

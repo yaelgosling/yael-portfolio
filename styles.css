@@ -796,19 +796,36 @@ body.is-sliding-in main {
 }
 
 /* On the work page the mouse is the small "new arrow for scroll", at its Figma size (53 x 45),
-   made bigger or smaller with the window by script.js (--scroll-arrow-right/-left), so it is
+   made bigger or smaller with the window by script.js (--scroll-arrow-...), so it is
    always the same size as the flip back button:
    it points right, so people know to swipe sideways. script.js adds "is-at-end" when the strip
    reaches the end: then it points left, until the strip is back at the start.
+   Everywhere it is only its outline (see-through inside), so the work shows through it.
+   Only over the text it is filled with white, so it is easy to see on the black letters.
    (The hotspot is the middle of the arrow.) */
 .project-work,
 .project-work * {
-  cursor: url("images/project/scroll-arrow-small.svg") 26 22, e-resize;
-  cursor: var(--scroll-arrow-right, url("images/project/scroll-arrow-small.svg") 26 22, e-resize);
+  cursor: url("images/project/scroll-arrow-small-outline.svg") 26 22, e-resize;
+  cursor: var(--scroll-arrow-right-outline, url("images/project/scroll-arrow-small-outline.svg") 26 22, e-resize);
 }
 
 .project-work.is-at-end,
 .project-work.is-at-end * {
+  cursor: url("images/project/scroll-arrow-small-left-outline.svg") 26 22, w-resize;
+  cursor: var(--scroll-arrow-left-outline, url("images/project/scroll-arrow-small-left-outline.svg") 26 22, w-resize);
+}
+
+/* Over the text (the title and the project text): the arrow filled with white */
+.project-work .project-title,
+.project-work .project-text,
+.project-work .project-text * {
+  cursor: url("images/project/scroll-arrow-small.svg") 26 22, e-resize;
+  cursor: var(--scroll-arrow-right, url("images/project/scroll-arrow-small.svg") 26 22, e-resize);
+}
+
+.project-work.is-at-end .project-title,
+.project-work.is-at-end .project-text,
+.project-work.is-at-end .project-text * {
   cursor: url("images/project/scroll-arrow-small-left.svg") 26 22, w-resize;
   cursor: var(--scroll-arrow-left, url("images/project/scroll-arrow-small-left.svg") 26 22, w-resize);
 }
@@ -1023,9 +1040,8 @@ img.project-strip__piece {
   visibility: visible;
 }
 
-.project-work video.project-video {
-  cursor: pointer;
-}
+/* Over a video the mouse is the outline arrow, like everywhere on the work page (see above);
+   the play symbol turning orange shows it can be clicked */
 
 /* Previous and next project frames (a link once that project's page exists) */
 a.project-nav {
@@ -1054,10 +1070,18 @@ a.project-nav {
   visibility: visible;
 }
 
-/* A "coming soon" frame: not a link yet, and it has no hover version, so it stays as it is */
+/* A "coming soon" frame: not a link yet, and it has no hover version, so it stays as it is.
+   The mouse stays the outline arrow over it, like over the rest of the work page */
 .project-work .project-strip__piece.project-nav--soon,
 .project-work .project-strip__piece.project-nav--soon * {
-  cursor: default;
+  cursor: url("images/project/scroll-arrow-small-outline.svg") 26 22, e-resize;
+  cursor: var(--scroll-arrow-right-outline, url("images/project/scroll-arrow-small-outline.svg") 26 22, e-resize);
+}
+
+.project-work.is-at-end .project-strip__piece.project-nav--soon,
+.project-work.is-at-end .project-strip__piece.project-nav--soon * {
+  cursor: url("images/project/scroll-arrow-small-left-outline.svg") 26 22, w-resize;
+  cursor: var(--scroll-arrow-left-outline, url("images/project/scroll-arrow-small-left-outline.svg") 26 22, w-resize);
 }
 
 .project-nav--soon:hover .project-nav__frame {
