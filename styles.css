@@ -269,14 +269,14 @@ body.home-page {
 .roll--start .roll__word--next  { left: 0; }
 .roll--end .roll__word--next    { right: 0; }
 
-/* Rolled: on hover, and while WORKS or HI is open, HOME while you are on the home page,
+/* Rolled: on hover, and while WORKS or HI is open, HOME while you are on the home page (unless WORKS or HI is open),
    for the project you are on in the index,
    and after clicking EMAIL ME or LET'S TALK */
 .roll-host:focus-visible .roll__track,
 .is-hi-open .site-bar__hi .roll__track,
 .is-index-open .site-bar__index .roll__track,
 .site-index__name.is-current .roll__track,
-.home .site-bar__text[href="index.html"] .roll__track,
+body:not(.is-hi-open):not(.is-index-open) .home .site-bar__text[href="index.html"] .roll__track,   /* HOME on the home page (not while HI or WORKS is open: then only that one is italic) */
 body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-project) .phone-home.is-playful .phone-bar__box--blue .roll__track,   /* phone: HOME, once the frames come out (not while WORKS or HI is open, or a project slides in) */
 .is-phone-going-home .phone-bar__box--blue .roll__track,     /* phone: HOME rolls to italic while the home page rolls down */
 .is-phone-home-back .phone-bar__box--blue .roll__track,      /* phone: HOME already italic when you arrive back home */
@@ -519,9 +519,11 @@ body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-proj
   );
 }
 
-/* While the index or the Hi page is open the page doesn't scroll (so "Reach Out" can't come up) */
-html.is-index-open-page,
-html.is-hi-open-page {
+/* While the index or the Hi page is open the page doesn't scroll (so "Reach Out" can't come up).
+   It's set on the body, not on html: on html it made the work page behind "Reach Out" jump
+   (it stopped sticking to the top of the window) */
+html.is-index-open-page body,
+html.is-hi-open-page body {
   overflow: hidden;
   overscroll-behavior: none;
 }
@@ -592,8 +594,6 @@ html.is-hi-open-page {
   text-decoration: none;
   text-align: left;
   white-space: nowrap;
-  user-select: text;
-  -webkit-user-select: text;
 }
 
 /* "Let's talk": its right edge stays where it is in Figma, so the longer number fits */
@@ -612,10 +612,66 @@ html.is-hi-open-page {
   white-space: nowrap;
 }
 
-/* The email address and number roll in on hover (see "words that roll"): one click selects all of it */
-.hi-page__reveal-value {
-  user-select: all;
-  -webkit-user-select: all;
+/* The COPIED label on the Hi page ("Group 19" in Figma): a black box with white Instrument Serif
+   italic 45px, over "Email me" or "Let's talk" once it's clicked. It rolls up the same way as
+   on Reach Out. script.js sets its width (at least 422, and always wide enough to cover the
+   address or number). Numbers are Figma pixels from the top left of "Email me" */
+.hi-page__copied {
+  position: absolute;
+  left: calc(-6 * var(--stage-pixel));    /* a little further left than Figma, to cover the italic letters' tails */
+  top: 0;                                  /* taller and higher than in Figma, so that */
+  width: calc(422 * var(--stage-pixel));
+  height: calc(65 * var(--stage-pixel));   /* COPIED sits on the same line as INSTAGRAM */
+  box-sizing: border-box;
+  padding: calc(9 * var(--stage-pixel)) 0 0 calc(19 * var(--stage-pixel));
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: calc(45 * var(--stage-pixel));
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.006;
+  text-align: left;
+  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
+  transition: clip-path var(--roll-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+/* "Let's talk" is on the right: its label lines up with its right edge */
+.hi-page__reveal--right .hi-page__copied {
+  left: auto;
+  right: calc(-6 * var(--stage-pixel));
+}
+
+.hi-page__reveal.is-copied .hi-page__copied {
+  clip-path: inset(0);
+}
+
+/* Once the label has rolled all the way up, the words under it are hidden, so moving the mouse
+   can't make them roll behind the label. They come back as soon as the label rolls down */
+.hi-page__reveal .roll {
+  transition: visibility 0s;
+}
+
+.hi-page__reveal.is-copied .roll {
+  visibility: hidden;
+  transition: visibility 0s linear var(--roll-time);
+}
+
+/* The Hi page closed: the label disappears at once, without rolling */
+.hi-page__reveal.is-resetting .hi-page__copied {
+  transition: none;
+}
+
+/* The email address and phone number (Hi page and Reach Out) are copied by clicking them, so they
+   can't be selected: no blue "selected" box ever shows on them */
+.hi-page__reveal,
+.hi-page__reveal *,
+.project-reach__copy,
+.project-reach__copy * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* The drawings on the Hi page. Each one is a window onto one big sheet of drawings */
@@ -1040,8 +1096,11 @@ img.project-strip__piece {
   visibility: visible;
 }
 
-/* Over a video the mouse is the outline arrow, like everywhere on the work page (see above);
-   the play symbol turning orange shows it can be clicked */
+/* Over a video the arrow goes away and the mouse is the normal pointing hand,
+   so people know they can click to play */
+.project-work video.project-video {
+  cursor: pointer;
+}
 
 /* Previous and next project frames (a link once that project's page exists) */
 a.project-nav {
@@ -1124,16 +1183,22 @@ a.project-nav {
   background-color: var(--color-white);
 }
 
-/* Covers the work page and blurs it. script.js sets --reach-progress from 0 (Reach Out
-   is still down) to 1 (Reach Out is all the way up), so the blur grows up to the
-   same amount as behind the index */
+/* While "Reach Out" comes up, the work page itself gets blurry. script.js sets --reach-progress
+   on it from 0 (Reach Out is still down) to 1 (Reach Out is all the way up), so the blur grows
+   up to the same amount as behind the index. (The work page is blurred itself, not through a
+   see-through layer on top: that kind of blur could flicker for a moment when something behind
+   it changed, like a GIF or the mouse moving) */
+.is-reach-open .project-work {
+  filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
+  will-change: filter;
+}
+
+/* An empty layer over the work page: it catches the mouse while Reach Out is up (see below) */
 .project-reach-blur {
   position: fixed;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
-  -webkit-backdrop-filter: blur(calc(var(--reach-progress, 0) * var(--index-blur)));
 }
 
 /* While "Reach Out" is (partly) up: the blur catches the mouse, so the work behind can't be

@@ -306,8 +306,10 @@ document.querySelectorAll(".project-reach__copy").forEach((link) => {
   document.fonts.ready.then(fitLabel);
   window.addEventListener("resize", fitLabel);
 
+  link.addEventListener("mousedown", (event) => event.preventDefault());   // no text selection
   link.addEventListener("click", async (event) => {
     event.preventDefault();
+    window.getSelection().removeAllRanges();
     const value = link.getAttribute("aria-label");   // the address or number, as it's written on the page
     try {
       await navigator.clipboard.writeText(value);
@@ -691,10 +693,11 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
    Project page: the work page gets more and more blurry while "Reach Out" slides up
    ========================================= */
 document.querySelectorAll(".project-reach-blur").forEach((blur) => {
+  const work = document.querySelector(".project-work");
   function updateBlur() {
     const end = document.documentElement.scrollHeight - window.innerHeight;
     const progress = end > 0 ? Math.min(window.scrollY / end, 1) : 0;
-    blur.style.setProperty("--reach-progress", progress);
+    work.style.setProperty("--reach-progress", progress);   // how blurry the work page is
     // Once "Reach Out" starts coming up, the work behind it stays still: the blur covers it,
     // and clicking the blur takes you back down to the work (scrolling back works too)
     document.body.classList.toggle("is-reach-open", window.scrollY > 2);
@@ -964,6 +967,14 @@ if (hiButton && hiPage) {
     document.documentElement.classList.toggle("is-index-open-page", false);
     hiButton.setAttribute("aria-expanded", open);
     hiPage.setAttribute("aria-hidden", !open);
+    // Closing the Hi page: a COPIED label goes away at once, so it's not there next time
+    if (!open) {
+      hiPage.querySelectorAll(".hi-page__reveal.is-copied").forEach((reveal) => {
+        reveal.classList.add("is-resetting");
+        reveal.classList.remove("is-copied");
+        requestAnimationFrame(() => requestAnimationFrame(() => reveal.classList.remove("is-resetting")));
+      });
+    }
   }
 
   hiButton.addEventListener("click", () => {
@@ -973,8 +984,9 @@ if (hiButton && hiPage) {
     if (event.key === "Escape") setHiOpen(false);
   });
 
-  // "Email me" is a link: a click opens a new email straight away and also copies the address.
-  // "Let's talk": a click copies the number.
+  // "Email me" and "Let's talk": a click copies the email address or the phone number
+  // (instead of opening an email or FaceTime), and a black COPIED label rolls up over it,
+  // like on Reach Out. It stays until something else is clicked
   async function copy(reveal) {
     reveal.classList.add("is-showing");
     const value = reveal.querySelector(".hi-page__reveal-value").textContent;
@@ -983,11 +995,42 @@ if (hiButton && hiPage) {
     } catch (error) {
       // Copying isn't allowed here: it can still be selected and copied by hand
     }
+    reveal.classList.add("is-copied");
+    window.getSelection().removeAllRanges();   // no blue "selected" highlight under the label
   }
 
-  hiPage.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
-    reveal.addEventListener("click", () => copy(reveal));
+  const reveals = [...hiPage.querySelectorAll(".hi-page__reveal")];
+  reveals.forEach((reveal) => {
+    // The COPIED label ("Group 19" in Figma), made here because the rolling words are rebuilt above
+    const copied = document.createElement("span");
+    copied.className = "hi-page__copied";
+    copied.setAttribute("aria-hidden", "true");
+    copied.textContent = "COPIED";
+    reveal.append(copied);
+
+    // At least as wide as in Figma, and always wide enough to cover the address or number
+    function fitLabel() {
+      const pixel = Math.min(window.innerWidth / 1440, window.innerHeight / 800);   // like --stage-pixel
+      const widest = Math.max(...[...reveal.querySelectorAll(".roll__word")].map((word) => word.scrollWidth));
+      copied.style.width = `${Math.max(429 * pixel, widest + 33 * pixel)}px`;
+    }
+    fitLabel();
+    document.fonts.ready.then(fitLabel);
+    window.addEventListener("resize", fitLabel);
+
+    reveal.addEventListener("mousedown", (event) => event.preventDefault());   // no text selection
+    reveal.addEventListener("click", (event) => {
+      event.preventDefault();
+      copy(reveal);
+    });
     reveal.addEventListener("mouseleave", () => reveal.classList.remove("is-showing"));
+  });
+
+  // A click anywhere else rolls the label back down
+  document.addEventListener("click", (event) => {
+    reveals.forEach((reveal) => {
+      if (!reveal.contains(event.target)) reveal.classList.remove("is-copied");
+    });
   });
 }
 
