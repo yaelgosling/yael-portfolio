@@ -599,6 +599,34 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
 
 
 /* =========================================
+   Project page (computer): scrolling down with the mouse wheel or the trackpad moves the strip
+   sideways (down = right, up = left). At the end of the strip, scrolling on down brings up
+   "Reach Out" as before; scrolling up from Reach Out goes back down to the strip, and then
+   moves the strip back to the left. Sideways swipes on the trackpad still work as before
+   ========================================= */
+document.querySelectorAll(".project-strip").forEach((strip) => {
+  window.addEventListener("wheel", (event) => {
+    if (!strip.offsetWidth) return;                                 // the phone version is showing
+    if (event.ctrlKey) return;                                      // zooming with the trackpad
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;    // a sideways swipe: as before
+    if (window.scrollY > 2) return;                                 // Reach Out is open: the page scrolls
+
+    // How far: trackpads give pixels, some mice give lines (about 40 pixels each)
+    const amount = event.deltaY * (event.deltaMode === 1 ? 40 : 1);
+    const end = strip.scrollWidth - strip.clientWidth;
+    const atEnd = strip.scrollLeft >= end - 2;
+    const atStart = strip.scrollLeft <= 2;
+    if ((amount > 0 && atEnd) || (amount < 0 && atStart)) return;  // at the end: Reach Out comes up
+
+    event.preventDefault();
+    // A mouse wheel moves in big steps, so it glides; a trackpad follows the fingers exactly
+    if (Math.abs(amount) >= 50) strip.scrollBy({ left: amount * 1.5, behavior: "smooth" });
+    else strip.scrollLeft += amount;
+  }, { passive: false });
+});
+
+
+/* =========================================
    Project page: the work page gets more and more blurry while "Reach Out" slides up
    ========================================= */
 document.querySelectorAll(".project-reach-blur").forEach((blur) => {
@@ -1142,36 +1170,25 @@ const PHONE_HOME_TOP = 49;   // like --phone-home-top
 const PHONE_BAR_MIDDLE = 422.65;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
-// The bar's two sizes, in Figma pixels: "phone bar new" (home page, and while WORKS is open)
-// and "phone bar" (the top of the project pages)
-const BAR_NEW_HEIGHT = 35.3;
-const BAR_OLD_HEIGHT = 30;
-
-// Which size the bar is in a spot: "phone bar new" in the middle, on the home page, and while
-// WORKS is open; otherwise "phone bar"
-function phoneBarIsNew(where) {
-  return where === "middle" || isPhoneHome || document.body.classList.contains("is-phone-works-open");
-}
+// The bar is "phone bar new" in Figma on every page: 310.55 × 35.3 (is-new-size in the HTML)
+const BAR_HEIGHT = 35.3;
 
 // Where the top edge of the bar is (screen pixels) in a spot: "top" (y 63 in Figma, on every
 // page) or "middle" (the home page: its middle at y 422.65)
-function phoneBarTop(where, isNew) {
+function phoneBarTop(where) {
   const page = window.innerWidth / 390;   // one Figma pixel on a phone page
   if (where === "top") return (63 - PHONE_TOP) * page;
-  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP) * page - (isNew ? BAR_NEW_HEIGHT : BAR_OLD_HEIGHT) / 2 * page;
+  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP - BAR_HEIGHT / 2) * page;
 }
 
-// Glides the bar to "top" or "middle" (in the same time and way as the pages slide), and
-// changes its size on the way when it needs to. isNew: which size (normally phoneBarIsNew).
+// Glides the bar to "top" or "middle" (in the same time and way as the pages slide).
 // instant: no gliding. (On the home page the WORKS list hangs under the bar and travels with it)
-function movePhoneBar(where, instant = false, isNew = phoneBarIsNew(where)) {
+function movePhoneBar(where, instant = false) {
   if (!phoneBar) return;
   if (instant) phoneBar.classList.add("is-instant");
-  phoneBar.classList.toggle("is-new-size", isNew);
-  // The bar's own place (from the CSS): on the home page its middle is in the middle spot,
-  // on the other pages its top edge is at the top spot
-  const ownTop = isPhoneHome ? phoneBarTop("middle", isNew) : phoneBarTop("top");
-  phoneBar.style.transform = `translateY(${phoneBarTop(where, isNew) - ownTop}px)`;
+  // The bar's own place (from the CSS): the middle on the home page, the top elsewhere
+  const ownTop = phoneBarTop(isPhoneHome ? "middle" : "top");
+  phoneBar.style.transform = `translateY(${phoneBarTop(where) - ownTop}px)`;
   if (instant) {
     phoneBar.offsetWidth;   // (makes the browser take it in before gliding is switched back on)
     phoneBar.classList.remove("is-instant");
@@ -1179,7 +1196,7 @@ function movePhoneBar(where, instant = false, isNew = phoneBarIsNew(where)) {
   if (isPhoneHome) {
     document.querySelectorAll(".phone-works").forEach((list) => {
       // the list really is at the top
-      list.style.transform = `translateY(${phoneBarTop(where, isNew) - phoneBarTop("top")}px)`;
+      list.style.transform = `translateY(${phoneBarTop(where) - phoneBarTop("top")}px)`;
     });
   }
 }
@@ -1203,11 +1220,7 @@ function setPhoneOpen(which) {
   document.body.classList.toggle("is-phone-works-open", which === "works");
   document.body.classList.toggle("is-phone-hi-open", which === "hi" || hiStaysBehind);
   document.body.classList.toggle("is-phone-works-over-hi", hiStaysBehind);
-  // On a project page the bar stays at the top, but grows to "phone bar new" while WORKS is open
-  if (!isPhoneHome) {
-    movePhoneBar("top");
-    return;
-  }
+  if (!isPhoneHome) return;   // on a project page the bar stays at the top
   // Like on the computer, everything happens at once: WORKS rolls to italic and the list
   // unrolls while the bar glides up (and the other way round when it closes)
   movePhoneBar(which ? "top" : "middle");
@@ -1277,7 +1290,7 @@ async function phoneOpenProject(href) {
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
-  movePhoneBar("top", false, false);   // it becomes "phone bar", like on the project page
+  movePhoneBar("top");
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
     window.location.href = href;
