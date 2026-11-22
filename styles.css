@@ -1674,17 +1674,17 @@ a.project-nav {
     position: fixed;
   }
 
-  /* A thin white strip along the very top of the screen, under the black line. Safari fills the
-     space behind the phone's time and battery with its colour, so the page disappears at the
-     black line as it scrolls up (instead of showing behind the time and battery) */
+  /* A white box above the black line: from far above the top of the screen (behind the phone's
+     time and battery) down to the line. The page disappears behind it as it scrolls up past the
+     line, like before */
   body.project-page:not(.process-page) main::before {
     content: "";
     position: fixed;
     left: 0;
     right: 0;
-    top: 0;
+    top: -300px;
     z-index: 3;
-    height: 4px;
+    height: 301px;
     background-color: var(--color-white);
   }
 
@@ -2126,9 +2126,10 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   background-color: var(--color-white);
 }
 
-/* The top: stays on the screen while the panel slides up over it */
+/* The top: stays on the screen while the panel slides up over it (underneath the panel) */
 .phone-hi__stage {
   position: sticky;
+  z-index: 0;
   top: 0;
   height: 100svh;
   overflow: hidden;            /* the picture of me sticks out on both sides: cut there */
@@ -2146,8 +2147,8 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   height: calc(var(--h) * var(--hi-fit-pixel));
 }
 
-/* The little drawings change to their second drawing and back, in time with the GIF of me
-   (two pictures, a third of a second each) */
+/* The little drawings and me (the two pictures of the GIF) change to their second picture and
+   back, all on the same timer, so they always move together (a third of a second each, like the GIF) */
 .phone-doodle--second {
   animation: phone-doodle-swap 0.66s steps(1, end) infinite;
 }
@@ -2164,7 +2165,8 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 /* "phone top frame hi": white to lime, 377 high, with a black line along its top */
 .phone-hi__panel {
   position: relative;
-  z-index: 2;
+  z-index: 2;                  /* over the drawings and the GIF of me */
+  transform: translateZ(0);    /* drawn on its own layer, so phones always show it on top */
   height: calc(377 * var(--phone-page-pixel));
   margin-top: calc(-81 * var(--phone-page-pixel));   /* its top peeks in at the bottom of the screen */
   background: linear-gradient(to bottom, var(--color-white), var(--color-lime));
