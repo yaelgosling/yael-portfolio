@@ -12,20 +12,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=84">
+  <link rel="stylesheet" href="styles.css?v=85">
 </head>
 <body class="project-page">
 
-  <!-- The menu bar: stays still at the top. Coming from the home page, it moves up to here -->
+  <!-- The menu bar: stays still at the top. The words are written already rolled (see "words that roll"
+       in script.js), so nothing changes in them when the page appears. Coming from the home page, it moves up to here -->
   <nav class="site-bar site-bar--project" style="--x: 569; --y: 31" aria-label="Main">
     <div class="site-bar__block site-bar__block--blue" style="--x: 0; --y: 0"></div>
     <div class="site-bar__block site-bar__block--orange" style="--x: 151; --y: 0"></div>
     <div class="site-bar__block site-bar__block--lime" style="--x: 151; --y: 35"></div>
-    <a class="site-bar__text site-bar__box" style="--x: 0; --y: 0" href="index.html">HOME</a>
-    <button class="site-bar__text site-bar__box site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index">WORKS</button>
-    <button class="site-bar__text site-bar__box site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page">HI</button>
+    <a class="site-bar__text site-bar__box roll-host" style="--x: 0; --y: 0" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
+    <button class="site-bar__text site-bar__box roll-host site-bar__index" style="--x: 151; --y: 0" type="button" aria-expanded="false" aria-controls="site-index" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
+    <button class="site-bar__text site-bar__box roll-host site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
     <!-- PROCESS (not on the home page, where this white spot is CLASSIC VIEW): opens the process page -->
-    <a class="site-bar__text site-bar__box site-bar__process" style="--x: 0; --y: 35" href="process.html">PROCESS</a>
+    <a class="site-bar__text site-bar__box roll-host site-bar__process" style="--x: 0; --y: 35" href="process.html" aria-label="PROCESS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">PROCESS</span><span class="roll__word roll__word--next">PROCESS</span></span></span></a>
     <!-- The index ("open index list" in Figma): opens downwards under the bar.
          Numbers are Figma pixels from the top left corner of the orange panel -->
     <div class="site-index" id="site-index">
@@ -278,7 +279,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=72"></script>
+  <script src="script.js?v=74"></script>
 
 </body>
 </html>

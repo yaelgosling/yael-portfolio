@@ -312,7 +312,13 @@ function rollBarWord(element, text) {
   }));
   // Once it has rolled, the word is drawn again exactly the way the next page draws it (not
   // rolled), so nothing twitches when the next page takes over
-  track.addEventListener("transitionend", () => makeRoll(element, text, text), { once: true });
+  track.addEventListener("transitionend", () => {
+    makeRoll(element, text, text);
+    // Locked plain, like on the next page (on the process page PROCESS would otherwise roll to italic)
+    const fresh = element.querySelector(".roll__track");
+    fresh.style.transition = "none";
+    fresh.style.transform = "none";
+  }, { once: true });
 }
 
 // The same word again, in italic (or the word in data-roll-next): HOME, WORKS, HI, the names in the list,
@@ -324,6 +330,7 @@ function rollBarWord(element, text) {
   [".project-text--email", "start"],
 ].forEach(([selector, align]) => {
   document.querySelectorAll(selector).forEach((element) => {
+    if (element.querySelector(":scope > .roll")) return;   // already written rolled in the page (the bar)
     const copied = element.querySelector(".project-reach__copied");   // the COPIED label stays (see below)
     if (copied) copied.remove();
     const word = element.textContent.trim();
@@ -436,7 +443,7 @@ document.querySelectorAll(".site-bar__view").forEach((button) => {
     rolling = setTimeout(() => setClassic(classic), ROLL_TIME);
   });
 
-  setClassic(false);
+  setClassic(false, true);   // the words are already in the page: only set the rest
 });
 
 
@@ -541,9 +548,16 @@ const PAGE_CHANGE_TIME = 900;  // the same as --page-change-time in styles.css
 // Only one page change at a time: once a click has started going to another page, more clicks
 // (on PROCESS, WORKS, a frame...) do nothing until the new page is there
 let changingPage = false;
-function startPageChange() {
+function startPageChange(clicked) {
   if (changingPage) return false;
   changingPage = true;
+  // The word you clicked (PROCESS, a name in the list...) stays in italic: nothing can be hovered
+  // any more while the page changes, and it shouldn't roll back to plain and then to italic again
+  const track = clicked && clicked.querySelector(":scope > .roll .roll__track");
+  if (track && getComputedStyle(track).transform !== "none") {
+    track.style.transition = "none";
+    track.style.transform = getComputedStyle(track).transform;
+  }
   document.body.classList.add("is-changing-page");
   return true;
 }
@@ -673,7 +687,7 @@ if (home) {
       if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
 
       event.preventDefault();
-      if (!startPageChange()) return;
+      if (!startPageChange(link)) return;
       await pageReady(prepareHome());
       // The index closes (it is part of the bar); everything else is covered by the home page
       document.body.classList.remove("is-index-open");
@@ -957,7 +971,7 @@ document.querySelectorAll("a.project-nav, a.site-bar__process").forEach((link) =
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
     event.preventDefault();
-    if (!startPageChange()) return;
+    if (!startPageChange(link)) return;
     if (home) {
       // Home page: the bar stays at the top (PROCESS too) and WORKS rolls up while the page slides up
       home.classList.add("is-leaving");
@@ -1125,7 +1139,7 @@ if (indexButton) {
       if (event.metaKey || event.ctrlKey) return;   // opening in a new tab works as usual
       event.preventDefault();
       if (name.classList.contains("is-current")) return setIndexOpen(false);
-      if (!startPageChange()) return;
+      if (!startPageChange(name)) return;
 
       const page = prepareSlide();
       await pageReady(page);                                   // (usually loaded already, on hover)

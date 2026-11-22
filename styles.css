@@ -2443,9 +2443,11 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   cursor: pointer;
 }
 
-/* Hovering over the top bar: the date and the title in italic */
+/* Hovering over the top bar, and while the card is open: the date and the title in italic */
 .process-card:has(.process-card__tab:hover, .process-card__tab:focus-visible, .process-card__head > :hover) .process-card__date,
-.process-card:has(.process-card__tab:hover, .process-card__tab:focus-visible, .process-card__head > :hover) .process-card__head .process-text {
+.process-card:has(.process-card__tab:hover, .process-card__tab:focus-visible, .process-card__head > :hover) .process-card__head .process-text,
+.process-card.is-open .process-card__date,
+.process-card.is-open .process-card__head .process-text {
   font-style: italic;
 }
 
