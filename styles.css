@@ -918,7 +918,9 @@ body.is-changing-page * {
 /* Opening a project page any other way: the page slides up by itself (script.js adds the class).
    Only the content slides: the bar stays still */
 body.is-sliding-in main {
-  animation: page-slide-up-alone var(--page-change-time) var(--page-change-easing) both;
+  /* "backwards": once it has slid up, nothing of the animation stays on (so the black line at
+     the top of a phone project page stays at the top of the screen) */
+  animation: page-slide-up-alone var(--page-change-time) var(--page-change-easing) backwards;
 }
 
 @keyframes page-slide-up-alone {
@@ -1622,53 +1624,59 @@ a.project-nav {
     display: block;
   }
 
-  /* The page doesn't scroll as a whole (then nothing can slide under the phone's time and
-     battery): it stays still on the screen and the phone page scrolls inside it.
-     (absolute, not fixed: Safari fills the space under its search bar with the colour of a fixed
-     box touching the bottom of the screen, which showed as a white box. This way the page itself
-     shows under the search bar, blurred by .phone-bottom-blur) */
-  html:has(body.project-page:not(.process-page)),
-  body.project-page:not(.process-page),
+  /* The home page never moves: no scrolling, no bouncing, a finger can't drag it */
   html:has(body.home-page),
   body.home-page {
     height: 100vh;
-    height: 100lvh;            /* the whole screen, also behind the search bar (so the page shows there) */
-    overflow: hidden;          /* the window never moves: the pages scroll inside */
+    height: 100lvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
   }
 
-  body.project-page main {
+  /* A project page scrolls like a normal web page (the whole window). Then Safari makes its
+     search bar small and the page shows behind it, a little blurred. The end doesn't bounce,
+     so swiping on brings up Reach Out */
+  html:has(body.project-page:not(.process-page)) {
+    overscroll-behavior: none;
+  }
+
+  body.project-page:not(.process-page) main {
+    position: relative;
+    overflow-x: clip;          /* frames sticking out on the sides don't make the page wider */
+  }
+
+  body.project-page:not(.process-page) main > .phone-scroll {
+    position: static;
+    overflow: visible;
+  }
+
+  body.project-page:not(.process-page) main > .phone-scroll::after {
+    display: none;
+  }
+
+  /* The black line at the top stays at the top of the screen */
+  body.project-page:not(.process-page) main > .phone-top-line {
+    position: fixed;
+  }
+
+  /* The process page has no phone version yet: it stays as it was */
+  body.process-page main {
     position: absolute;
     inset: 0 0 auto 0;
     height: 100vh;
-    height: 100lvh;            /* the whole screen, also behind the phone's search bar at the bottom */
+    height: 100lvh;
     overflow: hidden;
   }
-}
 
-/* Under the phone's search bar at the bottom of the screen, the page shows through a little
-   blurred, and comes into focus once it scrolls up above the search bar. (Its height is the
-   part of the screen behind the search bar: none when there is no search bar) */
-.phone-bottom-blur {
-  display: none;
-}
-
-@media (max-width: 700px) {
-  .phone-bottom-blur {
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 3;                /* over the scrolling page */
-    height: calc(100lvh - 100svh);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    /* the blur fades in at its top edge, so there is no hard line where it starts */
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
-    mask-image: linear-gradient(to bottom, transparent, #000 40%);
-    pointer-events: none;
+  /* WORKS, HI and Reach Out lie over the page: a finger on them doesn't scroll the page under them */
+  .phone-works,
+  .phone-works-blur,
+  .phone-hi {
+    touch-action: none;
   }
 }
+
 
 .phone-project {
   position: relative;
@@ -2101,6 +2109,12 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transform: translateY(-100%);
 }
 
+/* The title and the text are over the picture of me, never under it */
+.phone-hi__page .phone-title,
+.phone-hi__page .phone-text {
+  z-index: 1;
+}
+
 .phone-hi__page .phone-doodle {
   left: calc((var(--x) + var(--w) / 2) * var(--phone-page-pixel) - var(--w) / 2 * var(--hi-fit-pixel));
   top: calc(var(--y) * var(--hi-fit-pixel));
@@ -2353,8 +2367,16 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
     transition: transform var(--page-change-time) var(--page-change-easing);
   }
 
+  /* The page is held where it is on the screen (script.js sets --scrolled: how far it was
+     scrolled), then slides down off the screen in one piece */
   body.project-page.is-phone-going-home main {
-    transform: translate3d(0, 100%, 0);
+    position: fixed;
+    top: calc(-1 * var(--scrolled, 0px));
+    left: 0;
+    right: 0;
+    /* only the part that was on the screen slides down (the rest of the page is cut off) */
+    clip-path: inset(var(--scrolled, 0px) 0 calc(100% - var(--scrolled, 0px) - 100lvh) 0);
+    transform: translate3d(0, 100lvh, 0);
   }
 }
 

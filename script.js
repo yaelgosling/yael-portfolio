@@ -95,12 +95,12 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    slide downhill, they bump off the edges of the screen, and shaking the phone throws them
    around. Each one is a bit heavier or lighter than the others, turns a little while it moves,
    and springs back to its place when the phone is still. */
-const SWAY_GRAVITY = 3;      // how strongly tilting pulls (bigger = slides further)
+const SWAY_GRAVITY = 2;      // how strongly tilting pulls (bigger = slides further)
 const SWAY_SPRING = 0.02;    // how strongly each one is pulled back to its place
 const SWAY_FRICTION = 0.07;  // how quickly the swinging calms down (smaller = swings longer)
-const SWAY_SHAKE = 0.45;      // how much a shake throws them
+const SWAY_SHAKE = 0.3;      // how much a shake throws them
 const SWAY_BOUNCE = 0.5;     // how much speed they keep when they bump into an edge
-const SWAY_TURN = 1.1;       // how much they turn while moving (degrees per unit of speed)
+const SWAY_TURN = 0.7;       // how much they turn while moving (degrees per unit of speed)
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
 // items: elements with --x --y --w --h (Figma pixels). area: the edges they bump into.
@@ -1329,7 +1329,7 @@ if (phoneHome && window.frameElement) {
    from the computer frame named in data-hover). Tapping one opens the project (data-href),
    once the phone version of that project exists */
 const phoneWorkFrames = [...document.querySelectorAll(".phone-frame[data-hover]")];
-const PHONE_ROLL_WAIT = 450;         // like --roll-time: a tapped name in WORKS rolls to italic first
+const PHONE_ROLL_WAIT = 750;         // a tapped name in WORKS rolls to italic (0.45s) and stays a moment before the list closes
 let phoneChanging = false;           // a page change has started (more taps do nothing)
 
 phoneWorkFrames.forEach((frame) => {
@@ -1402,9 +1402,20 @@ function flashOrange(element, whenDone) {
   }, PHONE_TAP_TIME);
 }
 
+// The box a phone page scrolls in. A project page scrolls like a normal web page (the whole
+// window, so Safari's search bar gets small and the page shows behind it); others scroll in a box
+function phoneScrollerOf(element) {
+  const box = element.closest(".phone-scroll");
+  if (!box || getComputedStyle(box).overflowY === "visible") return document.scrollingElement;
+  return box;
+}
+// What to listen to for scrolling, and how much of the page shows at once
+const scrollTarget = (scroller) => (scroller === document.scrollingElement ? window : scroller);
+const scrollerView = (scroller) => (scroller === document.scrollingElement ? window.innerHeight : scroller.clientHeight);
+
 // The video: tap to play or pause. If it isn't all on the screen, the page glides so it sits in the middle
 document.querySelectorAll(".phone-video").forEach((video) => {
-  const scroller = video.closest(".phone-scroll");   // the page scrolls inside this box
+  const scroller = phoneScrollerOf(video);
   video.addEventListener("click", () => {
     const box = video.getBoundingClientRect();
     if (box.top < 0 || box.bottom > window.innerHeight) {
@@ -1422,7 +1433,7 @@ document.querySelectorAll(".phone-video").forEach((video) => {
 
 // The flip back button: glides back up to the top, speeding up and slowing down (like on the computer)
 document.querySelectorAll(".phone-flip").forEach((button) => {
-  const scroller = button.closest(".phone-scroll");   // the page scrolls inside this box
+  const scroller = phoneScrollerOf(button);
   const FLIP_TIME = 1400;
   const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // slow, fast, slow
 
@@ -1473,7 +1484,7 @@ document.querySelectorAll(".phone-project").forEach((page) => {
     }
   }
 
-  page.closest(".phone-scroll").addEventListener("scroll", requestUpdate, { passive: true });
+  scrollTarget(phoneScrollerOf(page)).addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
   document.body.addEventListener("animationend", requestUpdate);   // after the page has slid up
   update();
@@ -1673,16 +1684,16 @@ phoneWorksRows.forEach((row) => {
 // tap as a "hover" and need a second tap. The two projects get ready when the end of the page
 // comes near instead)
 const phoneNavLinks = [...document.querySelectorAll("a.phone-nav")];
-const phoneNavScroller = document.querySelector("main > .phone-scroll");
-if (phoneNavLinks.length && phoneNavScroller && !window.frameElement) {
+if (phoneNavLinks.length && !window.frameElement) {
+  const scroller = phoneScrollerOf(phoneNavLinks[0]);
   const prepareNear = () => {
-    const left = phoneNavScroller.scrollHeight - phoneNavScroller.clientHeight - phoneNavScroller.scrollTop;
-    if (left < phoneNavScroller.clientHeight * 1.5) {
+    const left = scroller.scrollHeight - scrollerView(scroller) - scroller.scrollTop;
+    if (left < scrollerView(scroller) * 1.5) {
       phoneNavLinks.forEach((link) => phonePreparePage(link.getAttribute("href"), "page-slide"));
-      phoneNavScroller.removeEventListener("scroll", prepareNear);
+      scrollTarget(scroller).removeEventListener("scroll", prepareNear);
     }
   };
-  phoneNavScroller.addEventListener("scroll", prepareNear, { passive: true });
+  scrollTarget(scroller).addEventListener("scroll", prepareNear, { passive: true });
 }
 
 phoneNavLinks.forEach((link) => {
@@ -1726,6 +1737,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     }
     await phonePageReady(page, 400);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+    document.querySelector("main").style.setProperty("--scrolled", `${window.scrollY}px`);
     document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
     movePhoneBar("middle");
     setTimeout(() => {
@@ -1800,7 +1812,8 @@ window.addEventListener("pageshow", (event) => {
    ========================================= */
 const phoneReach = document.querySelector(".phone-reach");
 
-const projectScroller = document.querySelector("main > .phone-scroll, .phone-home__scroll");   // the box the page scrolls in
+const projectScrollBox = document.querySelector("main > .phone-scroll, .phone-home__scroll");
+const projectScroller = projectScrollBox && phoneScrollerOf(projectScrollBox);   // what the page scrolls in
 
 if (phoneReach) {
   const START_AFTER = 10;   // how far (screen pixels) the finger moves before it counts as a swipe
@@ -1825,7 +1838,7 @@ if (phoneReach) {
     if (document.body.matches(".is-phone-works-open, .is-phone-hi-open")) return false;
     if (isPhoneHome) return false;   // only at the end of a project page
     if (projectScroller) {
-      const end = projectScroller.scrollHeight - projectScroller.clientHeight;
+      const end = projectScroller.scrollHeight - scrollerView(projectScroller);
       return projectScroller.scrollTop >= end - 2;
     }
     return false;
@@ -1873,7 +1886,7 @@ if (phoneReach) {
     let lastTop = projectScroller.scrollTop;
     let lastScrollTime = performance.now();
     let scrollSpeed = 0;
-    projectScroller.addEventListener("scroll", () => {
+    scrollTarget(projectScroller).addEventListener("scroll", () => {
       const now = performance.now();
       scrollSpeed = (projectScroller.scrollTop - lastTop) / Math.max(now - lastScrollTime, 1);
       lastTop = projectScroller.scrollTop;
