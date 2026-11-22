@@ -1335,7 +1335,7 @@ let phoneChanging = false;           // a page change has started (more taps do 
 phoneWorkFrames.forEach((frame) => {
   const computerImage = document.querySelector(`.home-frame__image[src="${frame.dataset.hover}"]`);
   const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
-  if (hover) frame.append(hover.cloneNode(true));
+  if (hover && !frame.querySelector(".home-frame__hover")) frame.append(hover.cloneNode(true));   // (usually already in the page)
 
   // A tap opens the project
   frame.addEventListener("click", () => {
@@ -1738,6 +1738,8 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     await phonePageReady(page, 400);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     document.querySelector("main").style.setProperty("--scrolled", `${window.scrollY}px`);
+    document.body.classList.remove("is-phone-reach-open");
+    document.documentElement.style.setProperty("--reach-progress", "0");
     document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
     movePhoneBar("middle");
     setTimeout(() => {
@@ -1835,7 +1837,8 @@ if (phoneReach) {
   // When it can come up: never behind WORKS or HI; on the home page once the frames are out;
   // and only at the very end of the page
   function canOpen() {
-    if (document.body.matches(".is-phone-works-open, .is-phone-hi-open")) return false;
+    // never behind WORKS or HI, and never while going to another page
+    if (document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-going-home, .is-phone-opening-project")) return false;
     if (isPhoneHome) return false;   // only at the end of a project page
     if (projectScroller) {
       const end = projectScroller.scrollHeight - scrollerView(projectScroller);
@@ -1997,4 +2000,17 @@ if (reloadPage && !window.frameElement) {
   window.addEventListener("pageshow", checkTime);
 
   reloadPage.addEventListener("click", () => window.location.reload());
+}
+
+
+/* =========================================
+   A project page on the phone always starts at the top (also when the browser would put it
+   back where it was before)
+   ========================================= */
+if (document.body.classList.contains("project-page") && "scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+if (document.body.classList.contains("project-page")) {
+  window.scrollTo(0, 0);
+  window.addEventListener("pageshow", () => window.scrollTo(0, 0));
 }

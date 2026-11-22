@@ -1476,6 +1476,14 @@ a.project-nav {
   transition: none;
 }
 
+.is-phone-home-back .phone-frame .home-frame__hover {
+  visibility: visible;
+}
+
+.is-phone-home-back .phone-frame:has(.home-frame__hover) .phone-frame__image {
+  visibility: hidden;
+}
+
 .is-phone-home-back .phone-frame {
   opacity: 1;
   transform: none;
@@ -1624,11 +1632,17 @@ a.project-nav {
     display: block;
   }
 
-  /* The home page never moves: no scrolling, no bouncing, a finger can't drag it */
-  html:has(body.home-page),
+  /* The home page never moves: no scrolling, no bouncing, a finger can't drag it.
+     (Pinning the page itself is the only way iPhones always keep it still) */
+  html:has(body.home-page) {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body.home-page {
-    height: 100vh;
-    height: 100lvh;
+    position: fixed;
+    inset: 0;
     overflow: hidden;
     overscroll-behavior: none;
     touch-action: none;
@@ -2093,20 +2107,24 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   position: relative;
   height: 100%;
   overflow: hidden;
-  background: linear-gradient(to bottom, var(--color-white) calc(519 * var(--hi-fit-pixel)), var(--color-lime) calc(844 * var(--hi-fit-pixel)));
+  /* white, then white to lime over the bottom 325 (like in Figma), ending at the bottom of the screen */
+  background: linear-gradient(to bottom, var(--color-white) calc(100svh - 325 * var(--phone-page-pixel)), var(--color-lime) 100svh);
 }
 
-.phone-hi__page .phone-title,
-.phone-hi__page .phone-text,
-.phone-hi__page .phone-hi__contact {
+.phone-hi__page .phone-title {
   top: calc(var(--y) * var(--hi-fit-pixel));
 }
 
-/* The text about me keeps its size, so on short phones it's placed by its bottom edge (y 743 in
-   Figma, where its last line ends): it never runs into the email and phone number under it */
+/* The bottom half (the text about me, the email, phone number and Instagram) is placed from the
+   bottom of the screen, as far from it as in Figma, so the email is always near the bottom.
+   The text is placed by where its last line ends (y 743 in Figma) */
 .phone-hi__page .phone-hi__text {
-  top: calc(743 * var(--hi-fit-pixel));
+  top: calc(100svh - (844 - 743) * var(--phone-page-pixel));
   transform: translateY(-100%);
+}
+
+.phone-hi__page .phone-hi__contact {
+  top: calc(100svh - (844 - var(--y)) * var(--phone-page-pixel));
 }
 
 /* The title and the text are over the picture of me, never under it */
@@ -2242,6 +2260,16 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
     var(--color-blue));
   transform: translate3d(0, calc((1 - var(--reach-progress, 0)) * 100%), 0);
   will-change: transform;
+  /* while it's closed it can't be seen at all (even if the search bar changes the screen size) */
+  visibility: hidden;
+  transition:
+    transform var(--reach-time) var(--reach-easing),
+    visibility 0s linear var(--reach-time);
+}
+
+.is-phone-reach-open .phone-reach,
+.is-phone-reach-dragging .phone-reach {
+  visibility: visible;
   transition: transform var(--reach-time) var(--reach-easing);
 }
 
