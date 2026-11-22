@@ -1685,9 +1685,12 @@ a.project-nav {
 
   /* WORKS, HI and Reach Out lie over the page: a finger on them doesn't scroll the page under them */
   .phone-works,
-  .phone-works-blur,
-  .phone-hi {
+  .phone-works-blur {
     touch-action: none;
+  }
+
+  .phone-hi {
+    touch-action: pan-y;
   }
 }
 
@@ -2087,16 +2090,17 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transform: translate3d(0, 0, 0);
 }
 
-/* The page inside ("phone hi", 844 high from the top of the screen). It doesn't scroll: it fits
-   the screen. Up and down (and the picture of me) use --hi-fit-pixel, a bit smaller on shorter
-   phones. White at the top, then white to lime from y 519 to the bottom.
-   The picture of me sticks out on both sides: cut there */
+/* The Hi page ("phone hi" in Figma). The top (title, the GIF of me and the little drawings) stays
+   still and fits the screen: up and down it uses --hi-fit-pixel, a bit smaller on shorter phones.
+   Under it, "phone top frame hi" peeks in at the bottom of the screen (81 high, like in Figma)
+   and comes up over the drawings when you scroll down */
 .phone-hi {
   --hi-fit-pixel: min(var(--phone-page-pixel), 100svh / 844);
 }
 
 .phone-hi .phone-scroll {
-  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;   /* the page under the Hi page never scrolls along */
 }
 
 .phone-hi .phone-scroll::after {
@@ -2105,39 +2109,60 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 
 .phone-hi__page {
   position: relative;
-  height: 100%;
-  overflow: hidden;
-  /* white, then white to lime over the bottom 325 (like in Figma), ending at the bottom of the screen */
-  background: linear-gradient(to bottom, var(--color-white) calc(100svh - 325 * var(--phone-page-pixel)), var(--color-lime) 100svh);
+  background-color: var(--color-white);
 }
 
-.phone-hi__page .phone-title {
+/* The top: stays on the screen while the panel slides up over it */
+.phone-hi__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;            /* the picture of me sticks out on both sides: cut there */
+}
+
+.phone-hi__stage .phone-title {
   top: calc(var(--y) * var(--hi-fit-pixel));
+  z-index: 1;                  /* over the picture of me */
 }
 
-/* The bottom half (the text about me, the email, phone number and Instagram) is placed from the
-   bottom of the screen, as far from it as in Figma, so the email is always near the bottom.
-   The text is placed by where its last line ends (y 743 in Figma) */
-.phone-hi__page .phone-hi__text {
-  top: calc(100svh - (844 - 743) * var(--phone-page-pixel));
-  transform: translateY(-100%);
-}
-
-.phone-hi__page .phone-hi__contact {
-  top: calc(100svh - (844 - var(--y)) * var(--phone-page-pixel));
-}
-
-/* The title and the text are over the picture of me, never under it */
-.phone-hi__page .phone-title,
-.phone-hi__page .phone-text {
-  z-index: 1;
-}
-
-.phone-hi__page .phone-doodle {
+.phone-hi__stage .phone-doodle {
   left: calc((var(--x) + var(--w) / 2) * var(--phone-page-pixel) - var(--w) / 2 * var(--hi-fit-pixel));
   top: calc(var(--y) * var(--hi-fit-pixel));
   width: calc(var(--w) * var(--hi-fit-pixel));
   height: calc(var(--h) * var(--hi-fit-pixel));
+}
+
+/* The little drawings change to their second drawing and back, in time with the GIF of me
+   (two pictures, a third of a second each) */
+.phone-doodle--second {
+  animation: phone-doodle-swap 0.66s steps(1, end) infinite;
+}
+
+.phone-doodle--first {
+  animation: phone-doodle-swap 0.66s steps(1, end) -0.33s infinite;
+}
+
+@keyframes phone-doodle-swap {
+  0%   { visibility: hidden; }
+  50%  { visibility: visible; }
+}
+
+/* "phone top frame hi": white to lime, 377 high, with a black line along its top */
+.phone-hi__panel {
+  position: relative;
+  z-index: 2;
+  height: calc(377 * var(--phone-page-pixel));
+  margin-top: calc(-81 * var(--phone-page-pixel));   /* its top peeks in at the bottom of the screen */
+  background: linear-gradient(to bottom, var(--color-white), var(--color-lime));
+}
+
+.phone-hi__panel-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--project-line);
+  background-color: var(--color-black);
 }
 
 .phone-hi__title {
@@ -2181,7 +2206,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   translate:
     calc(var(--move-x, 0) * var(--phone-page-pixel))
     calc(var(--move-y, 0) * var(--phone-page-pixel));
-  rotate: calc(var(--turn, 0) * 1deg);
+  rotate: calc(var(--turn, 0) * 1deg + var(--rotate, 0deg));
 }
 
 .phone-doodle img {
@@ -2256,7 +2281,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   height: 100lvh;              /* also behind the phone's search bar */
   z-index: 9;
   background: linear-gradient(to bottom,
-    var(--color-white) calc((77 - var(--phone-top)) * var(--phone-page-pixel)),
+    var(--color-white) calc((186 - var(--phone-top)) * var(--reach-y-pixel, var(--phone-page-pixel))),
     var(--color-blue));
   transform: translate3d(0, calc((1 - var(--reach-progress, 0)) * 100%), 0);
   will-change: transform;
@@ -2288,6 +2313,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   height: 100%;
 }
 
+.phone-reach__intro,
 .phone-reach__title,
 .phone-reach__label,
 .phone-reach__contact {
@@ -2312,6 +2338,16 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   font-size: calc(14 * var(--phone-page-pixel));
   font-weight: 600;
   line-height: normal;
+}
+
+/* "Think you have something to work on with me?": Inter Semi Bold 16 */
+.phone-reach__intro {
+  width: calc(var(--w) * var(--phone-page-pixel));
+  font-family: var(--font-body);
+  font-size: calc(16 * var(--phone-page-pixel));
+  font-weight: 600;
+  line-height: normal;
+  white-space: normal;
 }
 
 /* The email address, phone number and Instagram: Instrument Serif 30px */
@@ -2762,4 +2798,165 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
+}
+
+
+/* =========================================
+   Phone: nothing full-screen waits on the screen while it isn't in use.
+   Safari fills the space behind its search bar with the colour of anything pinned to the
+   screen that reaches its bottom edge (even when it's hidden or pushed out of sight), which
+   showed as a white band. So these layers are taken off the screen completely (display: none)
+   while they aren't used, and only come back when they slide or fade in. The page itself then
+   shows behind the search bar, a little blurred.
+   (@starting-style: where they start from when they come back; allow-discrete: they stay until
+   they have finished sliding or fading away)
+   ========================================= */
+@media (max-width: 700px) {
+  /* computer layers that phones don't use */
+  .hi-page,
+  .site-index-blur {
+    display: none;
+  }
+
+  .reload-page {
+    display: none;
+  }
+
+  .is-reload .reload-page {
+    display: block;
+  }
+
+  @starting-style {
+    .is-reload .reload-page {
+      opacity: 0;
+    }
+  }
+
+  .phone-works-blur {
+    display: none;
+    transition:
+      opacity var(--index-open-time) var(--page-change-easing),
+      display var(--index-open-time) allow-discrete;
+  }
+
+  .is-phone-works-open .phone-works-blur {
+    display: block;
+  }
+
+  @starting-style {
+    .is-phone-works-open .phone-works-blur {
+      opacity: 0;
+    }
+  }
+
+  .phone-hi {
+    display: none;
+    transition:
+      transform var(--page-change-time) var(--page-change-easing),
+      display var(--page-change-time) allow-discrete;
+  }
+
+  .is-phone-hi-open .phone-hi {
+    display: block;
+  }
+
+  @starting-style {
+    .is-phone-hi-open .phone-hi {
+      transform: translate3d(0, 100%, 0);
+    }
+  }
+
+  .phone-reach,
+  .phone-reach-blur {
+    display: none;
+  }
+
+  .phone-reach {
+    transition:
+      transform var(--reach-time) var(--reach-easing),
+      display var(--reach-time) allow-discrete;
+  }
+
+  .phone-reach-blur {
+    transition:
+      backdrop-filter var(--reach-time) var(--reach-easing),
+      -webkit-backdrop-filter var(--reach-time) var(--reach-easing),
+      display var(--reach-time) allow-discrete;
+  }
+
+  .is-phone-reach-open .phone-reach,
+  .is-phone-reach-dragging .phone-reach,
+  .is-phone-reach-open .phone-reach-blur,
+  .is-phone-reach-dragging .phone-reach-blur {
+    display: block;
+  }
+
+  @starting-style {
+    .is-phone-reach-open .phone-reach {
+      transform: translate3d(0, 100%, 0);
+    }
+  }
+
+  .phone-works {
+    display: none;
+    transition:
+      clip-path var(--index-open-time) var(--page-change-easing),
+      transform var(--page-change-time) var(--page-change-easing),
+      display var(--index-open-time) allow-discrete;
+  }
+
+  .is-phone-works-open .phone-works {
+    display: block;
+  }
+
+  @starting-style {
+    .is-phone-works-open .phone-works {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  /* The waiting copies of other pages: loaded, but off the screen until they slide in */
+  .page-slide,
+  .page-behind {
+    display: none;
+  }
+
+  .page-slide.is-sliding,
+  .is-phone-going-home .page-behind {
+    display: block;
+  }
+
+  @starting-style {
+    .page-slide.is-sliding {
+      transform: translateY(100%);
+    }
+  }
+}
+
+
+/* =========================================
+   Phone project pages: the work comes up out of a blur at the bottom of the screen and gets sharp
+   as it scrolls up (like stefanstefancik.com): a strip along the bottom, 160 high, blurs what's
+   behind it by 8 pixels, the blur fading in from nothing at its top edge
+   ========================================= */
+.phone-bottom-blur {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  body.project-page:not(.process-page) .phone-bottom-blur {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;                /* over the work, under the bar, WORKS, HI and Reach Out */
+    height: 160px;
+    background-color: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+    mask-image: linear-gradient(to bottom, transparent, #000);
+    pointer-events: none;
+  }
 }

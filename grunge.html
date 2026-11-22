@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=104">
+  <link rel="stylesheet" href="styles.css?v=107">
 </head>
 <body class="project-page">
 
@@ -203,6 +203,10 @@
 
 
 
+
+
+
+
     <!--
       The phone version ("phone grunge" in Figma, 390 × 3560): only on phones.
       One long page that scrolls down. Numbers are Figma pixels from the top left corner of the screen.
@@ -281,6 +285,9 @@
       </div>
     </section>
     </div>
+
+    <!-- The work comes up out of a blur at the bottom of the screen (styles.css) -->
+    <div class="phone-bottom-blur" aria-hidden="true"></div>
 
     <!-- The black line at the top: it stays still, and the page disappears as it scrolls up past it,
          so nothing shows under the phone's time and battery -->
@@ -412,20 +419,51 @@
        It scrolls by itself. The drawings move with the finger and when the phone tilts -->
   <section class="phone-hi" aria-label="Hi, I'm Yael">
     <div class="phone-scroll">
-    <div class="phone-hi__page" style="--h: 844">
-      <!-- Me, moving ("Untitled_Artwork 89", the same GIF as on the computer), under the title.
-           It stays still when the phone tilts -->
-      <div class="phone-doodle phone-doodle--still" style="--x: -107; --y: 133; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
+    <div class="phone-hi__page">
+      <!-- The top: stays still while the panel under it ("phone top frame hi") is pulled up over it -->
+      <div class="phone-hi__stage">
+        <!-- Me, moving ("Untitled_Artwork 89", the same GIF as on the computer), under the title -->
+        <div class="phone-doodle phone-doodle--still" style="--x: -107; --y: 261; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
+        <h2 class="phone-title phone-hi__title" style="--x: 20; --y: 88">HIIII I’M YAEL</h2>
 
-      <h2 class="phone-title phone-hi__title" style="--x: 20; --y: 88">HIIII I’M YAEL</h2>
+        <!-- The little drawings. Each one changes to its "Hi page hover" drawing (from the computer) and
+             back, in time with the GIF of me (styles.css: phone-doodle-swap) -->
+        <!-- mic -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 30.498; --y: 675.23; --w: 144; --h: 95.625; --rotate: 16.24deg"><img style="--iw: 612.5%; --ih: 922.35%; --il: -372.66%; --it: -343.53%" src="images/hi/mic-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 77.107; --y: 678.143; --w: 79; --h: 114; --rotate: -17.22deg"><img style="--iw: 1097.47%; --ih: 760.53%; --il: -737.97%; --it: -271.05%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- cheese -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 253; --y: 422; --w: 90.625; --h: 70"><img style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 249; --y: 406.92; --w: 132; --h: 104.077"><img style="--iw: 833.65%; --ih: 1057.32%; --il: -72.12%; --it: -229.27%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- cow -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 298; --y: 219; --w: 92.432; --h: 121.338"><img style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 300.52; --y: 189; --w: 80.427; --h: 156"><img style="--iw: 747.41%; --ih: 385.33%; --il: -152.59%; --it: -135.11%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- drogo -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 7; --y: 469; --w: 93.252; --h: 92.091"><img style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 18; --y: 469; --w: 95; --h: 80"><img style="--iw: 721.05%; --ih: 856.25%; --il: -195.79%; --it: -198.75%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- ted-lasso -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 208; --y: 586; --w: 73; --h: 85.943"><img style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 208; --y: 588; --w: 107; --h: 87"><img style="--iw: 854.21%; --ih: 1050.57%; --il: -351.4%; --it: -357.47%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- footy -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 100; --y: 176; --w: 63.439; --h: 53"><img style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 100; --y: 160; --w: 76; --h: 57"><img style="--iw: 597.37%; --ih: 796.49%; --il: -298.68%; --it: -149.12%" src="images/hi/hover-sheet.png" alt=""></div>
+        <!-- hand -->
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 61; --y: 561; --w: 77.564; --h: 68.236"><img style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 57; --y: 526; --w: 79; --h: 105"><img style="--iw: 1097.47%; --ih: 825.71%; --il: -817.72%; --it: -467.62%" src="images/hi/hover-sheet.png" alt=""></div>
+      </div>
 
-      <p class="phone-text phone-hi__text" style="--x: 20; --y: 588; --w: 355">Born in New Zealand.<br>Moved to Australia with my family. Immigrated to Israel by myself at 18 in 2019.<br><br>I’m currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+      <!-- "phone top frame hi": it peeks in at the bottom of the screen and comes up over the
+           drawings when you scroll down -->
+      <div class="phone-hi__panel">
+        <div class="phone-hi__panel-line" aria-hidden="true"></div>
+        <p class="phone-text phone-hi__text" style="--x: 17; --y: 26; --w: 223">Born in New Zealand.<br>Moved to Australia with my family. Immigrated to Israel by myself at 18 in 2019.</p>
+        <p class="phone-text phone-hi__text" style="--x: 145; --y: 122; --w: 227">I’m currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
 
-      <!-- Tapping the email address copies it (a COPIED label rolls up over it), the phone number
-           calls it and Instagram opens -->
-      <a class="phone-hi__contact" style="--x: 20; --y: 810" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
-      <a class="phone-hi__contact" style="--x: 192; --y: 810" href="tel:+972538521501">+972 538521501</a>
-      <a class="phone-hi__contact" style="--x: 326; --y: 810" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">Instagram</a>
+        <!-- Tapping the email address copies it (a COPIED label rolls up over it), the phone number
+             calls it and Instagram opens -->
+        <a class="phone-hi__contact" style="--x: 17; --y: 312" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+        <a class="phone-hi__contact" style="--x: 189; --y: 312" href="tel:+972538521501">+972 538521501</a>
+        <a class="phone-hi__contact" style="--x: 323; --y: 312" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">Instagram</a>
+      </div>
     </div>
     </div>
 
@@ -442,7 +480,8 @@
   <section class="phone-reach" aria-label="Reach out">
     <div class="phone-top-line" aria-hidden="true"></div>
     <div class="phone-reach__page">
-      <h2 class="phone-reach__title" style="--x: 18; --y: 55">REACH OUT</h2>
+      <p class="phone-reach__intro" style="--x: 18; --y: 88; --w: 354">Think you have something to work<br>on with me?</p>
+      <h2 class="phone-reach__title" style="--x: 18; --y: 130">REACH OUT!</h2>
       <p class="phone-reach__label" style="--x: 18; --y: 378">Email me</p>
       <a class="phone-reach__contact" style="--x: 18; --y: 393" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
       <p class="phone-reach__label" style="--x: 146; --y: 534">Let’s talk</p>
@@ -452,7 +491,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=88"></script>
+  <script src="script.js?v=90"></script>
 
 </body>
 </html>

@@ -1940,6 +1940,7 @@ phoneEmails.forEach((link) => {
 
   link.addEventListener("click", async (event) => {
     event.preventDefault();
+    fitLabel();   // (measured now: the page wasn't on the screen before)
     if (link.classList.contains("is-copied")) {
       link.classList.remove("is-copied");
       return;
