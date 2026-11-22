@@ -1329,7 +1329,6 @@ if (phoneHome && window.frameElement) {
    from the computer frame named in data-hover). Tapping one opens the project (data-href),
    once the phone version of that project exists */
 const phoneWorkFrames = [...document.querySelectorAll(".phone-frame[data-hover]")];
-const PHONE_TAP_CHANGE_TIME = 100;   // like --phone-tap-change-time: the tapped look shows this long first
 const PHONE_ROLL_WAIT = 450;         // like --roll-time: a tapped name in WORKS rolls to italic first
 let phoneChanging = false;           // a page change has started (more taps do nothing)
 
@@ -1338,14 +1337,11 @@ phoneWorkFrames.forEach((frame) => {
   const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
   if (hover) frame.append(hover.cloneNode(true));
 
-  // A tap: the frame shows its gradient drawing for a moment (there is no hover on a phone),
-  // then the project opens
+  // A tap opens the project
   frame.addEventListener("click", () => {
     if (frame.dataset.href && phoneHome.classList.contains("is-playful") && !phoneChanging) {
       phoneChanging = true;
-      frame.classList.add("is-tapped");
-      phonePreparePage(frame.dataset.href, "page-slide");
-      setTimeout(() => phoneOpenProject(frame.dataset.href), PHONE_TAP_CHANGE_TIME);
+      phoneOpenProject(frame.dataset.href);
     }
   });
 });
@@ -1619,7 +1615,6 @@ function phonePageReady(page, longest = 800) {
 
 // Opens a project: it slides up from the bottom while the bar glides to the top
 // (and an open list rolls up into the bar at the same time)
-const PHONE_OPEN_TIME = 550;       // like --phone-open-time: a project sliding up on the phone
 const PHONE_LONGEST_WAIT = 500;    // the longest it waits for a project that isn't loaded yet
 async function phoneOpenProject(href) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1635,7 +1630,7 @@ async function phoneOpenProject(href) {
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
     window.location.href = href;
-  }, PHONE_OPEN_TIME);
+  }, PAGE_CHANGE_TIME);
 }
 
 // The WORKS list. Names roll to italic (made here, like the words in the bar).
@@ -1692,15 +1687,12 @@ if (phoneNavLinks.length && phoneNavScroller && !window.frameElement) {
 
 phoneNavLinks.forEach((link) => {
   const href = link.getAttribute("href");
-  // A tap: it shows its gradient version for a moment (there is no hover on a phone), then
-  // the project opens
+  // A tap opens the project
   link.addEventListener("click", (event) => {
     event.preventDefault();
     if (phoneChanging) return;
     phoneChanging = true;
-    link.classList.add("is-tapped");
-    phonePreparePage(href, "page-slide");
-    setTimeout(() => phoneOpenProject(href), PHONE_TAP_CHANGE_TIME);
+    phoneOpenProject(href);
   });
 });
 
@@ -1919,7 +1911,7 @@ phoneEmails.forEach((link) => {
   const label = document.createElement("span");
   label.className = "phone-copy__label";
   label.setAttribute("aria-hidden", "true");
-  label.textContent = "COPIED";
+  label.innerHTML = '<span class="phone-copy__word">COPIED</span>';
   link.append(label);
 
   // The label covers the whole address (with a little extra on both sides)

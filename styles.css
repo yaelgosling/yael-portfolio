@@ -904,15 +904,6 @@ html.is-hi-open-page body {
   transform: none;
 }
 
-/* On the phone a project slides up faster (and the bar glides up with it) */
-@media (max-width: 700px) {
-  .page-slide,
-  .is-phone-opening-project .phone-bar,
-  .is-phone-opening-project .phone-bar__box {
-    transition-duration: var(--phone-open-time);
-  }
-}
-
 /* Inside that waiting copy, the bar is hidden: the home page's bar is the one you see */
 .is-preview .site-bar {
   visibility: hidden;
@@ -1471,15 +1462,6 @@ a.project-nav {
   visibility: visible;
 }
 
-/* Tapped: back to its gradient drawing for a moment, before the project opens */
-.phone-frame.is-arrived.is-tapped:has(.home-frame__hover) .phone-frame__image {
-  visibility: visible;
-}
-
-.phone-frame.is-arrived.is-tapped .home-frame__hover {
-  visibility: hidden;
-}
-
 .phone-frame[data-href] {
   cursor: pointer;
 }
@@ -1609,9 +1591,7 @@ a.project-nav {
    One long 390-wide page that scrolls down. Positions are Figma pixels.
    ========================================= */
 :root {
-  --phone-tap-time: 0.25s;
-  --phone-tap-change-time: 0.1s;
-  --phone-open-time: 0.55s;        /* a project sliding up on the phone (and the bar gliding to the top) */   /* a tapped frame shows its gradient this long before the page changes */   /* how long the pause play symbol and the flip back arrow stay orange */
+  --phone-tap-time: 0.25s;   /* how long the pause play symbol and the flip back arrow stay orange */
 }
 
 /* Phones show a grey square when something is tapped: not here, as things turn orange instead */
@@ -1647,10 +1627,13 @@ a.project-nav {
      (absolute, not fixed: Safari fills the space under its search bar with the colour of a fixed
      box touching the bottom of the screen, which showed as a white box. This way the page itself
      shows under the search bar, blurred by .phone-bottom-blur) */
-  html:has(body.project-page),
-  body.project-page {
-    height: 100%;
-    overflow: hidden;
+  html:has(body.project-page:not(.process-page)),
+  body.project-page:not(.process-page),
+  html:has(body.home-page),
+  body.home-page {
+    height: 100vh;
+    height: 100lvh;            /* the whole screen, also behind the search bar (so the page shows there) */
+    overflow: hidden;          /* the window never moves: the pages scroll inside */
   }
 
   body.project-page main {
@@ -1842,29 +1825,6 @@ a.project-nav {
   color: inherit;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* Its gradient version ("next page hover"): shows for a moment after a tap, before the
-   project opens (there is no hover on a phone) */
-.phone-nav__gradient {
-  position: absolute;
-  inset: var(--inset);
-  visibility: hidden;
-}
-
-.phone-nav__gradient img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.phone-nav.is-tapped .phone-nav__gradient {
-  visibility: visible;
-}
-
-.phone-nav.is-tapped .project-nav__layer,
-.phone-nav.is-tapped .phone-nav__text {
-  visibility: hidden;
 }
 
 .phone-nav__text--nowrap {
@@ -2350,6 +2310,11 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   pointer-events: none;
 }
 
+/* On Reach Out the word is a little smaller than the address (the box stays the same) */
+.phone-reach .phone-copy__word {
+  font-size: 0.88em;
+}
+
 .phone-copy.is-copied .phone-copy__label {
   clip-path: inset(0);
 }
@@ -2735,4 +2700,16 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
     --title-x: 81; --title-y: 412;
     --text-x: 186; --text-y: 734; --text-size: 16;
   }
+}
+
+
+/* Going to another page: the old page stays on the screen until the new one is ready, and then
+   they swap at once (no white flash in between). Browsers that can't do this just change pages */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
 }
