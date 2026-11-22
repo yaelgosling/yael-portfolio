@@ -2086,8 +2086,9 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 
 /* The Hi page ("phone hi" in Figma). The top (title, the GIF of me and the little drawings) stays
    still and fits the screen: up and down it uses --hi-fit-pixel, a bit smaller on shorter phones.
-   Under it, "phone top frame hi" peeks in at the bottom of the screen (81 high, like in Figma)
-   and comes up over the drawings when you scroll down */
+   Under it, "phone top frame hi" (y 778, 668 long) comes up over the drawings when you scroll
+   down. It uses --hi-fit-pixel too, so on every phone it starts and stops in the same places as
+   in Figma (never too close to the drawings or the title) */
 .phone-hi {
   --hi-fit-pixel: min(var(--phone-page-pixel), 100svh / 844);
 }
@@ -2142,14 +2143,21 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   50%  { visibility: visible; }
 }
 
-/* "phone top frame hi": white to lime, 377 high, with a black line along its top */
+/* "phone top frame hi": white to lime, 668 high, with a black line along its top */
 .phone-hi__panel {
   position: relative;
   z-index: 2;                  /* over the drawings and the GIF of me */
   transform: translateZ(0);    /* drawn on its own layer, so phones always show it on top */
-  height: calc(377 * var(--phone-page-pixel));
-  margin-top: calc(-81 * var(--phone-page-pixel));   /* its top peeks in at the bottom of the screen */
+  height: calc(668 * var(--hi-fit-pixel));
+  margin-top: calc(778 * var(--hi-fit-pixel) - 100svh);   /* its top at y 778, like in Figma */
   background: linear-gradient(to bottom, var(--color-white), var(--color-lime));
+}
+
+/* Inside the panel: the two paragraphs keep their spacing from Figma (the text doesn't get
+   smaller, so they never run into each other); the email, phone and Instagram are placed in the
+   same proportion as the panel, so they stay near its bottom */
+.phone-hi__panel .phone-hi__contact {
+  top: calc(var(--y) * var(--hi-fit-pixel));
 }
 
 .phone-hi__panel-line {
@@ -2175,14 +2183,14 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   white-space: nowrap;
 }
 
-/* The email address, phone number and Instagram, in a row at the bottom: Inter Semi Bold 10px */
+/* The email address, phone number and Instagram: Instrument Serif 16px */
 .phone-hi__contact {
   position: absolute;
   left: calc(var(--x) * var(--phone-page-pixel));
   top: calc(var(--y) * var(--phone-page-pixel));
-  font-family: var(--font-body);
-  font-size: calc(10 * var(--phone-page-pixel));
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: calc(16 * var(--phone-page-pixel));
+  font-weight: 400;
   line-height: normal;
   color: var(--color-black);
   text-decoration: none;
@@ -2363,37 +2371,39 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   user-select: none;
 }
 
+/* The address and "Copied" share one line. Copying rolls the address up and out, and "Copied"
+   (black, Instrument Serif italic, the same size as the address) rolls up into its place */
+.phone-copy__roll {
+  display: inline-grid;
+  overflow: hidden;
+  vertical-align: top;
+  padding-right: 0.15em;       /* room for the italic letters' tails */
+}
+
+.phone-copy__address,
 .phone-copy__label {
-  position: absolute;
-  left: -0.25em;
-  /* a little lower than the top of the line, so it never covers the "Email me" above it */
-  top: 0.2em;
-  bottom: 0;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  padding-left: 0.3em;
-  background-color: var(--color-black);
-  color: var(--color-white);
+  grid-area: 1 / 1;
+  transition: transform var(--roll-time) var(--page-change-easing);
+}
+
+.phone-copy__label {
+  transform: translateY(100%);   /* waiting under the line */
+  color: var(--color-black);
   font-family: var(--font-display);
-  font-size: 1.1em;
-  font-weight: 400;
   font-style: italic;
-  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
-  transition: clip-path var(--roll-time) var(--page-change-easing);
   pointer-events: none;
 }
 
-/* On Reach Out the word is a little smaller than the address (the box stays the same) */
-.phone-reach .phone-copy__word {
-  font-size: 0.88em;
+.phone-copy.is-copied .phone-copy__address {
+  transform: translateY(-100%);
 }
 
 .phone-copy.is-copied .phone-copy__label {
-  clip-path: inset(0);
+  transform: none;
 }
 
-/* The Hi page or Reach Out went away: the label disappears at once, without rolling */
+/* The Hi page or Reach Out went away: the address is back at once, without rolling */
+.phone-copy.is-resetting .phone-copy__address,
 .phone-copy.is-resetting .phone-copy__label {
   transition: none;
 }
@@ -2949,7 +2959,17 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
   }
 }
 
-/* The same blur on the Hi page: the text panel comes up out of it at the bottom of the screen */
+/* The same blur on the Hi page: the text panel comes up out of it at the bottom of the screen.
+   Once the panel is all the way up (it can't scroll further) the blur fades away, so the bottom
+   (Instagram) is sharp */
+.phone-hi .phone-bottom-blur {
+  transition: opacity 0.3s ease;
+}
+
+.phone-hi.is-at-end .phone-bottom-blur {
+  opacity: 0;
+}
+
 @media (max-width: 700px) {
   .phone-hi .phone-bottom-blur {
     display: block;

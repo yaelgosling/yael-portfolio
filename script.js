@@ -1924,23 +1924,13 @@ const phoneEmails = [...document.querySelectorAll('.phone-hi__contact[href^="mai
 phoneEmails.forEach((link) => {
   const address = link.textContent.trim();
   link.classList.add("phone-copy");
-  const label = document.createElement("span");
-  label.className = "phone-copy__label";
-  label.setAttribute("aria-hidden", "true");
-  label.innerHTML = '<span class="phone-copy__word">COPIED</span>';
-  link.append(label);
-
-  // The label covers the whole address (with a little extra on both sides)
-  function fitLabel() {
-    label.style.width = `${link.offsetWidth + 14 * window.innerWidth / 390}px`;
-  }
-  fitLabel();
-  document.fonts.ready.then(fitLabel);
-  window.addEventListener("resize", fitLabel);
+  // The address and "Copied" in the same spot: copying rolls the address up and out of its line
+  // and "Copied" up into it (like the words in the bar)
+  link.innerHTML = `<span class="phone-copy__roll"><span class="phone-copy__address">${address}</span>` +
+    `<span class="phone-copy__label" aria-hidden="true">Copied</span></span>`;
 
   link.addEventListener("click", async (event) => {
     event.preventDefault();
-    fitLabel();   // (measured now: the page wasn't on the screen before)
     if (link.classList.contains("is-copied")) {
       link.classList.remove("is-copied");
       return;
@@ -2015,3 +2005,16 @@ if (document.body.classList.contains("project-page")) {
   window.scrollTo(0, 0);
   window.addEventListener("pageshow", () => window.scrollTo(0, 0));
 }
+
+
+/* =========================================
+   Phone Hi page: once the panel is pulled all the way up (it can't scroll further), the blur at
+   the bottom of the screen goes away, so Instagram at the bottom is sharp
+   ========================================= */
+document.querySelectorAll(".phone-hi").forEach((hi) => {
+  const box = hi.querySelector(".phone-scroll");
+  if (!box) return;
+  const check = () => hi.classList.toggle("is-at-end", box.scrollTop >= box.scrollHeight - box.clientHeight - 2);
+  box.addEventListener("scroll", check, { passive: true });
+  window.addEventListener("resize", check);
+});
