@@ -40,13 +40,8 @@
   --page-change-easing: cubic-bezier(0.7, 0, 0.2, 1);
 
   /* Process page: sizes out of a 1440px-wide frame */
-  --process-side-space: calc(95 / 1440 * 100cqw);
-  --process-top-space: calc(79 / 1440 * 100cqw);
-  --process-card-gap: calc(62 / 1440 * 100cqw);
-  --process-card-width: calc(302 / 1440 * 100cqw);
 
   /* Card text: 12px out of a 302px-wide card */
-  --card-text-size: calc(12 / 302 * 100cqw);
 
   /* Process page on phones */
   --phone-space: 16px;
@@ -396,6 +391,36 @@ body:not(.is-phone-works-open):not(.is-phone-hi-open):not(.is-phone-opening-proj
 .site-bar__view.is-word-away .roll__word--next {
   visibility: hidden;
   transition: none;
+}
+
+/* PROCESS on the home page: in the same white spot as CLASSIC VIEW. It waits hidden below
+   the spot, and whenever CLASSIC VIEW rolls away (WORKS or HI opens, or you leave the home
+   page) PROCESS rolls up into its place; when they close it rolls back down */
+.home .site-bar__process {
+  pointer-events: none;
+}
+
+.home .site-bar__process .roll__track {
+  transform: translateY(calc(1em * var(--roll-line)));
+}
+
+.is-index-open .home .site-bar__process,
+.is-hi-open .home .site-bar__process {
+  pointer-events: auto;
+}
+
+.is-index-open .home .site-bar__process .roll__track,
+.is-hi-open .home .site-bar__process .roll__track,
+.home.is-leaving .site-bar__process .roll__track {
+  transform: none;
+}
+
+/* ...and like the other words, it rolls to italic on hover */
+@media (hover: hover) {
+  .is-index-open .home .site-bar__process:hover .roll__track,
+  .is-hi-open .home .site-bar__process:hover .roll__track {
+    transform: translateY(calc(-1em * var(--roll-line)));
+  }
 }
 
 /* Clicking CLASSIC VIEW / PLAY VIEW: the other view's word waits under the italic word,
@@ -854,12 +879,6 @@ html.is-hi-open-page body {
 
 .site-bar--project {
   transition: transform var(--page-change-time) var(--page-change-easing);
-}
-
-/* CLASSIC VIEW rolling into the bar while it glides home: as slow as the bar, so they
-   arrive together */
-.is-leaving-home .site-bar__view .roll__track {
-  transition-duration: var(--page-change-time);
 }
 
 /* From y 31 at the top to y 312 on the home page, which sits in the middle of the window */
@@ -1377,100 +1396,6 @@ a.project-nav {
   height: 312.7%;
   max-width: none;
 }
-
-/* =========================================
-   Process page
-   A row of closed tabs, one per week. Clicking a tab opens its card.
-   Sizes follow the window width.
-   ========================================= */
-.process {
-  width: 100%;
-  container-type: inline-size; /* lets the sizes below follow the page width */
-}
-
-.process__cards {
-  padding: var(--process-top-space) var(--process-side-space);
-  display: flex;
-  flex-wrap: wrap;             /* new weeks continue on the next line */
-  align-items: flex-start;
-  gap: var(--process-card-gap);
-}
-
-/* One card. Closed, it is only as tall as its tab */
-.card {
-  position: relative;
-  flex: none;
-  width: var(--process-card-width);
-  aspect-ratio: 302 / var(--tab-height);
-  container-type: inline-size; /* lets everything inside follow the card width */
-}
-
-.card.is-open {
-  aspect-ratio: 302 / var(--card-height);
-}
-
-/* A colored block or an image inside a card, placed in Figma pixels (see process.html) */
-.card__piece {
-  position: absolute;
-  left: calc(var(--x) / 302 * 100cqw);
-  top: calc(var(--y) / 302 * 100cqw);
-  width: calc(var(--w) / 302 * 100cqw);
-  height: calc(var(--h) / 302 * 100cqw);
-}
-
-.card__piece--orange { background-color: var(--color-orange); }
-.card__piece--blue { background-color: var(--color-blue); }
-.card__piece--lime { background-color: var(--color-lime); }
-.card__piece--white { background-color: var(--color-white); }
-
-.card__image {
-  object-fit: cover;
-}
-
-/* The date tab: a button that opens and closes the card */
-.card__tab {
-  border: none;
-  cursor: pointer;
-}
-
-/* Hovering over the tab changes the date to the italic of Instrument Serif */
-.card__tab:hover .card__date,
-.card__tab:focus-visible .card__date {
-  font-style: italic;
-}
-
-/* A piece of text inside a card */
-.card__text {
-  position: absolute;
-  left: calc(var(--x) / 302 * 100cqw);
-  top: calc(var(--y) / 302 * 100cqw);
-  width: calc(var(--w) / 302 * 100cqw);
-  text-align: left;
-  font-family: var(--font-display);
-  font-size: var(--card-text-size);
-  font-weight: 400;
-  line-height: var(--line-height);
-  color: var(--color-black);
-}
-
-.card__text--lime {
-  color: var(--color-lime);
-}
-
-/* Phones: the cards stack and fill the width, so the text stays readable */
-@media (max-width: 700px) {
-  .process__cards {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    padding: var(--phone-space);
-    gap: var(--phone-space);
-  }
-
-  .card {
-    width: 100%;
-  }
-}
-
 
 /* =========================================
    Phone home page ("phone home new" in Figma)
@@ -2345,6 +2270,205 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   }
 }
 
+
+
+/* =========================================
+   Process page ("Process" in Figma): five cards in a strip that moves left and right
+   (it works like the strip on the project pages). Each card shows only its date tab;
+   clicking the tab opens the card (script.js). Numbers are Figma pixels
+   ========================================= */
+.process-block--orange { background-color: var(--color-orange); }
+.process-block--blue { background-color: var(--color-blue); }
+.process-block--lime { background-color: var(--color-lime); }
+.process-block--white { background-color: var(--color-white); }
+
+.process-image {
+  object-fit: cover;
+}
+
+/* One card. It covers the whole strip, so everything in it is placed like in Figma.
+   Closed, the card waits lower down, with its top bar in the middle of the page; opening,
+   it glides up to its place at the top while the rest of it unrolls (like the bar on the home
+   page gliding up into classic view). Only the top bar can be clicked */
+.process-card {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateY(calc(50vh - 143.5 * var(--stage-pixel)));
+  transition: transform var(--page-change-time) var(--page-change-easing);
+}
+
+@supports (top: round(1.5px, 1px)) {
+  .process-card {
+    transform: translateY(round(calc(50vh - 143.5 * var(--stage-pixel)), 1px));   /* on a whole pixel, so the lines stay sharp */
+  }
+}
+
+.process-card.is-open {
+  transform: none;
+}
+
+.process-card__head > *,
+.process-card__tab {
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-card {
+    transition: none;
+  }
+}
+
+/* The thin black lines inside a card */
+.project-strip__piece.process-line {
+  height: var(--project-line);
+  background-color: var(--color-black);
+}
+
+/* The part of a card that opens. It covers the whole strip (so its pieces are placed exactly
+   like the top bar's), but only its own part shows (--ax, --ay, --aw, --ah). Closed, that part
+   is rolled up to its top edge, under the top bar; clicking the top bar unrolls it downwards,
+   the same way the WORKS list opens */
+.process-card__content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  clip-path: inset(
+    calc(var(--ay) * var(--stage-pixel))
+    calc(100% - (var(--ax) + var(--aw)) * var(--stage-pixel))
+    calc(100% - var(--ay) * var(--stage-pixel))
+    calc(var(--ax) * var(--stage-pixel))
+  );
+  visibility: hidden;
+  transition:
+    clip-path var(--index-open-time) var(--page-change-easing),
+    visibility 0s linear var(--index-open-time);
+}
+
+.process-card.is-open .process-card__content {
+  clip-path: inset(
+    calc(var(--ay) * var(--stage-pixel))
+    calc(100% - (var(--ax) + var(--aw)) * var(--stage-pixel))
+    calc(100% - (var(--ay) + var(--ah)) * var(--stage-pixel))
+    calc(var(--ax) * var(--stage-pixel))
+  );
+  visibility: visible;
+  transition: clip-path var(--index-open-time) var(--page-change-easing);
+}
+
+/* Boxes, lines, colours and pictures on the cards sit on whole screen pixels, so every black
+   line meets exactly. Each one goes from its rounded left edge to its rounded right edge
+   (and the same for top and bottom). --ox / --oy: start one pixel earlier, to share the
+   line of the box on the left or above */
+@supports (top: round(1.5px, 1px)) {
+  .project-strip__piece.process-snap {
+    left: calc(round(calc(var(--x) * var(--stage-pixel)), 1px) - var(--ox, 0) * 1px);
+    top: calc(round(calc(var(--y) * var(--stage-pixel)), 1px) - var(--oy, 0) * 1px);
+    width: calc(round(calc((var(--x) + var(--w)) * var(--stage-pixel)), 1px) - round(calc(var(--x) * var(--stage-pixel)), 1px) + var(--ox, 0) * 1px);
+    height: calc(round(calc((var(--y) + var(--h)) * var(--stage-pixel)), 1px) - round(calc(var(--y) * var(--stage-pixel)), 1px) + var(--oy, 0) * 1px);
+  }
+
+  .project-strip__piece.process-line {
+    height: var(--project-line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-card__content,
+  .process-card.is-open .process-card__content {
+    transition: none;
+  }
+}
+
+/* Text on the cards: Instrument Serif 12px (the small one 10px) */
+.process-text {
+  position: absolute;
+  left: calc(var(--x) * var(--stage-pixel));
+  top: calc(var(--y) * var(--stage-pixel));
+  width: calc(var(--w, auto) * var(--stage-pixel));
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--stage-pixel));
+  font-weight: 400;
+  line-height: 1.006;
+  text-align: left;
+  color: var(--color-black);
+}
+
+.process-text--small {
+  font-size: calc(10.093 * var(--stage-pixel));
+}
+
+.process-text--lime {
+  color: var(--color-lime);
+}
+
+.process-text--nowrap,
+.process-card__date {
+  width: auto;
+  white-space: nowrap;
+}
+
+/* The date tab: a button that opens and closes the card. It stays on top of the card */
+.process-card__tab {
+  z-index: 2;
+  padding: 0;
+  border: 0;
+}
+
+.project-work .process-card__tab,
+.project-work .process-card__tab * {
+  cursor: pointer;
+}
+
+/* The rest of the card's top bar (the title and its colours): always seen, on top of the card,
+   and clicking it opens the card too */
+.process-card__head {
+  display: contents;
+}
+
+.process-card__head > * {
+  z-index: 2;
+}
+
+.project-work .process-card__head > *,
+.project-work .process-card__head > * * {
+  cursor: pointer;
+}
+
+/* Hovering over the top bar: the date and the title in italic */
+.process-card:has(.process-card__tab:hover, .process-card__tab:focus-visible, .process-card__head > :hover) .process-card__date,
+.process-card:has(.process-card__tab:hover, .process-card__tab:focus-visible, .process-card__head > :hover) .process-card__head .process-text {
+  font-style: italic;
+}
+
+/* The thin line along the bottom of the top bar only shows once the card is open
+   (closing, it goes when the card has rolled up). It is always on top of the coloured blocks,
+   also of the date block */
+.process-card__head .process-line {
+  z-index: 3;
+  visibility: hidden;
+  transition: visibility 0s linear var(--index-open-time);
+}
+
+.process-card.is-open .process-card__head .process-line {
+  visibility: visible;
+  transition: none;
+}
+
+/* The thin black line across the top of the process page, the whole width of the window */
+.process-work__line {
+  left: 0;
+  width: 100%;
+  z-index: 3;
+}
+
+/* PROCESS in the bar is in italic while you are on the process page
+   (unless WORKS or HI is open: then only that one is italic) */
+body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll__track {
+  transform: translateY(calc(-1em * var(--roll-line)));
+}
 
 /* =========================================
    The bar on whole pixels

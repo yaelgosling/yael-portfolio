@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=75">
+  <link rel="stylesheet" href="styles.css?v=83">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -260,6 +260,8 @@
       <!-- CLASSIC VIEW tidies the frames into rows and moves the bar to the top
            ("Home New Organise order" in Figma). Then it says PLAY VIEW, which puts them back -->
       <button class="site-bar__text site-bar__box site-bar__view" style="--x: 0; --y: 35" type="button" aria-pressed="false">CLASSIC VIEW</button>
+      <!-- PROCESS: in the same white spot, whenever CLASSIC VIEW isn't there (WORKS or HI open, or leaving the home page) -->
+      <a class="site-bar__text site-bar__box site-bar__process" style="--x: 0; --y: 35" href="process.html">PROCESS</a>
       <button class="site-bar__text site-bar__box site-bar__hi" style="--x: 151; --y: 35" type="button" aria-expanded="false" aria-controls="hi-page">HI</button>
       <!-- The index ("open index list" in Figma): opens downwards under the bar.
            Numbers are Figma pixels from the top left corner of the orange panel -->
@@ -632,7 +634,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=61"></script>
+  <script src="script.js?v=68"></script>
 
 </body>
 </html>

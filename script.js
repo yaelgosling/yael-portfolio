@@ -285,6 +285,36 @@ function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
   if (!element.hasAttribute("aria-label")) element.setAttribute("aria-label", word);
 }
 
+// Rolls a word in the bar on to another word: the word moves up and out, and the new word
+// (plain, not italic) comes up from below. Used for the white spot in the bar when changing
+// pages: CLASSIC VIEW rolls on to PROCESS leaving the home page, and PROCESS rolls on to
+// CLASSIC VIEW going back home
+function rollBarWord(element, text) {
+  const track = element.querySelector(".roll__track");
+  if (!track) return;
+  element.style.pointerEvents = "none";
+  const shifted = getComputedStyle(track).transform !== "none";   // already rolled up one word
+  let word;
+  if (shifted) {
+    // The italic word is showing (or the word already rolled away): the new word waits one further down
+    word = document.createElement("span");
+    word.className = "roll__word roll__word--next roll__word--after";
+    track.append(word);
+  } else {
+    word = track.querySelector(".roll__word--next");
+  }
+  word.textContent = text;
+  word.style.fontStyle = "normal";
+  word.style.visibility = "visible";
+  word.style.transition = "none";
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    track.style.transform = `translateY(calc(${shifted ? -2 : -1}em * var(--roll-line)))`;
+  }));
+  // Once it has rolled, the word is drawn again exactly the way the next page draws it (not
+  // rolled), so nothing twitches when the next page takes over
+  track.addEventListener("transitionend", () => makeRoll(element, text, text), { once: true });
+}
+
 // The same word again, in italic (or the word in data-roll-next): HOME, WORKS, HI, the names in the list,
 // and the links on Reach Out and the Hi page (Instagram, the email address, the phone number)
 [
@@ -374,10 +404,16 @@ document.querySelectorAll(".site-bar__view").forEach((button) => {
   const ROLL_TIME = 450;   // the same as --roll-time in styles.css
   let rolling = null;
 
-  function setClassic(classic) {
+  // quiet: only change the words, without building the button again, so a roll that is
+  // already moving (PROCESS rolling away, CLASSIC VIEW rolling back) carries on smoothly
+  function setClassic(classic, quiet = false) {
     clearTimeout(rolling);
     home.classList.toggle("is-classic", classic);
-    makeRoll(button, label(classic), label(classic));
+    if (quiet && button.querySelector(".roll__track:not([style])")) {
+      button.querySelectorAll(".roll__word").forEach((word) => { word.textContent = label(classic); });
+    } else {
+      makeRoll(button, label(classic), label(classic));
+    }
     button.setAttribute("aria-label", label(classic));
     button.setAttribute("aria-pressed", classic);
     if (classic) restHomeFrames();   // the frames stop following the mouse
@@ -559,7 +595,7 @@ document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
 });
 
 // Coming back with the browser's back button: put the waiting page away again
-window.addEventListener("pageshow", () => {
+window.addEventListener("pageshow", (event) => {
   document.querySelectorAll(".page-slide").forEach((page) => page.classList.remove("is-sliding"));
   if (home) home.classList.remove("is-leaving");
 });
@@ -585,7 +621,7 @@ if (home) {
     link.addEventListener("click", (event) => {
       event.preventDefault();
       closeOverlays();
-      setHomeView(false);
+      setHomeView(false, true);
     });
   });
 
@@ -621,14 +657,8 @@ if (home) {
       document.body.classList.remove("is-index-open");
       document.documentElement.classList.remove("is-index-open-page");
       document.body.classList.add("is-leaving-home");
-      // CLASSIC VIEW rolls down into the bar while the bar glides to the middle
-      const view = document.createElement("span");
-      view.className = "site-bar__text site-bar__box site-bar__view is-word-away";
-      view.style.setProperty("--x", 0);
-      view.style.setProperty("--y", 35);
-      makeRoll(view, "CLASSIC VIEW", "CLASSIC VIEW");
-      link.closest(".site-bar").appendChild(view);
-      requestAnimationFrame(() => requestAnimationFrame(() => view.classList.remove("is-word-away")));
+      // PROCESS rolls on to CLASSIC VIEW while the bar glides to the middle
+      link.closest(".site-bar").querySelectorAll(".site-bar__process").forEach((process) => rollBarWord(process, "CLASSIC VIEW"));
       whenBarArrives(link.closest(".site-bar"), () => {
         sessionStorage.setItem("home-slid-back", "yes");
         window.location.href = link.href;
@@ -637,9 +667,9 @@ if (home) {
   });
 
   // Coming back with the browser's back button: put everything back
-  window.addEventListener("pageshow", () => {
+  window.addEventListener("pageshow", (event) => {
     document.body.classList.remove("is-leaving-home");
-    document.querySelectorAll(".site-bar__view").forEach((view) => view.remove());
+    if (event.persisted) window.location.reload();   // the bar's words were rolled on: start fresh
   });
 }
 
@@ -868,7 +898,12 @@ document.querySelectorAll(".project-work").forEach(async (work) => {
    Project page: the next and previous project frames (once they are links) open that
    project the same way: its page slides up over this one, while the bar stays where it is
    ========================================= */
-document.querySelectorAll("a.project-nav").forEach((link) => {
+// The next/previous project frames, and PROCESS in the bar (not on the process page itself)
+document.querySelectorAll("a.project-nav, a.site-bar__process").forEach((link) => {
+  if (link.classList.contains("site-bar__process") && document.body.classList.contains("process-page")) {
+    link.addEventListener("click", (event) => event.preventDefault());   // already here
+    return;
+  }
   let slide = null;
 
   function prepareSlide() {
@@ -890,6 +925,8 @@ document.querySelectorAll("a.project-nav").forEach((link) => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
     event.preventDefault();
+    if (home) home.classList.add("is-leaving");   // home page: the bar stays at the top, PROCESS stays
+    else closeOverlays();                          // other pages: WORKS or HI rolls away while the page slides up
     const page = prepareSlide();
     await page.ready;
     page.classList.add("is-sliding");
@@ -1053,7 +1090,9 @@ if (indexButton) {
       const page = prepareSlide();
       await page.ready;                                        // (usually loaded already, on hover)
       document.body.classList.add("is-opening-from-index");   // the blur stays
-      if (home) home.classList.add("is-leaving");              // on the home page the bar stays at the top
+      if (home) {
+        home.classList.add("is-leaving");                       // on the home page the bar stays at the top
+      }
       setIndexOpen(false);                                     // the index rolls up...
       page.classList.add("is-sliding");                        // ...while the project page slides up
       setTimeout(() => {
@@ -1197,13 +1236,28 @@ if (!window.frameElement) {
 /* =========================================
    Process page: click a date tab to open or close its card
    ========================================= */
-document.querySelectorAll(".card__tab").forEach((tab) => {
+// Process page: clicking a card's top bar unrolls the rest of the card (styles.css), clicking again rolls it up
+document.querySelectorAll(".process-card__tab").forEach((tab) => {
   tab.addEventListener("click", () => {
-    const card = tab.closest(".card");
+    const card = tab.closest(".process-card");
     const isOpen = card.classList.toggle("is-open");
     tab.setAttribute("aria-expanded", isOpen);
-    card.querySelector(".card__content").hidden = !isOpen;
+    card.querySelector(".process-card__content").setAttribute("aria-hidden", !isOpen);
+    // The videos play only while the card is open, and always from the start: opening, they
+    // start again from the beginning; closing, they stop and go back to the start once the
+    // card has rolled up
+    clearTimeout(card.videoReset);
+    const videos = card.querySelectorAll("video");
+    if (isOpen) {
+      videos.forEach((video) => { video.currentTime = 0; video.play().catch(() => {}); });
+    } else {
+      card.videoReset = setTimeout(() => {
+        videos.forEach((video) => { video.pause(); video.currentTime = 0; });
+      }, 700);   // --index-open-time in styles.css
+    }
   });
+  // The rest of the card's top bar opens it too
+  tab.closest(".process-card").querySelector(".process-card__head").addEventListener("click", () => tab.click());
 });
 
 
