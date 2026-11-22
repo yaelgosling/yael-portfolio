@@ -134,7 +134,7 @@ const phoneDoodles = [...document.querySelectorAll(".phone-doodle:not(.phone-doo
 if (!reducedMotion && phoneFrames.length) {
   swayGroups.push({
     // the home page (Figma 390 wide, from y 49 to 844)
-    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 49, bottom: 844 }),
+    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 0, bottom: 844 }),
     // only after they came out, and not behind WORKS or HI
     isActive: () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
                     !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open"),
@@ -1503,7 +1503,7 @@ document.querySelectorAll(".phone-project").forEach((page) => {
 const phoneBar = document.querySelector(".phone-bar");
 const isPhoneHome = Boolean(document.querySelector(".phone-home"));
 const PHONE_TOP = 49;        // like --phone-top in styles.css
-const PHONE_HOME_TOP = 49;   // like --phone-home-top
+const PHONE_HOME_TOP = 0;    // like --phone-home-top
 const PHONE_BAR_MIDDLE = 422;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
