@@ -904,6 +904,15 @@ html.is-hi-open-page body {
   transform: none;
 }
 
+/* On the phone a project slides up faster (and the bar glides up with it) */
+@media (max-width: 700px) {
+  .page-slide,
+  .is-phone-opening-project .phone-bar,
+  .is-phone-opening-project .phone-bar__box {
+    transition-duration: var(--phone-open-time);
+  }
+}
+
 /* Inside that waiting copy, the bar is hidden: the home page's bar is the one you see */
 .is-preview .site-bar {
   visibility: hidden;
@@ -1601,7 +1610,8 @@ a.project-nav {
    ========================================= */
 :root {
   --phone-tap-time: 0.25s;
-  --phone-tap-change-time: 0.1s;   /* a tapped frame shows its gradient this long before the page changes */   /* how long the pause play symbol and the flip back arrow stay orange */
+  --phone-tap-change-time: 0.1s;
+  --phone-open-time: 0.55s;        /* a project sliding up on the phone (and the bar gliding to the top) */   /* a tapped frame shows its gradient this long before the page changes */   /* how long the pause play symbol and the flip back arrow stay orange */
 }
 
 /* Phones show a grey square when something is tapped: not here, as things turn orange instead */
@@ -1633,13 +1643,47 @@ a.project-nav {
   }
 
   /* The page doesn't scroll as a whole (then nothing can slide under the phone's time and
-     battery): it stays still on the screen and the phone page scrolls inside it */
+     battery): it stays still on the screen and the phone page scrolls inside it.
+     (absolute, not fixed: Safari fills the space under its search bar with the colour of a fixed
+     box touching the bottom of the screen, which showed as a white box. This way the page itself
+     shows under the search bar, blurred by .phone-bottom-blur) */
+  html:has(body.project-page),
+  body.project-page {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body.project-page main {
-    position: fixed;
+    position: absolute;
     inset: 0 0 auto 0;
     height: 100vh;
     height: 100lvh;            /* the whole screen, also behind the phone's search bar at the bottom */
     overflow: hidden;
+  }
+}
+
+/* Under the phone's search bar at the bottom of the screen, the page shows through a little
+   blurred, and comes into focus once it scrolls up above the search bar. (Its height is the
+   part of the screen behind the search bar: none when there is no search bar) */
+.phone-bottom-blur {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .phone-bottom-blur {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;                /* over the scrolling page */
+    height: calc(100lvh - 100svh);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    /* the blur fades in at its top edge, so there is no hard line where it starts */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+    mask-image: linear-gradient(to bottom, transparent, #000 40%);
+    pointer-events: none;
   }
 }
 

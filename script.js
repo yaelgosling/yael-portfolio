@@ -1619,13 +1619,15 @@ function phonePageReady(page, longest = 800) {
 
 // Opens a project: it slides up from the bottom while the bar glides to the top
 // (and an open list rolls up into the bar at the same time)
+const PHONE_OPEN_TIME = 550;       // like --phone-open-time: a project sliding up on the phone
+const PHONE_LONGEST_WAIT = 500;    // the longest it waits for a project that isn't loaded yet
 async function phoneOpenProject(href) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     window.location.href = href;
     return;
   }
   const page = phonePreparePage(href, "page-slide");
-  await phonePageReady(page);
+  await phonePageReady(page, PHONE_LONGEST_WAIT);
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
@@ -1633,7 +1635,7 @@ async function phoneOpenProject(href) {
   setTimeout(() => {
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
     window.location.href = href;
-  }, PAGE_CHANGE_TIME);
+  }, PHONE_OPEN_TIME);
 }
 
 // The WORKS list. Names roll to italic (made here, like the words in the bar).
@@ -1661,6 +1663,8 @@ phoneWorksRows.forEach((row) => {
     if (phoneChanging) return;
     phoneWorksRows.forEach((other) => other.classList.toggle("is-tapped", other === row));
     if (href) {
+      // The project you're on rolls back from italic to normal, while the new one rolls to italic
+      phoneWorksRows.forEach((other) => other.classList.remove("is-current"));
       // The name rolls to italic, then the list closes and the project opens
       phoneChanging = true;
       phonePreparePage(href, "page-slide");
@@ -1746,7 +1750,13 @@ window.addEventListener("load", () => {
   if (window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
   setTimeout(() => {
     if (isPhoneHome) {
-      phonePreparePage("i-dont-touch-meat.html", "page-slide");
+      // The projects get ready one after the other (not all at once), so a tap opens them straight away
+      const hrefs = [...document.querySelectorAll(".phone-frame[data-href]")].map((frame) => frame.dataset.href);
+      const next = () => {
+        const href = hrefs.shift();
+        if (href) phonePreparePage(href, "page-slide").ready.then(next);
+      };
+      next();
     } else {
       document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
         phonePreparePage(link.href, "page-behind");
@@ -1780,6 +1790,12 @@ window.addEventListener("pageshow", (event) => {
   phoneChanging = false;
   document.querySelectorAll(".phone-frame.is-tapped, .phone-nav.is-tapped, .phone-works__row.is-tapped")
     .forEach((element) => element.classList.remove("is-tapped"));
+  // The project you're on is italic again
+  phoneWorksRows.forEach((row) => {
+    const href = row.getAttribute("href");
+    const here = window.location.pathname.replace(/\.html$/, "");
+    row.classList.toggle("is-current", Boolean(href) && here.endsWith("/" + href.replace(/\.html$/, "")));
+  });
   if (phoneBar) movePhoneBar(isPhoneHome ? "middle" : "top", true);
 });
 
