@@ -12,9 +12,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=85">
+  <link rel="stylesheet" href="styles.css?v=92">
 </head>
 <body class="project-page">
+
+  <!-- The reload page ("reload page" in Figma, "phone reload page" on phones). It covers everything
+       when the internet is lost, or when the page has been open for more than an hour (script.js).
+       Tapping or clicking anywhere reloads the page. The picture is in the page from the start,
+       so it can still show without internet -->
+  <div class="reload-page" aria-hidden="true">
+    <div class="reload-page__stage">
+      <div class="reload-page__picture"><img src="images/reload/surprised-me.gif" alt=""></div>
+      <p class="reload-page__title">WELL SHIT....</p>
+      <p class="reload-page__text">Maybe reload the page...</p>
+    </div>
+  </div>
+
 
   <!-- The menu bar: stays still at the top. The words are written already rolled (see "words that roll"
        in script.js), so nothing changes in them when the page appears. Coming from the home page, it moves up to here -->
@@ -62,6 +75,13 @@
       <span class="site-index__name site-index__name--soon" style="--y: 544; --h: 60; --label-w: 175.91; --label-y: 15.97">PAINTINGS / ILLUSTRATIONS</span>
       <div class="site-index__band"></div>
     </div>
+  </nav>
+
+  <!-- The phone bar ("phone bar new" in Figma, the same on every page): only on phones, stays still at the top -->
+  <nav class="phone-bar phone-bar--project is-new-size" aria-label="Main">
+    <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823; --x-home: 0; --w-home: 118.972" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
+    <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618; --x-home: 118.58; --w-home: 117.55" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
+    <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89; --x-home: 236.13; --w-home: 117.87" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
   </nav>
 
   <main>
@@ -189,6 +209,131 @@
       </div>
     </section>
 
+
+
+
+
+
+
+
+
+
+
+
+    <!--
+      The phone version ("phone Judges chapter 4" in Figma, 390 × 2964): only on phones.
+      One long page that scrolls down. Numbers are Figma pixels from the top left corner of the screen.
+    -->
+    <!-- On the phone the page scrolls inside this box (not the whole browser page) -->
+    <div class="phone-scroll">
+    <section class="phone-project" style="--h: 2964">
+
+      <!-- The information -->
+      <p class="phone-text" style="--x: 18; --y: 88; --w: 55">Project</p>
+      <h1 class="phone-title" style="--x: 18; --y: 106">JUDGES<br>CHAPTER 4</h1>
+      <p class="phone-text" style="--x: 146; --y: 572; --w: 226">Inspired by Judges Chapter 4, this comic book reimagines the story of Yael and Sisera.<br><br>Traditionally, Yael is celebrated for her decisive act of violence in killing Sisera. I chose to reverse that moment.<br>In this version, Yael spares Sisera, and her hesitation leads to devastating consequences. The change allows me to question heroism, morality, and the fragile line between compassion and destruction in times of war.</p>
+      <p class="phone-text" style="--x: 18; --y: 1750; --w: 53">Year</p>
+      <p class="phone-text" style="--x: 146; --y: 1750; --w: 53">2026</p>
+      <p class="phone-text" style="--x: 18; --y: 1777; --w: 53">Field</p>
+      <p class="phone-text" style="--x: 146; --y: 1777; --w: 171">Illustration. Print.</p>
+      <p class="phone-text" style="--x: 18; --y: 1887; --w: 87">Challenges</p>
+      <ul class="phone-text phone-text--list" style="--x: 137; --y: 1887; --w: 236">
+        <li>Finding an interesting way to change a historical story that bring on a new meaning without being clique.</li>
+        <li>This was a new style, so the challenge was understanding what brushes, textures and details to include on a digital drawing.</li>
+      </ul>
+
+      <!-- The video: tap to play or pause. The "pause play" symbol sits in the middle. It turns orange for a moment
+           when tapped, then the video starts -->
+      <video class="phone-piece phone-video" style="--x: 18; --y: 264; --w: 355.05; --h: 263" src="images/judges-chapter-4/animation.mp4#t=0.1" poster="images/judges-chapter-4/animation-poster.jpg" preload="metadata" playsinline aria-label="The Judges, Chapter 4 comic. Tap to play or pause."></video>
+      <img class="phone-piece phone-video__play" style="--x: 182.97; --y: 380.335; --w: 25.11; --h: 30.33" src="images/project/new-pause-play.png" alt="">
+      <img class="phone-piece phone-video__play phone-video__play--orange" style="--x: 182.97; --y: 380.335; --w: 25.11; --h: 30.32" src="images/project/new-pause-play-hover.svg" alt="">
+
+      <!-- The pictures -->
+      <img class="phone-piece" style="--x: 17; --y: 1019; --w: 193.752; --h: 145.314" src="images/judges-chapter-4/cover-mockup.jpg" alt="The comic's cover">
+      <div class="phone-piece phone-crop" style="--x: 177; --y: 1394; --w: 193.752; --h: 145.35">
+        <img style="--crop: -52.02% auto auto -122.47%; --crop-w: 242.2%; --crop-h: 403.55%" src="images/judges-chapter-4/instagram-posts.png" alt="Instagram posts for the comic">
+      </div>
+      <div class="phone-piece phone-crop" style="--x: 93; --y: 1513; --w: 194.18; --h: 145.528">
+        <img style="--crop: -259.47% auto auto -19.73%; --crop-w: 242.2%; --crop-h: 403.94%" src="images/judges-chapter-4/instagram-posts.png" alt="Instagram posts for the comic">
+      </div>
+      <img class="phone-piece" style="--x: 18; --y: 2244; --w: 299; --h: 224.25" src="images/judges-chapter-4/books-mockup.jpg" alt="Copies of the comic book">
+
+      <!-- Previous and next project. A tap shows its gradient version ("next page hover") for a
+           moment, then the project slides up (like from the home page). Coming Soon frames are not links -->
+      <a class="phone-piece phone-nav" href="grunge.html" aria-label="Previous project: Grunge" style="--x: 10; --y: 2768; --w: 108.781; --h: 116.709">
+        <div class="project-nav__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/judges-chapter-4/previous-grunge-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/judges-chapter-4/previous-grunge-2.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/judges-chapter-4/previous-grunge-3.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/judges-chapter-4/previous-grunge-4.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/judges-chapter-4/previous-grunge-5.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/judges-chapter-4/previous-grunge-6.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/judges-chapter-4/previous-grunge-7.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 20.65% 7.26% 9.26% 13.32%"><img src="images/judges-chapter-4/previous-grunge-8.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/judges-chapter-4/previous-grunge-9.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/judges-chapter-4/previous-grunge-10.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/judges-chapter-4/previous-grunge-11.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/judges-chapter-4/previous-grunge-12.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/judges-chapter-4/previous-grunge-13.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/judges-chapter-4/previous-grunge-14.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/judges-chapter-4/previous-grunge-15.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/judges-chapter-4/previous-grunge-16.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/judges-chapter-4/previous-grunge-17.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 80.48% 84.32% 16.87% 15.28%"><img src="images/judges-chapter-4/previous-grunge-18.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 31.54% 84.07% 64.04% 15.79%"><img src="images/judges-chapter-4/previous-grunge-19.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img src="images/judges-chapter-4/previous-grunge-20.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/judges-chapter-4/previous-grunge-21.svg" alt=""></div>
+        <p class="phone-nav__text" style="--inset: 32.56% 23.7% 34.88% 27.58%"><span class="project-nav__label">PREVIOUS PROJECT</span><br><span class="phone-nav__name">Grunge</span></p>
+        <span class="phone-nav__gradient" style="--inset: 0%"><img src="images/judges-chapter-4/previous-grunge-hover.svg" alt=""></span>
+      </a>
+      <a class="phone-piece phone-nav" href="mtv-ident.html" aria-label="Next project: MTV Ident" style="--x: 267; --y: 2694; --w: 106.49; --h: 208.769">
+        <div class="project-nav__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/judges-chapter-4/next-mtv-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/judges-chapter-4/next-mtv-2.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/judges-chapter-4/next-mtv-3.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/judges-chapter-4/next-mtv-4.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 81.64% 68.36% 13.73% 25.72%"><img src="images/judges-chapter-4/next-mtv-5.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/judges-chapter-4/next-mtv-6.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/judges-chapter-4/next-mtv-7.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 13.78% 64.64% 83.73% 29.71%"><img src="images/judges-chapter-4/next-mtv-8.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/judges-chapter-4/next-mtv-9.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 46.09% 9.62% 50.88% 88.63%"><img src="images/judges-chapter-4/next-mtv-10.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 35.48% 79.52% 61.28% 18.74%"><img src="images/judges-chapter-4/next-mtv-11.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/judges-chapter-4/next-mtv-12.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 86.64% 33.11% 11.86% 62.14%"><img src="images/judges-chapter-4/next-mtv-13.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/judges-chapter-4/next-mtv-14.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 57.75% 12.78% 40.54% 85.13%"><img src="images/judges-chapter-4/next-mtv-15.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/judges-chapter-4/next-mtv-16.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/judges-chapter-4/next-mtv-17.svg" alt=""></div>
+        <p class="phone-nav__text" style="--inset: 41.19% 21.12% 36.29% 32.87%"><span class="project-nav__label">NEXT PROJECT</span><br><span class="phone-nav__name">MTV Ident</span></p>
+        <span class="phone-nav__gradient" style="--inset: 0%"><img src="images/judges-chapter-4/next-mtv-hover.svg" alt=""></span>
+      </a>
+
+      <!-- "flip back button": glides back up to the top. It turns orange for a moment when tapped.
+           In Figma the arrow is turned to point up -->
+      <button class="phone-piece phone-flip" style="--x: 179.996; --y: 2821; --w: 30.748; --h: 34.999" type="button" aria-label="Back to the top">
+        <img class="phone-flip__image" src="images/phone/flip-back.svg" alt="">
+        <img class="phone-flip__image phone-flip__image--orange" src="images/phone/flip-back-orange.svg" alt="">
+      </button>
+
+      <!-- The top pictures: on top of everything, they move a bit faster than the rest
+           when you scroll, which gives the page depth (script.js) -->
+      <div class="phone-project__fast">
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 24; --y: 1199; --w: 187.435; --h: 275">
+          <img style="--crop: -158.06% auto auto -170.23%; --crop-w: 535.57%; --crop-h: 258.06%" src="images/judges-chapter-4/artwork-479.png" alt="A drawing from the comic">
+        </div>
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 9; --y: 2157; --w: 371; --h: 150.315">
+          <img style="--crop: 0% auto auto -96.86%; --crop-w: 196.86%; --crop-h: 343.49%" src="images/judges-chapter-4/artwork-482.png" alt="A drawing from the comic">
+        </div>
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 137; --y: 2502; --w: 146; --h: 152.822">
+          <img style="--crop: -20.54% auto auto -514.39%; --crop-w: 655.7%; --crop-h: 442.86%" src="images/judges-chapter-4/spreads-4.png" alt="A spread from the comic">
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <!-- The black line at the top: it stays still, and the page disappears as it scrolls up past it,
+         so nothing shows under the phone's time and battery -->
+    <div class="phone-top-line" aria-hidden="true"></div>
+
     <!-- Blurs the work page more and more while "Reach Out" slides up (script.js) -->
     <div class="project-reach-blur" aria-hidden="true"></div>
 
@@ -279,7 +424,83 @@
     </div>
   </section>
 
-  <script src="script.js?v=74"></script>
+  <!-- ===== Phone only (see the bottom of styles.css) ===== -->
+
+  <!-- WORKS on the phone ("phone works new" in Figma): the bar is at the top and the list
+       opens downwards under it, over a blur. Row positions are Figma pixels (the list starts at 93).
+       Tapping a name ("phone works click new"): a project rolls to italic and opens; a project that
+       isn't ready (--soon) shows a black "Coming Soon" box (--soon-w: how wide in Figma) -->
+  <div class="phone-works-blur" aria-hidden="true"></div>
+  <nav class="phone-works" aria-label="Works">
+      <div class="phone-works__line" style="--y: 93"></div>
+      <div class="phone-works__line" style="--y: 157"></div>
+      <div class="phone-works__line" style="--y: 217"></div>
+      <div class="phone-works__line" style="--y: 277"></div>
+      <div class="phone-works__line" style="--y: 337"></div>
+      <div class="phone-works__line" style="--y: 397"></div>
+      <div class="phone-works__line" style="--y: 457"></div>
+      <div class="phone-works__line" style="--y: 517"></div>
+      <div class="phone-works__line" style="--y: 577"></div>
+      <div class="phone-works__line" style="--y: 637"></div>
+      <div class="phone-works__line" style="--y: 697"></div>
+      <a class="phone-works__row" style="--y: 94; --h: 63" href="the-witch.html"><span class="phone-works__name">The Witch</span><span class="phone-works__type">Illustration</span></a>
+      <a class="phone-works__row" style="--y: 157; --h: 60" href="i-dont-touch-meat.html"><span class="phone-works__name">I Don’t Touch Meat</span><span class="phone-works__type">Motion</span></a>
+      <a class="phone-works__row" style="--y: 217; --h: 60" href="grunge.html"><span class="phone-works__name">Grunge</span><span class="phone-works__type">Print. Web</span></a>
+      <a class="phone-works__row" style="--y: 277; --h: 60" href="judges-chapter-4.html"><span class="phone-works__name">Judges, Chapter 4</span><span class="phone-works__type">Illustration</span></a>
+      <a class="phone-works__row" style="--y: 337; --h: 60" href="mtv-ident.html"><span class="phone-works__name">MTV Ident</span><span class="phone-works__type">Motion</span></a>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 397; --h: 60; --soon-w: 113.826"><span class="phone-works__name">Board Games</span><span class="phone-works__type">Object</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 457; --h: 60; --soon-w: 113.826"><span class="phone-works__name">Davar Achad</span><span class="phone-works__type">Branding</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 517; --h: 60; --soon-w: 140.006"><span class="phone-works__name">Travel Journey</span><span class="phone-works__type">Print</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 577; --h: 60; --soon-w: 260.662"><span class="phone-works__name">The Guide For The New Israeli</span><span class="phone-works__type">Motion</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 637; --h: 60; --soon-w: 221.961"><span class="phone-works__name">Paintings/Illustrations</span><span class="phone-works__type"></span></div>
+    <div class="phone-works__band"></div>
+  </nav>
+
+  <!-- HI on the phone ("phone hi" in Figma): slides up from the bottom, under the bar.
+       It scrolls by itself. The drawings move with the finger and when the phone tilts -->
+  <section class="phone-hi" aria-label="Hi, I'm Yael">
+    <div class="phone-scroll">
+    <div class="phone-hi__page" style="--h: 844">
+      <h2 class="phone-title phone-hi__title" style="--x: 20; --y: 127">HIIII I’M YAEL</h2>
+
+      <!-- Me, moving ("Untitled_Artwork 89", the same GIF as on the computer), over the title.
+           It stays still when the phone tilts -->
+      <div class="phone-doodle phone-doodle--still" style="--x: -107; --y: 149; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
+
+      <p class="phone-text phone-hi__text" style="--x: 20; --y: 588; --w: 355">Born in New Zealand.<br>Moved to Australia with my family. Immigrated to Israel by myself at 18 in 2019.<br><br>I’m currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+
+      <!-- Tapping the email address copies it (a COPIED label rolls up over it), the phone number
+           calls it and Instagram opens -->
+      <a class="phone-hi__contact" style="--x: 20; --y: 810" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+      <a class="phone-hi__contact" style="--x: 192; --y: 810" href="tel:+972538521501">+972 538521501</a>
+      <a class="phone-hi__contact" style="--x: 326; --y: 810" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    </div>
+
+    <!-- The black line at the top: it stays still, and the page disappears as it scrolls up past it,
+         so nothing shows under the phone's time and battery -->
+    <div class="phone-top-line" aria-hidden="true"></div>
+  </section>
+
+  <!-- REACH OUT on the phone ("phone reach out" in Figma): on the home page swiping up (and on a
+       project page swiping up again at the end) drags it up from the bottom while the page behind
+       blurs more and more (like Reach Out on the computer).
+       Swiping down puts it away. Numbers are Figma pixels in the 390 × 844 phone frame -->
+  <div class="phone-reach-blur" aria-hidden="true"></div>
+  <section class="phone-reach" aria-label="Reach out">
+    <div class="phone-top-line" aria-hidden="true"></div>
+    <div class="phone-reach__page">
+      <h2 class="phone-reach__title" style="--x: 18; --y: 55">REACH OUT</h2>
+      <p class="phone-reach__label" style="--x: 18; --y: 378">Email me</p>
+      <a class="phone-reach__contact" style="--x: 18; --y: 393" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+      <p class="phone-reach__label" style="--x: 146; --y: 534">Let’s talk</p>
+      <a class="phone-reach__contact" style="--x: 146; --y: 550" href="tel:+972538521501">+972 538521501</a>
+      <p class="phone-reach__label" style="--x: 146; --y: 689">Instagram</p>
+      <a class="phone-reach__contact" style="--x: 146; --y: 704" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
+    </div>
+  </section>
+
+  <script src="script.js?v=82"></script>
 
 </body>
 </html>

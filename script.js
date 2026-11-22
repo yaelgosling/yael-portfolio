@@ -111,9 +111,10 @@ function swayWithPhone(elements, area) {
     return {
       element,
       weight: 0.7 + Math.random() * 0.6,   // some slide more than others
-      // how far it can go before it touches an edge
-      minX: area.left - x, maxX: area.right - (x + w),
-      minY: area.top - y, maxY: area.bottom - (y + h),
+      // how far it can go before it touches an edge (a frame that already goes past an edge
+      // in Figma can stay where it is)
+      minX: Math.min(0, area.left - x), maxX: Math.max(0, area.right - (x + w)),
+      minY: Math.min(0, area.top - y), maxY: Math.max(0, area.bottom - (y + h)),
       x: 0, y: 0, speedX: 0, speedY: 0,
     };
   });
@@ -132,8 +133,8 @@ const phoneDoodles = [...document.querySelectorAll(".phone-doodle:not(.phone-doo
 
 if (!reducedMotion && phoneFrames.length) {
   swayGroups.push({
-    // the home page (Figma 390 wide, from y 49 to 1500)
-    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 49, bottom: 1500 }),
+    // the home page (Figma 390 wide, from y 49 to 844)
+    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 49, bottom: 844 }),
     // only after they came out, and not behind WORKS or HI
     isActive: () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
                     !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open"),
@@ -142,8 +143,8 @@ if (!reducedMotion && phoneFrames.length) {
 
 if (!reducedMotion && phoneDoodles.length) {
   swayGroups.push({
-    // the phone Hi page (390 wide, 1438 high)
-    items: swayWithPhone(phoneDoodles, { left: 0, right: 390, top: 49, bottom: 1438 }),
+    // the phone Hi page (390 wide, 844 high)
+    items: swayWithPhone(phoneDoodles, { left: 0, right: 390, top: 0, bottom: 844 }),
     isActive: () => document.body.classList.contains("is-phone-hi-open"),
   });
 }
@@ -1256,45 +1257,6 @@ if (hiButton && hiPage) {
 
 
 /* =========================================
-   The reload page ("reload page" in Figma): comes on when the internet goes down, or when
-   nobody has touched the website for an hour. Clicking it reloads the page. It is made
-   straight away (with its picture), so it can still show without internet
-   ========================================= */
-if (!window.frameElement) {
-  const IDLE_TIME = 60 * 60 * 1000;   // one hour, in milliseconds
-
-  const reload = document.createElement("div");
-  reload.className = "reload-page";
-  reload.setAttribute("role", "button");
-  reload.setAttribute("aria-label", "Well shit. Maybe reload the page");
-  reload.innerHTML = `
-    <div class="reload-page__gradient"></div>
-    <div class="reload-page__stage">
-      <p class="project-title" style="--x: 604; --y: 363">WELL SHIT....</p>
-      <div class="reload-page__picture"><img src="images/reload/surprised-me.gif" alt=""></div>
-      <p class="project-text" style="--x: 944; --y: 758; --w: 150">Maybe reload the page...</p>
-    </div>`;
-  document.body.appendChild(reload);
-
-  const show = () => document.body.classList.add("is-reload-showing");
-  reload.addEventListener("click", () => window.location.reload());
-
-  // The internet goes down (and when it comes back, the page can be reloaded)
-  window.addEventListener("offline", show);
-
-  // An hour without any mouse, keyboard, touch or scrolling
-  let idle = setTimeout(show, IDLE_TIME);
-  ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"].forEach((type) => {
-    window.addEventListener(type, () => {
-      if (document.body.classList.contains("is-reload-showing")) return;
-      clearTimeout(idle);
-      idle = setTimeout(show, IDLE_TIME);
-    }, { passive: true, capture: true });
-  });
-}
-
-
-/* =========================================
    Process page: click a date tab to open or close its card
    ========================================= */
 // Process page: clicking a card's top bar unrolls the rest of the card (styles.css), clicking again rolls it up
@@ -1328,9 +1290,26 @@ document.querySelectorAll(".process-card__tab").forEach((tab) => {
 const phoneHome = document.querySelector('.phone-home');
 const PHONE_WAIT = 1000;   // how long the blank page shows (milliseconds)
 
+// Each frame changes from its gradient drawing to its work once it lands in its place
+// (when its jump ends; FRAME_LAND_WAIT in case the browser never says so)
+const FRAME_LAND_WAIT = 2500;
+function landFramesNow() {
+  phoneHome.querySelectorAll(".phone-frame").forEach((frame) => frame.classList.add("is-arrived"));
+}
+if (phoneHome) {
+  phoneHome.querySelectorAll(".phone-frame").forEach((frame) => {
+    frame.addEventListener("transitionend", (event) => {
+      if (event.target === frame && event.propertyName === "transform" && phoneHome.classList.contains("is-playful")) {
+        frame.classList.add("is-arrived");
+      }
+    });
+  });
+}
+
 if (phoneHome && window.frameElement) {
   // A waiting copy of the home page (rolling down from the top): the frames are already out
   phoneHome.classList.add("is-instant", "is-playful");
+  landFramesNow();
 } else if (phoneHome) {
   const openedAt = performance.now();
 
@@ -1339,6 +1318,7 @@ if (phoneHome && window.frameElement) {
     const waitLeft = Math.max(0, PHONE_WAIT - (performance.now() - openedAt));
     setTimeout(function () {
       phoneHome.classList.add('is-playful');
+      setTimeout(landFramesNow, FRAME_LAND_WAIT);
     }, waitLeft);
   });
 }
@@ -1349,15 +1329,25 @@ if (phoneHome && window.frameElement) {
    from the computer frame named in data-hover). Tapping one opens the project (data-href),
    once the phone version of that project exists */
 const phoneWorkFrames = [...document.querySelectorAll(".phone-frame[data-hover]")];
+const PHONE_TAP_CHANGE_TIME = 100;   // like --phone-tap-change-time: the tapped look shows this long first
+const PHONE_ROLL_WAIT = 450;         // like --roll-time: a tapped name in WORKS rolls to italic first
+let phoneChanging = false;           // a page change has started (more taps do nothing)
 
 phoneWorkFrames.forEach((frame) => {
   const computerImage = document.querySelector(`.home-frame__image[src="${frame.dataset.hover}"]`);
   const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
   if (hover) frame.append(hover.cloneNode(true));
 
+  if (frame.dataset.href) {
+    frame.addEventListener("touchstart", () => phonePreparePage(frame.dataset.href, "page-slide"), { passive: true });
+  }
+  // A tap: the frame shows its gradient drawing for a moment (there is no hover on a phone),
+  // then the project opens
   frame.addEventListener("click", () => {
-    if (frame.dataset.href && phoneHome.classList.contains("is-playful")) {
-      phoneOpenProject(frame.dataset.href);
+    if (frame.dataset.href && phoneHome.classList.contains("is-playful") && !phoneChanging) {
+      phoneChanging = true;
+      frame.classList.add("is-tapped");
+      setTimeout(() => phoneOpenProject(frame.dataset.href), PHONE_TAP_CHANGE_TIME);
     }
   });
 });
@@ -1509,17 +1499,18 @@ const phoneBar = document.querySelector(".phone-bar");
 const isPhoneHome = Boolean(document.querySelector(".phone-home"));
 const PHONE_TOP = 49;        // like --phone-top in styles.css
 const PHONE_HOME_TOP = 49;   // like --phone-home-top
-const PHONE_BAR_MIDDLE = 422.65;   // like --phone-bar-middle (the middle of the home bar in Figma)
+const PHONE_BAR_MIDDLE = 422;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
-// The bar is "phone bar new" in Figma on every page: 310.55 × 35.3 (is-new-size in the HTML)
-const BAR_HEIGHT = 35.3;
+// The bar's height in Figma ("phone bar", 354 × 36 on every page)
+const BAR_HEIGHT = 36;
+const PHONE_BAR_TOP = 20;   // like --phone-bar-top: its top edge when it is at the top of the screen
 
-// Where the top edge of the bar is (screen pixels) in a spot: "top" (y 63 in Figma, on every
-// page) or "middle" (the home page: its middle at y 422.65)
+// Where the top edge of the bar is (screen pixels) in a spot: "top" (20 from the top of the
+// screen, "phone works placement" in Figma, on every page) or "middle" (the home page: its middle at y 422.65)
 function phoneBarTop(where) {
   const page = window.innerWidth / 390;   // one Figma pixel on a phone page
-  if (where === "top") return (63 - PHONE_TOP) * page;
+  if (where === "top") return PHONE_BAR_TOP * page;
   return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP - BAR_HEIGHT / 2) * page;
 }
 
@@ -1661,8 +1652,30 @@ phoneWorksRows.forEach((row) => {
       setPhoneOpen(null);   // already here: just close the list (and HI, if it was behind)
       return;
     }
+    if (phoneChanging) return;
     phoneWorksRows.forEach((other) => other.classList.toggle("is-tapped", other === row));
-    if (href) phoneOpenProject(href);
+    if (href) {
+      // The name rolls to italic, then the list closes and the project opens
+      phoneChanging = true;
+      phonePreparePage(href, "page-slide");
+      setTimeout(() => phoneOpenProject(href), PHONE_ROLL_WAIT);
+    }
+  });
+});
+
+// The previous and next project frames at the bottom of a project page: the project slides up
+document.querySelectorAll("a.phone-nav").forEach((link) => {
+  const href = link.getAttribute("href");
+  link.addEventListener("touchstart", () => phonePreparePage(href, "page-slide"), { passive: true });
+  // A tap: it shows its gradient version for a moment (there is no hover on a phone), then
+  // the project opens
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (phoneChanging) return;
+    phoneChanging = true;
+    link.classList.add("is-tapped");
+    phonePreparePage(href, "page-slide");
+    setTimeout(() => phoneOpenProject(href), PHONE_TAP_CHANGE_TIME);
   });
 });
 
@@ -1707,14 +1720,13 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
 });
 
 // Get the next pages ready in the background a moment after this one has opened, so a tap
-// changes the page straight away: on the home page the projects, elsewhere the home page
+// changes the page straight away: on the home page I Don't Touch Meat (the others get ready
+// when a finger touches their frame), elsewhere the home page
 window.addEventListener("load", () => {
   if (window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
   setTimeout(() => {
     if (isPhoneHome) {
-      document.querySelectorAll(".phone-frame[data-href]").forEach((frame) => {
-        phonePreparePage(frame.dataset.href, "page-slide");
-      });
+      phonePreparePage("i-dont-touch-meat.html", "page-slide");
     } else {
       document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
         phonePreparePage(link.href, "page-behind");
@@ -1729,6 +1741,7 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
   sessionStorage.removeItem("phone-home-back");
   const phoneHomePage = document.querySelector(".phone-home");
   phoneHomePage.classList.add("is-instant", "is-playful");
+  landFramesNow();
   requestAnimationFrame(() => requestAnimationFrame(() => {
     phoneHomePage.classList.remove("is-instant");
     document.documentElement.classList.remove("is-phone-home-back");
@@ -1744,6 +1757,9 @@ window.addEventListener("pageshow", (event) => {
   });
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
     "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
+  phoneChanging = false;
+  document.querySelectorAll(".phone-frame.is-tapped, .phone-nav.is-tapped, .phone-works__row.is-tapped")
+    .forEach((element) => element.classList.remove("is-tapped"));
   if (phoneBar) movePhoneBar(isPhoneHome ? "middle" : "top", true);
 });
 
@@ -1779,7 +1795,7 @@ if (phoneReach) {
   // and only at the very end of the page
   function canOpen() {
     if (document.body.matches(".is-phone-works-open, .is-phone-hi-open")) return false;
-    if (isPhoneHome && !document.querySelector(".phone-home").classList.contains("is-playful")) return false;
+    if (isPhoneHome) return false;   // only at the end of a project page
     if (projectScroller) {
       const end = projectScroller.scrollHeight - projectScroller.clientHeight;
       return projectScroller.scrollTop >= end - 2;
@@ -1849,4 +1865,95 @@ if (phoneReach) {
     startY = null;
     dragging = false;
   });
+}
+
+
+/* =========================================
+   Phone: tapping the email address (on the Hi page and on Reach Out) copies it instead of
+   opening an email, and a black COPIED label rolls up over it, like on the computer.
+   Tapping it again, or the phone number or Instagram, rolls the label back down.
+   When the Hi page or Reach Out goes away, the label is gone (without rolling).
+   The phone number still calls, and Instagram still opens
+   ========================================= */
+const phoneEmails = [...document.querySelectorAll('.phone-hi__contact[href^="mailto:"], .phone-reach__contact[href^="mailto:"]')];
+
+phoneEmails.forEach((link) => {
+  const address = link.textContent.trim();
+  link.classList.add("phone-copy");
+  const label = document.createElement("span");
+  label.className = "phone-copy__label";
+  label.setAttribute("aria-hidden", "true");
+  label.textContent = "COPIED";
+  link.append(label);
+
+  // The label covers the whole address (with a little extra on both sides)
+  function fitLabel() {
+    label.style.width = `${link.offsetWidth + 14 * window.innerWidth / 390}px`;
+  }
+  fitLabel();
+  document.fonts.ready.then(fitLabel);
+  window.addEventListener("resize", fitLabel);
+
+  link.addEventListener("click", async (event) => {
+    event.preventDefault();
+    if (link.classList.contains("is-copied")) {
+      link.classList.remove("is-copied");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(address);
+    } catch (error) {
+      // Copying isn't allowed here
+    }
+    link.classList.add("is-copied");
+  });
+
+  // The phone number or Instagram next to it rolls the label back down
+  const page = link.closest(".phone-hi, .phone-reach");
+  page.querySelectorAll(".phone-hi__contact, .phone-reach__contact").forEach((other) => {
+    if (other !== link) other.addEventListener("click", () => link.classList.remove("is-copied"));
+  });
+});
+
+// The Hi page closed or Reach Out went down: the labels go away at once
+if (phoneEmails.length) {
+  new MutationObserver(() => {
+    phoneEmails.forEach((link) => {
+      const page = link.closest(".phone-hi") ? "is-phone-hi-open" : "is-phone-reach-open";
+      if (!document.body.classList.contains(page) && link.classList.contains("is-copied")) {
+        link.classList.add("is-resetting");
+        link.classList.remove("is-copied");
+        requestAnimationFrame(() => requestAnimationFrame(() => link.classList.remove("is-resetting")));
+      }
+    });
+  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+}
+
+
+/* =========================================
+   The reload page: it comes up when the internet is lost, or when the page has been open for
+   more than an hour (then things may be out of date). A tap or click anywhere reloads the page
+   ========================================= */
+const reloadPage = document.querySelector(".reload-page");
+const RELOAD_AFTER = 60 * 60 * 1000;   // one hour (milliseconds)
+const pageOpenedAt = Date.now();
+
+if (reloadPage && !window.frameElement) {
+  function showReloadPage() {
+    document.body.classList.add("is-reload");
+    reloadPage.setAttribute("aria-hidden", "false");
+  }
+
+  window.addEventListener("offline", showReloadPage);
+  const checkTime = () => {
+    if (Date.now() - pageOpenedAt > RELOAD_AFTER) showReloadPage();
+  };
+  setInterval(checkTime, 60 * 1000);
+  // Coming back to a tab or phone that was asleep (the timer doesn't run then)
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) checkTime();
+  });
+  window.addEventListener("pageshow", checkTime);
+
+  reloadPage.addEventListener("click", () => window.location.reload());
 }

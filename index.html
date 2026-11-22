@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=85">
+  <link rel="stylesheet" href="styles.css?v=92">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -22,6 +22,18 @@
   </script>
 </head>
 <body class="home-page">
+
+  <!-- The reload page ("reload page" in Figma, "phone reload page" on phones). It covers everything
+       when the internet is lost, or when the page has been open for more than an hour (script.js).
+       Tapping or clicking anywhere reloads the page. The picture is in the page from the start,
+       so it can still show without internet -->
+  <div class="reload-page" aria-hidden="true">
+    <div class="reload-page__stage">
+      <div class="reload-page__picture"><img src="images/reload/surprised-me.gif" alt=""></div>
+      <p class="reload-page__title">WELL SHIT....</p>
+      <p class="reload-page__text">Maybe reload the page...</p>
+    </div>
+  </div>
 
   <!-- The home page ("Home New" in Figma): a 1440 × 768 stage that fits the window -->
   <main class="home">
@@ -304,33 +316,21 @@
 
   <!-- The phone home page: only shown on phones (see the bottom of styles.css).
        It starts as "phone home blank" in Figma: just the bar, like a loading page.
-       A second later it turns into "phone home playful": the frames jump out from behind the bar.
+       A second later it turns into "phone home playful": the frames jump out from behind the bar
+       as empty gradient frames, and each one turns into its work when it lands in its place.
        At the same moment HOME rolls up into italic, like the words in the computer bar.
        Tilting or shaking the phone moves the frames.
-       The page is "phone home new" in Figma: 1500 high, it scrolls down, with two layers
-       ("phone home over" moves faster than "phone home under") while the bar stays in the middle.
-       Numbers are Figma pixels in the 390 × 1500 phone frame. --order = which frame comes out first -->
+       Numbers are Figma pixels in the 390 × 844 "phone home playful" frame. --order = which frame comes out first -->
   <div class="phone-home">
     <!-- The page scrolls down inside this box. The bar is not in it, so it stays still on the screen -->
     <div class="phone-scroll phone-home__scroll">
     <div class="phone-home__page">
-      <!-- "phone home under" in Figma: drawings without a work in them. They scroll at the normal speed -->
-      <div class="phone-home__under">
-        <div class="phone-frame phone-frame--under" style="--x: 74; --y: 250; --w: 159; --h: 80.067; --order: 2"><img class="phone-frame__image" src="images/phone/under-oval-lime.svg" alt=""></div>
-        <div class="phone-frame phone-frame--under" style="--x: 211; --y: 516; --w: 149.859; --h: 92.745; --order: 2"><img class="phone-frame__image" src="images/phone/under-wide-orange.svg" alt=""></div>
-        <div class="phone-frame phone-frame--under" style="--x: 92; --y: 932; --w: 81.425; --h: 165.379; --order: 5"><img class="phone-frame__image" src="images/phone/under-tall-orange.svg" alt=""></div>
-        <div class="phone-frame phone-frame--under" style="--x: 29; --y: 1227; --w: 147.304; --h: 77; --order: 7"><img class="phone-frame__image" src="images/phone/under-wide-blue.svg" alt=""></div>
-        <div class="phone-frame phone-frame--under" style="--x: 200; --y: 1251; --w: 118.92; --h: 189.635; --order: 8"><img class="phone-frame__image" src="images/phone/under-tall-lime.svg" alt=""></div>
-      </div>
-
-      <!-- "phone home over" in Figma: the work frames. While you scroll they move faster than the
-           frames under them (script.js sets --shift), like the fast pictures on a project page.
-           They always show their work (their hover picture, copied by script.js from the computer
-           frame named in data-hover). Tapping a frame opens the project (data-href), once the phone
-           version of that project exists.
+      <!-- The work frames. They come out as their gradient drawing and, once in place, show their
+           work (their hover picture, copied by script.js from the computer frame named in data-hover).
+           Tapping a frame opens the project (data-href).
            The frame drawings are written right into the page, so they show from the very first moment -->
       <div class="phone-home__frames">
-      <div class="phone-frame phone-frame--over" style="--x: 151; --y: 92; --w: 192.412; --h: 158.216; --order: 1" data-hover="images/home/witch-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 18; --y: 60; --w: 180.979; --h: 148.815; --order: 1" data-hover="images/home/witch-frame.svg" data-href="the-witch.html" aria-label="The Witch">
         <!-- images/phone/witch-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="121.22" height="99.6762" viewBox="0 0 121.22 99.6762" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -346,7 +346,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 180; --y: 619; --w: 165.199; --h: 177.240; --order: 3" data-hover="images/home/grunge-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 125; --y: 606; --w: 155.384; --h: 166.709; --order: 4" data-hover="images/home/grunge-frame.svg" data-href="grunge.html" aria-label="Grunge">
         <!-- images/phone/grunge-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="104.076" height="111.662" viewBox="0 0 104.076 111.662" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -381,7 +381,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 36; --y: 810; --w: 255.198; --h: 121.775; --order: 4" data-hover="images/home/judges-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 145; --y: 501; --w: 218.353; --h: 104.193; --order: 3" data-hover="images/home/judges-frame.svg" data-href="judges-chapter-4.html" aria-label="Judges, Chapter 4">
         <!-- images/phone/judges-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="146.252" height="69.7885" viewBox="0 0 146.252 69.7885" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -411,7 +411,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 158; --y: 957; --w: 161.175; --h: 315.977; --order: 6" data-hover="images/home/mtv-ident-frame.svg">
+      <div class="phone-frame phone-frame--over" style="--x: 11; --y: 336; --w: 137.49; --h: 269.543; --order: 2" data-hover="images/home/mtv-ident-frame.svg" data-href="mtv-ident.html" aria-label="MTV Ident">
         <!-- images/phone/mtv-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="92.0905" height="180.54" viewBox="0 0 92.0905 180.54" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -442,7 +442,7 @@
         </defs>
         </svg>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 29; --y: 391; --w: 188.318; --h: 203.730; --order: 0" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
+      <div class="phone-frame phone-frame--over" style="--x: 216; --y: 172; --w: 177.129; --h: 191.625; --order: 0" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
         <!-- images/phone/dont-eat-meat-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="118.641" height="128.35" viewBox="0 0 118.641 128.35" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -473,14 +473,14 @@
     </div>
     </div>
 
-    <!-- The phone bar ("phone bar new" in Figma, is-new-size, the same on every page). Numbers are Figma
+    <!-- The phone bar ("phone bar" in Figma, 354 × 36, is-new-size, the same on every page). Numbers are Figma
          pixels from its left edge: --x and --w for the smaller "phone bar" at the top of the project pages,
          --x-home and --w-home for "phone bar new".
          Each word is written twice (the second one in italic, waiting below) so it can roll -->
     <nav class="phone-bar is-new-size" aria-label="Main">
-      <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823; --x-home: 0; --w-home: 104.52" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
-      <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618; --x-home: 104.175; --w-home: 103.271" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
-      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89; --x-home: 207; --w-home: 103.552" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
+      <a class="phone-bar__box phone-bar__box--blue roll-host" style="--x: 0; --w: 100.823; --x-home: 0; --w-home: 118.972" href="index.html" aria-label="HOME"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HOME</span><span class="roll__word roll__word--next">HOME</span></span></span></a>
+      <button class="phone-bar__box phone-bar__box--orange phone-bar__works roll-host" style="--x: 100.49; --w: 99.618; --x-home: 118.58; --w-home: 117.55" type="button" aria-label="WORKS"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">WORKS</span><span class="roll__word roll__word--next">WORKS</span></span></span></button>
+      <button class="phone-bar__box phone-bar__box--lime phone-bar__hi roll-host" style="--x: 200.109; --w: 99.89; --x-home: 236.13; --w-home: 117.87" type="button" aria-label="HI"><span class="roll roll--center"><span class="roll__track"><span class="roll__word">HI</span><span class="roll__word roll__word--next">HI</span></span></span></button>
     </nav>
   </div>
 
@@ -556,7 +556,7 @@
 
   <!-- WORKS on the phone ("phone works new" in Figma): the bar goes to the top and the list
        opens downwards under it, over a blur. Row positions are Figma pixels (the list starts at 93).
-       Only projects with a phone page are links for now. Tapping a name (like "phone works click
+       Tapping a name (like "phone works click
        new"): a project rolls to italic and opens; a project that isn't ready (--soon) shows a black
        "Coming Soon" box over its name (--soon-w: how wide the box is in Figma) -->
   <div class="phone-works-blur" aria-hidden="true"></div>
@@ -572,16 +572,16 @@
       <div class="phone-works__line" style="--y: 577"></div>
       <div class="phone-works__line" style="--y: 637"></div>
       <div class="phone-works__line" style="--y: 697"></div>
-      <div class="phone-works__row" style="--y: 94; --h: 63"><span class="phone-works__name">The Witch</span><span class="phone-works__type">Illustration</span></div>
+      <a class="phone-works__row" style="--y: 94; --h: 63" href="the-witch.html"><span class="phone-works__name">The Witch</span><span class="phone-works__type">Illustration</span></a>
       <a class="phone-works__row" style="--y: 157; --h: 60" href="i-dont-touch-meat.html"><span class="phone-works__name">I Don’t Touch Meat</span><span class="phone-works__type">Motion</span></a>
-      <div class="phone-works__row" style="--y: 217; --h: 60"><span class="phone-works__name">Grunge</span><span class="phone-works__type">Print. Web</span></div>
-      <div class="phone-works__row" style="--y: 277; --h: 60"><span class="phone-works__name">Judges, Chapter 4</span><span class="phone-works__type">Illustration</span></div>
-      <div class="phone-works__row" style="--y: 337; --h: 60"><span class="phone-works__name">MTV Ident</span><span class="phone-works__type">Motion</span></div>
-      <div class="phone-works__row phone-works__row--soon" style="--y: 397; --h: 60; --soon-w: 100"><span class="phone-works__name">Board Games</span><span class="phone-works__type">Object</span></div>
-      <div class="phone-works__row phone-works__row--soon" style="--y: 457; --h: 60; --soon-w: 100"><span class="phone-works__name">Davar Achad</span><span class="phone-works__type">Branding</span></div>
-      <div class="phone-works__row phone-works__row--soon" style="--y: 517; --h: 60; --soon-w: 123"><span class="phone-works__name">Travel Journey</span><span class="phone-works__type">Print</span></div>
-      <div class="phone-works__row phone-works__row--soon" style="--y: 577; --h: 60; --soon-w: 229"><span class="phone-works__name">The Guide For The New Israeli</span><span class="phone-works__type">Motion</span></div>
-      <div class="phone-works__row phone-works__row--soon" style="--y: 637; --h: 60; --soon-w: 195"><span class="phone-works__name">Paintings/Illustrations</span><span class="phone-works__type"></span></div>
+      <a class="phone-works__row" style="--y: 217; --h: 60" href="grunge.html"><span class="phone-works__name">Grunge</span><span class="phone-works__type">Print. Web</span></a>
+      <a class="phone-works__row" style="--y: 277; --h: 60" href="judges-chapter-4.html"><span class="phone-works__name">Judges, Chapter 4</span><span class="phone-works__type">Illustration</span></a>
+      <a class="phone-works__row" style="--y: 337; --h: 60" href="mtv-ident.html"><span class="phone-works__name">MTV Ident</span><span class="phone-works__type">Motion</span></a>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 397; --h: 60; --soon-w: 113.826"><span class="phone-works__name">Board Games</span><span class="phone-works__type">Object</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 457; --h: 60; --soon-w: 113.826"><span class="phone-works__name">Davar Achad</span><span class="phone-works__type">Branding</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 517; --h: 60; --soon-w: 140.006"><span class="phone-works__name">Travel Journey</span><span class="phone-works__type">Print</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 577; --h: 60; --soon-w: 260.662"><span class="phone-works__name">The Guide For The New Israeli</span><span class="phone-works__type">Motion</span></div>
+      <div class="phone-works__row phone-works__row--soon" style="--y: 637; --h: 60; --soon-w: 221.961"><span class="phone-works__name">Paintings/Illustrations</span><span class="phone-works__type"></span></div>
     <div class="phone-works__band"></div>
   </nav>
 
@@ -589,25 +589,20 @@
        It scrolls by itself. The drawings move with the finger and when the phone tilts -->
   <section class="phone-hi" aria-label="Hi, I'm Yael">
     <div class="phone-scroll">
-    <div class="phone-hi__page" style="--h: 1438">
-      <h2 class="phone-title phone-hi__title" style="--x: 18; --y: 136">HIIII I’M YAEL</h2>
-      <p class="phone-text phone-hi__text" style="--x: 143; --y: 552; --w: 233">Born in New Zealand.<br>Moved to Australia with my family.<br>Immigrated to Israel by myself at 18 in 2019.<br><br>Currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+    <div class="phone-hi__page" style="--h: 844">
+      <h2 class="phone-title phone-hi__title" style="--x: 20; --y: 127">HIIII I’M YAEL</h2>
 
-      <!-- The drawings, each cut from one sheet (like on the computer). The picture of me stays still -->
-      <div class="phone-doodle phone-doodle--still" style="--x: 111; --y: 396; --w: 86; --h: 144.185"><img style="--iw: 586.8%; --ih: 350%; --il: -217.16%; --it: -206.5%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 254; --y: 221; --w: 70.438; --h: 69.561"><img style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 203; --y: 305; --w: 68.454; --h: 52.875"><img style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 10; --y: 663; --w: 69.819; --h: 91.653"><img style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 274; --y: 812; --w: 55.141; --h: 64.917"><img style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 143; --y: 903; --w: 47.919; --h: 40.034"><img style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
-      <div class="phone-doodle" style="--x: 51; --y: 1219; --w: 58.588; --h: 51.542"><img style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
+      <!-- Me, moving ("Untitled_Artwork 89", the same GIF as on the computer), over the title.
+           It stays still when the phone tilts -->
+      <div class="phone-doodle phone-doodle--still" style="--x: -107; --y: 149; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
 
-      <p class="phone-text phone-hi__label" style="--x: 18; --y: 975">Email me</p>
-      <a class="phone-hi__contact" style="--x: 18; --y: 990" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
-      <p class="phone-text phone-hi__label" style="--x: 146; --y: 1131">Let’s talk</p>
-      <a class="phone-hi__contact" style="--x: 146; --y: 1147" href="tel:+972538521501">+972 538521501</a>
-      <p class="phone-text phone-hi__label" style="--x: 146; --y: 1286">Instagram</p>
-      <a class="phone-hi__contact" style="--x: 146; --y: 1301" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
+      <p class="phone-text phone-hi__text" style="--x: 20; --y: 588; --w: 355">Born in New Zealand.<br>Moved to Australia with my family. Immigrated to Israel by myself at 18 in 2019.<br><br>I’m currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+
+      <!-- Tapping the email address copies it (a COPIED label rolls up over it), the phone number
+           calls it and Instagram opens -->
+      <a class="phone-hi__contact" style="--x: 20; --y: 810" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
+      <a class="phone-hi__contact" style="--x: 192; --y: 810" href="tel:+972538521501">+972 538521501</a>
+      <a class="phone-hi__contact" style="--x: 326; --y: 810" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">Instagram</a>
     </div>
     </div>
 
@@ -616,25 +611,7 @@
     <div class="phone-top-line" aria-hidden="true"></div>
   </section>
 
-  <!-- REACH OUT on the phone ("phone reach out" in Figma): on the home page swiping up (and on a
-       project page swiping up again at the end) drags it up from the bottom while the page behind
-       blurs more and more (like Reach Out on the computer).
-       Swiping down puts it away. Numbers are Figma pixels in the 390 × 844 phone frame -->
-  <div class="phone-reach-blur" aria-hidden="true"></div>
-  <section class="phone-reach" aria-label="Reach out">
-    <div class="phone-top-line" aria-hidden="true"></div>
-    <div class="phone-reach__page">
-      <h2 class="phone-reach__title" style="--x: 18; --y: 55">REACH OUT</h2>
-      <p class="phone-reach__label" style="--x: 18; --y: 378">Email me</p>
-      <a class="phone-reach__contact" style="--x: 18; --y: 393" href="mailto:yaelgosling5@gmail.com">yaelgosling5@gmail.com</a>
-      <p class="phone-reach__label" style="--x: 146; --y: 534">Let’s talk</p>
-      <a class="phone-reach__contact" style="--x: 146; --y: 550" href="tel:+972538521501">+972 538521501</a>
-      <p class="phone-reach__label" style="--x: 146; --y: 689">Instagram</p>
-      <a class="phone-reach__contact" style="--x: 146; --y: 704" href="https://www.instagram.com/yael.gosling/" target="_blank" rel="noopener">yael.gosling</a>
-    </div>
-  </section>
-
-  <script src="script.js?v=74"></script>
+  <script src="script.js?v=82"></script>
 
 </body>
 </html>

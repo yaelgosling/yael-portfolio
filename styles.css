@@ -1343,69 +1343,8 @@ a.project-nav {
 
 
 /* =========================================
-   The reload page ("reload page" in Figma)
-   Comes on over everything when the internet goes down, or when the website has been left
-   untouched for an hour (script.js). Clicking anywhere on it reloads the page.
-   ========================================= */
-.reload-page {
-  position: fixed;
-  inset: 0;
-  z-index: 7;                       /* over everything, also the bar */
-  background-color: var(--color-white);
-  cursor: pointer;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity var(--page-change-time) ease,
-    visibility 0s linear var(--page-change-time);
-}
-
-.is-reload-showing .reload-page {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity var(--page-change-time) ease;
-}
-
-/* White to orange, from y 62 to the bottom of the window */
-.reload-page__gradient {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(62 * var(--stage-pixel));
-  bottom: 0;
-  background: linear-gradient(to bottom, var(--color-white), var(--color-orange));
-}
-
-/* The 1440 design, in the middle of the window */
-.reload-page__stage {
-  position: relative;
-  width: calc(1440 * var(--stage-pixel));
-  height: calc(800 * var(--stage-pixel));
-  margin: 0 auto;
-}
-
-/* The moving picture of me, cut out of a bigger square like in Figma */
-.reload-page__picture {
-  position: absolute;
-  left: calc(636 * var(--stage-pixel));
-  top: calc(174 * var(--stage-pixel));
-  width: calc(142 * var(--stage-pixel));
-  height: calc(206.607 * var(--stage-pixel));
-  overflow: hidden;
-}
-
-.reload-page__picture img {
-  position: absolute;
-  left: -161.46%;
-  top: -178.38%;
-  width: 454.98%;
-  height: 312.7%;
-  max-width: none;
-}
-
-/* =========================================
-   Phone home page ("phone home new" in Figma)
-   A 390 × 1500 page that fills the width of the screen and scrolls down. Positions are Figma pixels.
+   Phone home page ("phone home playful" in Figma)
+   A 390 × 844 page that fills the width of the screen. Positions are Figma pixels.
    The top 49 pixels of every phone frame in Figma are the phone's own strip (time, battery):
    the website starts under it, so everything moves up by --phone-top (--phone-home-top).
    The bar is not part of the scrolling page: it stays still in the middle of the screen.
@@ -1413,8 +1352,9 @@ a.project-nav {
 :root {
   --phone-top: 49;                                  /* the phone's own strip at the top of the Figma frames */
   --phone-home-top: 49;                             /* where the home page starts in Figma */
-  --phone-home-height: 1500;                        /* and where it ends */
-  --phone-bar-middle: 422.65;                       /* the middle of the home bar in Figma (y) */
+  --phone-home-height: 844;                         /* and where it ends */
+  --phone-bar-middle: 422;                          /* the middle of the home bar in Figma (y) */
+  --phone-bar-top: 20;                              /* the bar's top edge when it is at the top of the screen */
   --phone-pixel: calc(100vw / 390);                 /* one Figma pixel on the phone home page */
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
@@ -1466,7 +1406,7 @@ a.project-nav {
 }
 
 /* One frame. Before the page opens it hides small behind the middle of the bar
-   (the bar's middle is at 195, --phone-bar-middle in Figma) */
+   (x 195, y --phone-bar-middle in Figma) */
 .phone-frame {
   position: absolute;
   left: calc(var(--x) * var(--phone-pixel));
@@ -1499,14 +1439,28 @@ a.project-nav {
   height: 100%;
 }
 
-/* The work frames always show their work: their hover picture (the same one as on the
-   computer, added by script.js) instead of the plain frame. A tap opens the project */
-.phone-frame:has(.home-frame__hover) .phone-frame__image {
+/* While jumping out a frame is its gradient drawing. Once it lands in its place (is-arrived,
+   added by script.js) it shows its work: its hover picture (the same one as on the computer,
+   added by script.js) instead. A tap opens the project */
+.phone-frame .home-frame__hover {
   visibility: hidden;
 }
 
-.phone-frame .home-frame__hover {
+.phone-frame.is-arrived:has(.home-frame__hover) .phone-frame__image {
+  visibility: hidden;
+}
+
+.phone-frame.is-arrived .home-frame__hover {
   visibility: visible;
+}
+
+/* Tapped: back to its gradient drawing for a moment, before the project opens */
+.phone-frame.is-arrived.is-tapped:has(.home-frame__hover) .phone-frame__image {
+  visibility: visible;
+}
+
+.phone-frame.is-arrived.is-tapped .home-frame__hover {
+  visibility: hidden;
 }
 
 .phone-frame[data-href] {
@@ -1560,11 +1514,11 @@ a.project-nav {
     height var(--page-change-time) var(--page-change-easing);
 }
 
-/* "phone bar new" (310.55 × 35.3, words 18) */
+/* "phone bar" (354 × 36, words 16), on every page */
 .phone-bar.is-new-size {
-  --bar-w: 310.55;
-  --bar-h: 35.3;
-  --bar-font: 18;
+  --bar-w: 354;
+  --bar-h: 36;
+  --bar-font: 16;
 }
 
 /* Putting it in place without gliding (script.js) */
@@ -1573,10 +1527,11 @@ a.project-nav {
   transition: none;
 }
 
-/* On a project page it stays still at the top of the screen (its top at y 63 in Figma) */
+/* On a project page it stays still at the top of the screen (its top 20 from the top of the
+   screen, like "phone works placement" in Figma) */
 .phone-bar--project {
   position: fixed;
-  top: calc((63 - var(--phone-top)) * var(--bar-pixel));
+  top: calc(var(--phone-bar-top) * var(--bar-pixel));
   display: none;               /* only on phones (see below) */
 }
 
@@ -1637,7 +1592,8 @@ a.project-nav {
    One long 390-wide page that scrolls down. Positions are Figma pixels.
    ========================================= */
 :root {
-  --phone-tap-time: 0.25s;   /* how long the pause play symbol and the flip back arrow stay orange */
+  --phone-tap-time: 0.25s;
+  --phone-tap-change-time: 0.1s;   /* a tapped frame shows its gradient this long before the page changes */   /* how long the pause play symbol and the flip back arrow stay orange */
 }
 
 /* Phones show a grey square when something is tapped: not here, as things turn orange instead */
@@ -1683,7 +1639,6 @@ a.project-nav {
   position: relative;
   width: 100%;
   height: calc(var(--h) * var(--phone-page-pixel));
-  margin-top: calc(var(--phone-top) * -1 * var(--phone-page-pixel));   /* the website starts at the black line */
   overflow: hidden;            /* the previous project frame sticks out on the left in Figma */
 }
 
@@ -1824,6 +1779,42 @@ a.project-nav {
   color: var(--color-orange);
 }
 
+/* The project's name under "NEXT PROJECT": a little more space above it, like in Figma */
+.phone-nav__name {
+  line-height: 1.64;
+}
+
+/* A frame is a link to that project (the "Coming Soon" ones aren't) */
+.phone-nav {
+  overflow: hidden;            /* like in Figma, the drawing is cut at the edge of its frame */
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Its gradient version ("next page hover"): shows for a moment after a tap, before the
+   project opens (there is no hover on a phone) */
+.phone-nav__gradient {
+  position: absolute;
+  inset: var(--inset);
+  visibility: hidden;
+}
+
+.phone-nav__gradient img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.phone-nav.is-tapped .phone-nav__gradient {
+  visibility: visible;
+}
+
+.phone-nav.is-tapped .project-nav__layer,
+.phone-nav.is-tapped .phone-nav__text {
+  visibility: hidden;
+}
+
 .phone-nav__text--nowrap {
   white-space: nowrap;
 }
@@ -1907,13 +1898,13 @@ a.project-nav {
 }
 
 /* The orange list ("phone works new" in Figma), right under the bar at the top (the bar is
-   "phone bar new" then: 63 to 98.3, and 39.72 from the left like the bar) */
+   then 20 to 56 from the top of the screen, and 18 from the left) */
 .phone-works {
   position: fixed;
-  left: calc(39.72 * var(--phone-page-pixel));
+  left: calc(18 * var(--phone-page-pixel));
   /* It starts 2 pixels higher, tucked under the bar, so no white line can show between them */
-  top: calc((98.3 - var(--phone-top)) * var(--phone-page-pixel) - 2px);
-  width: calc(311 * var(--phone-page-pixel));
+  top: calc((var(--phone-bar-top) + 36) * var(--phone-page-pixel) - 2px);
+  width: calc(354 * var(--phone-page-pixel));
   height: calc(636 * var(--phone-page-pixel) + 2px);
   z-index: 6;                  /* over a page sliding in, under the bar */
   background-color: var(--color-orange);
@@ -1955,7 +1946,7 @@ a.project-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 calc(14.49 * var(--phone-page-pixel)) 0 calc(17.93 * var(--phone-page-pixel));   /* like "phone works new" */
+  padding: 0 calc(16.49 * var(--phone-page-pixel)) 0 calc(20.4 * var(--phone-page-pixel));   /* like "phone works new" */
   color: var(--color-black);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -2010,7 +2001,7 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  padding: 0 calc(9 * var(--phone-page-pixel));
+  padding: 0 calc(10.25 * var(--phone-page-pixel));
   background-color: var(--color-black);
   color: var(--color-white);
   font-family: var(--font-display);
@@ -2062,20 +2053,21 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transform: translate3d(0, 0, 0);
 }
 
-/* The page inside: white at the top to lime at the bottom */
+/* The page inside ("phone hi", 844 high from the top of the screen): white at the top,
+   then white to lime from y 519 to the bottom. The picture of me sticks out on both sides: cut there */
 .phone-hi__page {
   position: relative;
   height: calc(var(--h) * var(--phone-page-pixel));
-  margin-top: calc(var(--phone-top) * -1 * var(--phone-page-pixel));   /* the website starts at the black line */
-  background: linear-gradient(to bottom, var(--color-white) calc(var(--phone-top) * var(--phone-page-pixel)), var(--color-lime));
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--color-white) calc(519 * var(--phone-page-pixel)), var(--color-lime));
 }
 
 .phone-hi__title {
-  width: calc(227 * var(--phone-page-pixel));
+  width: calc(264 * var(--phone-page-pixel));
   white-space: normal;
 }
 
-.phone-hi__text,
+/* The labels above the email, phone and Instagram: Inter Semi Bold 14 (the text stays 16) */
 .phone-hi__label {
   font-size: calc(14 * var(--phone-page-pixel));
 }
@@ -2084,15 +2076,16 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   white-space: nowrap;
 }
 
-/* The email address, phone number and Instagram: Instrument Serif 30px, blue */
+/* The email address, phone number and Instagram, in a row at the bottom: Inter Semi Bold 10px */
 .phone-hi__contact {
   position: absolute;
   left: calc(var(--x) * var(--phone-page-pixel));
   top: calc(var(--y) * var(--phone-page-pixel));
-  font-family: var(--font-display);
-  font-size: calc(30 * var(--phone-page-pixel));
+  font-family: var(--font-body);
+  font-size: calc(10 * var(--phone-page-pixel));
+  font-weight: 600;
   line-height: normal;
-  color: var(--color-blue);
+  color: var(--color-black);
   text-decoration: none;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
@@ -2240,6 +2233,43 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   line-height: normal;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Phone: tapping the email address (on the Hi page and Reach Out) copies it, and a black COPIED
+   label rolls up over it, like on the computer (script.js makes the label and sets its width).
+   Tapping the phone number calls it, and Instagram opens */
+.phone-copy {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.phone-copy__label {
+  position: absolute;
+  left: -0.25em;
+  top: 0;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-left: 0.3em;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 1.1em;
+  font-weight: 400;
+  font-style: italic;
+  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
+  transition: clip-path var(--roll-time) var(--page-change-easing);
+  pointer-events: none;
+}
+
+.phone-copy.is-copied .phone-copy__label {
+  clip-path: inset(0);
+}
+
+/* The Hi page or Reach Out went away: the label disappears at once, without rolling */
+.phone-copy.is-resetting .phone-copy__label {
+  transition: none;
 }
 
 
@@ -2517,5 +2547,105 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
       round(calc(31 * var(--stage-pixel)), 1px) -
       round(calc(50svh + (var(--y) - 384) * var(--stage-pixel)), 1px)
     ));
+  }
+}
+
+
+/* =========================================
+   The reload page ("reload page" in Figma, 1440 × 800, and "phone reload page", 390 × 844).
+   It covers everything when the internet is lost or the page has been open for more than an
+   hour (script.js adds is-reload). A tap or click anywhere reloads the page
+   ========================================= */
+.reload-page {
+  position: fixed;
+  inset: 0;
+  z-index: 100;                /* over everything, also the bar */
+  overflow: hidden;
+  /* white at the top, then white to orange (from y 62 of 800) */
+  background: linear-gradient(to bottom, var(--color-white) 7.75%, var(--color-orange));
+  cursor: pointer;
+  /* it fades in */
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--page-change-time) ease,
+    visibility 0s linear var(--page-change-time);
+}
+
+.is-reload .reload-page {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--page-change-time) ease;
+}
+
+/* The 1440 × 800 frame, fitted to the window like the other computer pages */
+.reload-page__stage {
+  position: relative;
+  width: calc(1440 * var(--stage-pixel));
+  height: calc(800 * var(--stage-pixel));
+  margin: 0 auto;
+  --reload-pixel: var(--stage-pixel);
+  --x: 636; --y: 174; --w: 142; --h: 206.607;      /* the picture */
+  --title-x: 604; --title-y: 363;                  /* WELL SHIT.... */
+  --text-x: 944; --text-y: 758; --text-size: 12;   /* Maybe reload the page... */
+}
+
+/* Me, shocked ("ezgif.com-gif-maker", a GIF): cut from a bigger square picture, like in Figma */
+.reload-page__picture {
+  position: absolute;
+  left: calc(var(--x) * var(--reload-pixel));
+  top: calc(var(--y) * var(--reload-pixel));
+  width: calc(var(--w) * var(--reload-pixel));
+  height: calc(var(--h) * var(--reload-pixel));
+  overflow: hidden;
+}
+
+.reload-page__picture img {
+  position: absolute;
+  left: -161.46%;
+  top: -178.38%;
+  width: 454.98%;
+  height: 312.7%;
+  max-width: none;
+}
+
+/* "WELL SHIT....": Instrument Serif 50px */
+.reload-page__title {
+  position: absolute;
+  left: calc(var(--title-x) * var(--reload-pixel));
+  top: calc(var(--title-y) * var(--reload-pixel));
+  font-family: var(--font-display);
+  font-size: calc(50 * var(--reload-pixel));
+  line-height: 1.112;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* "Maybe reload the page...": Inter Semi Bold */
+.reload-page__text {
+  position: absolute;
+  left: calc(var(--text-x) * var(--reload-pixel));
+  top: calc(var(--text-y) * var(--reload-pixel));
+  font-family: var(--font-body);
+  font-size: calc(var(--text-size) * var(--reload-pixel));
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+/* On phones: "phone reload page" (white to orange from y 49) */
+@media (max-width: 700px) {
+  .reload-page {
+    background: linear-gradient(to bottom, var(--color-white) calc(49 * var(--phone-page-pixel)), var(--color-orange));
+  }
+
+  .reload-page__stage {
+    width: 100%;
+    height: 100%;
+    --reload-pixel: var(--phone-page-pixel);
+    --x: 84; --y: 118; --w: 221; --h: 321.55;
+    --title-x: 81; --title-y: 412;
+    --text-x: 186; --text-y: 734; --text-size: 16;
   }
 }
