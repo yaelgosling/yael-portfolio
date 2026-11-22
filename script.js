@@ -95,12 +95,12 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    slide downhill, they bump off the edges of the screen, and shaking the phone throws them
    around. Each one is a bit heavier or lighter than the others, turns a little while it moves,
    and springs back to its place when the phone is still. */
-const SWAY_GRAVITY = 4;      // how strongly tilting pulls (bigger = slides further)
+const SWAY_GRAVITY = 3;      // how strongly tilting pulls (bigger = slides further)
 const SWAY_SPRING = 0.02;    // how strongly each one is pulled back to its place
 const SWAY_FRICTION = 0.07;  // how quickly the swinging calms down (smaller = swings longer)
-const SWAY_SHAKE = 0.6;      // how much a shake throws them
+const SWAY_SHAKE = 0.45;      // how much a shake throws them
 const SWAY_BOUNCE = 0.5;     // how much speed they keep when they bump into an edge
-const SWAY_TURN = 1.5;       // how much they turn while moving (degrees per unit of speed)
+const SWAY_TURN = 1.1;       // how much they turn while moving (degrees per unit of speed)
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
 // items: elements with --x --y --w --h (Figma pixels). area: the edges they bump into.
@@ -1338,15 +1338,13 @@ phoneWorkFrames.forEach((frame) => {
   const hover = computerImage && computerImage.parentElement.querySelector(".home-frame__hover");
   if (hover) frame.append(hover.cloneNode(true));
 
-  if (frame.dataset.href) {
-    frame.addEventListener("touchstart", () => phonePreparePage(frame.dataset.href, "page-slide"), { passive: true });
-  }
   // A tap: the frame shows its gradient drawing for a moment (there is no hover on a phone),
   // then the project opens
   frame.addEventListener("click", () => {
     if (frame.dataset.href && phoneHome.classList.contains("is-playful") && !phoneChanging) {
       phoneChanging = true;
       frame.classList.add("is-tapped");
+      phonePreparePage(frame.dataset.href, "page-slide");
       setTimeout(() => phoneOpenProject(frame.dataset.href), PHONE_TAP_CHANGE_TIME);
     }
   });
@@ -1508,10 +1506,18 @@ const PHONE_BAR_TOP = 20;   // like --phone-bar-top: its top edge when it is at 
 
 // Where the top edge of the bar is (screen pixels) in a spot: "top" (20 from the top of the
 // screen, "phone works placement" in Figma, on every page) or "middle" (the home page: its middle at y 422.65)
+// The height of the screen without the phone's search bar (100svh in styles.css)
+const screenProbe = document.createElement("div");
+screenProbe.style.cssText = "position: fixed; top: 0; height: 100svh; width: 0; visibility: hidden; pointer-events: none";
+document.documentElement.appendChild(screenProbe);
+
 function phoneBarTop(where) {
   const page = window.innerWidth / 390;   // one Figma pixel on a phone page
   if (where === "top") return PHONE_BAR_TOP * page;
-  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP - BAR_HEIGHT / 2) * page;
+  // The home page fits the screen: up and down it uses a slightly smaller pixel on short phones
+  // (like --phone-fit-pixel in styles.css)
+  const fit = Math.min(page, screenProbe.offsetHeight / (844 - PHONE_HOME_TOP));
+  return (PHONE_BAR_MIDDLE - PHONE_HOME_TOP) * fit - BAR_HEIGHT / 2 * page;
 }
 
 // Glides the bar to "top" or "middle" (in the same time and way as the pages slide).
@@ -1664,9 +1670,24 @@ phoneWorksRows.forEach((row) => {
 });
 
 // The previous and next project frames at the bottom of a project page: the project slides up
-document.querySelectorAll("a.phone-nav").forEach((link) => {
+// (Nothing is added to the page while a finger touches a frame: phones then treat the first
+// tap as a "hover" and need a second tap. The two projects get ready when the end of the page
+// comes near instead)
+const phoneNavLinks = [...document.querySelectorAll("a.phone-nav")];
+const phoneNavScroller = document.querySelector("main > .phone-scroll");
+if (phoneNavLinks.length && phoneNavScroller && !window.frameElement) {
+  const prepareNear = () => {
+    const left = phoneNavScroller.scrollHeight - phoneNavScroller.clientHeight - phoneNavScroller.scrollTop;
+    if (left < phoneNavScroller.clientHeight * 1.5) {
+      phoneNavLinks.forEach((link) => phonePreparePage(link.getAttribute("href"), "page-slide"));
+      phoneNavScroller.removeEventListener("scroll", prepareNear);
+    }
+  };
+  phoneNavScroller.addEventListener("scroll", prepareNear, { passive: true });
+}
+
+phoneNavLinks.forEach((link) => {
   const href = link.getAttribute("href");
-  link.addEventListener("touchstart", () => phonePreparePage(href, "page-slide"), { passive: true });
   // A tap: it shows its gradient version for a moment (there is no hover on a phone), then
   // the project opens
   link.addEventListener("click", (event) => {
@@ -1698,7 +1719,6 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
 
   // Anywhere else: the project slides down to show the home page (waiting behind it), while
   // the bar glides to the middle. The opposite of how the project came up
-  link.addEventListener("touchstart", () => phonePreparePage(link.href, "page-behind"), { passive: true });
   link.addEventListener("click", async (event) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
     event.preventDefault();

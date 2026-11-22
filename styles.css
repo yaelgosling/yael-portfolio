@@ -1355,7 +1355,10 @@ a.project-nav {
   --phone-home-height: 844;                         /* and where it ends */
   --phone-bar-middle: 422;                          /* the middle of the home bar in Figma (y) */
   --phone-bar-top: 20;                              /* the bar's top edge when it is at the top of the screen */
-  --phone-pixel: calc(100vw / 390);                 /* one Figma pixel on the phone home page */
+  --phone-pixel: calc(100vw / 390);                 /* one Figma pixel across the phone home page */
+  /* The home page doesn't scroll: the whole Figma frame (y 49 to 844) fits the screen. Up and down
+     (and the size of the frames) use --phone-fit-pixel, which is a bit smaller on shorter phones */
+  --phone-fit-pixel: min(var(--phone-pixel), 100svh / (844 - 49));
   --phone-page-pixel: calc(100vw / 390);           /* one Figma pixel on a phone project page (it scrolls down) */
   --phone-frames-time: 0.9s;                        /* how long a frame takes to jump out */
   --phone-frames-gap: 0.07s;                        /* the wait between one frame and the next */
@@ -1385,16 +1388,20 @@ a.project-nav {
   }
 }
 
-/* The box the home page scrolls in. The end doesn't bounce, so swiping on brings up Reach Out */
+/* The box the home page is in: it doesn't scroll (everything fits the screen) */
 .phone-home__scroll {
+  overflow: hidden;
   overscroll-behavior: none;
-  touch-action: pan-y;         /* a finger scrolls the page up and down */
 }
 
-/* The whole scrolling page, as high as in Figma */
+.phone-home__scroll::after {
+  display: none;
+}
+
+/* The whole page: it fills the screen */
 .phone-home__page {
   position: relative;
-  height: calc((var(--phone-home-height) - var(--phone-home-top)) * var(--phone-pixel));
+  height: 100%;
   overflow: hidden;            /* frames swaying past an edge are cut, not making the page wider */
 }
 
@@ -1409,15 +1416,16 @@ a.project-nav {
    (x 195, y --phone-bar-middle in Figma) */
 .phone-frame {
   position: absolute;
-  left: calc(var(--x) * var(--phone-pixel));
-  top: calc((var(--y) - var(--phone-home-top)) * var(--phone-pixel));
-  width: calc(var(--w) * var(--phone-pixel));
-  height: calc(var(--h) * var(--phone-pixel));
+  /* its middle stays where Figma has it across the screen; up and down it fits the screen */
+  left: calc((var(--x) + var(--w) / 2) * var(--phone-pixel) - var(--w) / 2 * var(--phone-fit-pixel));
+  top: calc((var(--y) - var(--phone-home-top)) * var(--phone-fit-pixel));
+  width: calc(var(--w) * var(--phone-fit-pixel));
+  height: calc(var(--h) * var(--phone-fit-pixel));
   opacity: 0;
   transform:
     translate(
       calc((195 - var(--x) - var(--w) / 2) * var(--phone-pixel)),
-      calc((var(--phone-bar-middle) - var(--y) - var(--h) / 2) * var(--phone-pixel))
+      calc((var(--phone-bar-middle) - var(--y) - var(--h) / 2) * var(--phone-fit-pixel))
     )
     scale(0.1);
   /* script.js swings it around when the phone tilts or shakes
@@ -1498,7 +1506,7 @@ a.project-nav {
   position: absolute;
   /* Its middle is where Figma has it (x 195, y 422.65 on the home page), whatever its size */
   left: calc(50% - var(--bar-w) / 2 * var(--bar-pixel));
-  top: calc((var(--phone-bar-middle) - var(--phone-home-top)) * var(--phone-pixel) - var(--bar-h) / 2 * var(--bar-pixel));
+  top: calc((var(--phone-bar-middle) - var(--phone-home-top)) * var(--phone-fit-pixel) - var(--bar-h) / 2 * var(--bar-pixel));
   width: calc(var(--bar-w) * var(--bar-pixel));
   height: calc(var(--bar-h) * var(--bar-pixel));
   z-index: 7;                  /* above everything, also a page sliding in */
@@ -2053,13 +2061,47 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
   transform: translate3d(0, 0, 0);
 }
 
-/* The page inside ("phone hi", 844 high from the top of the screen): white at the top,
-   then white to lime from y 519 to the bottom. The picture of me sticks out on both sides: cut there */
+/* The page inside ("phone hi", 844 high from the top of the screen). It doesn't scroll: it fits
+   the screen. Up and down (and the picture of me) use --hi-fit-pixel, a bit smaller on shorter
+   phones. White at the top, then white to lime from y 519 to the bottom.
+   The picture of me sticks out on both sides: cut there */
+.phone-hi {
+  --hi-fit-pixel: min(var(--phone-page-pixel), 100svh / 844);
+}
+
+.phone-hi .phone-scroll {
+  overflow: hidden;
+}
+
+.phone-hi .phone-scroll::after {
+  display: none;
+}
+
 .phone-hi__page {
   position: relative;
-  height: calc(var(--h) * var(--phone-page-pixel));
+  height: 100%;
   overflow: hidden;
-  background: linear-gradient(to bottom, var(--color-white) calc(519 * var(--phone-page-pixel)), var(--color-lime));
+  background: linear-gradient(to bottom, var(--color-white) calc(519 * var(--hi-fit-pixel)), var(--color-lime) calc(844 * var(--hi-fit-pixel)));
+}
+
+.phone-hi__page .phone-title,
+.phone-hi__page .phone-text,
+.phone-hi__page .phone-hi__contact {
+  top: calc(var(--y) * var(--hi-fit-pixel));
+}
+
+/* The text about me keeps its size, so on short phones it's placed by its bottom edge (y 743 in
+   Figma, where its last line ends): it never runs into the email and phone number under it */
+.phone-hi__page .phone-hi__text {
+  top: calc(743 * var(--hi-fit-pixel));
+  transform: translateY(-100%);
+}
+
+.phone-hi__page .phone-doodle {
+  left: calc((var(--x) + var(--w) / 2) * var(--phone-page-pixel) - var(--w) / 2 * var(--hi-fit-pixel));
+  top: calc(var(--y) * var(--hi-fit-pixel));
+  width: calc(var(--w) * var(--hi-fit-pixel));
+  height: calc(var(--h) * var(--hi-fit-pixel));
 }
 
 .phone-hi__title {
@@ -2246,8 +2288,9 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 .phone-copy__label {
   position: absolute;
   left: -0.25em;
-  top: 0;
-  height: 100%;
+  /* a little lower than the top of the line, so it never covers the "Email me" above it */
+  top: 0.2em;
+  bottom: 0;
   box-sizing: border-box;
   display: flex;
   align-items: center;
