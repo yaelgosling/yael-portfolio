@@ -1648,44 +1648,23 @@ a.project-nav {
     touch-action: none;
   }
 
-  /* A project page scrolls like a normal web page (the whole window). Then Safari makes its
-     search bar small and the page shows behind it, a little blurred. The end doesn't bounce,
-     so swiping on brings up Reach Out */
-  html:has(body.project-page:not(.process-page)) {
+  /* A project page doesn't scroll as a whole (then nothing can slide under the phone's time and
+     battery): it stays still on the screen and the phone page scrolls inside it, so the page
+     disappears at the black line at the top */
+  html:has(body.project-page:not(.process-page)),
+  body.project-page:not(.process-page) {
+    height: 100vh;
+    height: 100lvh;            /* the whole screen, also behind the phone's search bar */
+    overflow: hidden;
     overscroll-behavior: none;
   }
 
   body.project-page:not(.process-page) main {
-    position: relative;
-    overflow-x: clip;          /* frames sticking out on the sides don't make the page wider */
-  }
-
-  body.project-page:not(.process-page) main > .phone-scroll {
-    position: static;
-    overflow: visible;
-  }
-
-  body.project-page:not(.process-page) main > .phone-scroll::after {
-    display: none;
-  }
-
-  /* The black line at the top stays at the top of the screen */
-  body.project-page:not(.process-page) main > .phone-top-line {
-    position: fixed;
-  }
-
-  /* A white box above the black line: from far above the top of the screen (behind the phone's
-     time and battery) down to the line. The page disappears behind it as it scrolls up past the
-     line, like before */
-  body.project-page:not(.process-page) main::before {
-    content: "";
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: -300px;
-    z-index: 3;
-    height: 301px;
-    background-color: var(--color-white);
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 100vh;
+    height: 100lvh;            /* the whole screen, also behind the phone's search bar at the bottom */
+    overflow: hidden;
   }
 
   /* The process page has no phone version yet: it stays as it was */
@@ -2447,16 +2426,8 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
     transition: transform var(--page-change-time) var(--page-change-easing);
   }
 
-  /* The page is held where it is on the screen (script.js sets --scrolled: how far it was
-     scrolled), then slides down off the screen in one piece */
   body.project-page.is-phone-going-home main {
-    position: fixed;
-    top: calc(-1 * var(--scrolled, 0px));
-    left: 0;
-    right: 0;
-    /* only the part that was on the screen slides down (the rest of the page is cut off) */
-    clip-path: inset(var(--scrolled, 0px) 0 calc(100% - var(--scrolled, 0px) - 100lvh) 0);
-    transform: translate3d(0, 100lvh, 0);
+    transform: translate3d(0, 100%, 0);
   }
 }
 
@@ -2968,6 +2939,25 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
     bottom: 0;
     z-index: 4;                /* over the work, under the bar, WORKS, HI and Reach Out */
     height: 56px;              /* only just above the bottom of the screen */
+    background-color: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+    mask-image: linear-gradient(to bottom, transparent, #000);
+    pointer-events: none;
+  }
+}
+
+/* The same blur on the Hi page: the text panel comes up out of it at the bottom of the screen */
+@media (max-width: 700px) {
+  .phone-hi .phone-bottom-blur {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100svh - 56px);  /* the bottom of what shows on the screen */
+    z-index: 4;                /* over the Hi page's text */
+    height: 56px;
     background-color: rgba(255, 255, 255, 0.01);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
