@@ -909,6 +909,12 @@ html.is-hi-open-page body {
   visibility: hidden;
 }
 
+/* While going to another page, nothing on this page can be clicked any more (script.js) */
+body.is-changing-page,
+body.is-changing-page * {
+  pointer-events: none !important;
+}
+
 /* Opening a project page any other way: the page slides up by itself (script.js adds the class).
    Only the content slides: the bar stays still */
 body.is-sliding-in main {

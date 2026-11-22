@@ -538,6 +538,26 @@ if (home && window.matchMedia("(hover: hover)").matches) {
    ========================================= */
 const PAGE_CHANGE_TIME = 900;  // the same as --page-change-time in styles.css
 
+// Only one page change at a time: once a click has started going to another page, more clicks
+// (on PROCESS, WORKS, a frame...) do nothing until the new page is there
+let changingPage = false;
+function startPageChange() {
+  if (changingPage) return false;
+  changingPage = true;
+  document.body.classList.add("is-changing-page");
+  return true;
+}
+window.addEventListener("pageshow", () => {
+  changingPage = false;
+  document.body.classList.remove("is-changing-page");
+});
+
+// Waits for the waiting copy of the next page to be loaded, but only a very short moment:
+// then the page slides in anyway (so a click always does something straight away)
+function pageReady(page) {
+  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, 200))]);
+}
+
 // Runs `then` once the bar has really finished gliding (and that last spot is on the screen),
 // so the next page takes over from the bar exactly where it stops. (A timer alone could go off
 // a moment before the bar's last tiny step, and then the words jumped a tiny bit)
@@ -583,8 +603,9 @@ document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
     if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
 
     event.preventDefault();
+    if (!startPageChange()) return;
     const page = prepareSlide();
-    await page.ready;
+    await pageReady(page);
     page.classList.add("is-sliding");
     home.classList.add("is-leaving");     // the bar moves up to its spot on the project page
     whenBarArrives(home.querySelector(".site-bar"), () => {
@@ -652,7 +673,8 @@ if (home) {
       if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
 
       event.preventDefault();
-      await prepareHome().ready;
+      if (!startPageChange()) return;
+      await pageReady(prepareHome());
       // The index closes (it is part of the bar); everything else is covered by the home page
       document.body.classList.remove("is-index-open");
       document.documentElement.classList.remove("is-index-open-page");
@@ -901,7 +923,11 @@ document.querySelectorAll(".project-work").forEach(async (work) => {
 // The next/previous project frames, and PROCESS in the bar (not on the process page itself)
 document.querySelectorAll("a.project-nav, a.site-bar__process").forEach((link) => {
   if (link.classList.contains("site-bar__process") && document.body.classList.contains("process-page")) {
-    link.addEventListener("click", (event) => event.preventDefault());   // already here
+    // Already here: clicking it closes WORKS or HI, so you see the process page again
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeOverlays();
+    });
     return;
   }
   let slide = null;
@@ -920,15 +946,28 @@ document.querySelectorAll("a.project-nav, a.site-bar__process").forEach((link) =
 
   link.addEventListener("pointerenter", prepareSlide);
   link.addEventListener("focus", prepareSlide);
+  // PROCESS: the process page gets ready out of sight soon after this page has opened,
+  // so clicking it slides the process page up straight away
+  if (link.classList.contains("site-bar__process") && !window.frameElement) {
+    if (document.readyState === "complete") prepareSlide();
+    else window.addEventListener("load", prepareSlide, { once: true });
+  }
 
   link.addEventListener("click", async (event) => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || event.metaKey || event.ctrlKey) return;   // open normally
     event.preventDefault();
-    if (home) home.classList.add("is-leaving");   // home page: the bar stays at the top, PROCESS stays
-    else closeOverlays();                          // other pages: WORKS or HI rolls away while the page slides up
+    if (!startPageChange()) return;
+    if (home) {
+      // Home page: the bar stays at the top (PROCESS too) and WORKS rolls up while the page slides up
+      home.classList.add("is-leaving");
+      document.body.classList.remove("is-index-open");
+      document.documentElement.classList.remove("is-index-open-page");
+    } else {
+      closeOverlays();   // other pages: WORKS or HI rolls away while the page slides up
+    }
     const page = prepareSlide();
-    await page.ready;
+    await pageReady(page);
     page.classList.add("is-sliding");
     setTimeout(() => {
       sessionStorage.setItem("page-slid-in", "yes");   // the new page doesn't need to slide again
@@ -1086,9 +1125,10 @@ if (indexButton) {
       if (event.metaKey || event.ctrlKey) return;   // opening in a new tab works as usual
       event.preventDefault();
       if (name.classList.contains("is-current")) return setIndexOpen(false);
+      if (!startPageChange()) return;
 
       const page = prepareSlide();
-      await page.ready;                                        // (usually loaded already, on hover)
+      await pageReady(page);                                   // (usually loaded already, on hover)
       document.body.classList.add("is-opening-from-index");   // the blur stays
       if (home) {
         home.classList.add("is-leaving");                       // on the home page the bar stays at the top
@@ -1137,6 +1177,13 @@ if (hiButton && hiPage) {
   }
 
   hiButton.addEventListener("click", () => {
+    // WORKS is open over the Hi page: HI just closes WORKS, so you see the Hi page again
+    if (document.body.classList.contains("is-hi-open") && document.body.classList.contains("is-index-open")) {
+      document.body.classList.remove("is-index-open");
+      document.documentElement.classList.remove("is-index-open-page");
+      document.querySelectorAll(".site-bar__index").forEach((button) => button.setAttribute("aria-expanded", false));
+      return;
+    }
     setHiOpen(!document.body.classList.contains("is-hi-open"));
   });
   document.addEventListener("keydown", (event) => {
