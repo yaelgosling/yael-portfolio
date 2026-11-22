@@ -1674,6 +1674,20 @@ a.project-nav {
     position: fixed;
   }
 
+  /* A thin white strip along the very top of the screen, under the black line. Safari fills the
+     space behind the phone's time and battery with its colour, so the page disappears at the
+     black line as it scrolls up (instead of showing behind the time and battery) */
+  body.project-page:not(.process-page) main::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    height: 4px;
+    background-color: var(--color-white);
+  }
+
   /* The process page has no phone version yet: it stays as it was */
   body.process-page main {
     position: absolute;
@@ -2936,8 +2950,8 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
 
 /* =========================================
    Phone project pages: the work comes up out of a blur at the bottom of the screen and gets sharp
-   as it scrolls up (like stefanstefancik.com): a strip along the bottom, 160 high, blurs what's
-   behind it by 8 pixels, the blur fading in from nothing at its top edge
+   as it scrolls up (like stefanstefancik.com): a low strip along the bottom blurs what's behind
+   it a little, the blur fading in from nothing at its top edge
    ========================================= */
 .phone-bottom-blur {
   display: none;
@@ -2951,10 +2965,10 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
     right: 0;
     bottom: 0;
     z-index: 4;                /* over the work, under the bar, WORKS, HI and Reach Out */
-    height: 160px;
+    height: 56px;              /* only just above the bottom of the screen */
     background-color: rgba(255, 255, 255, 0.01);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
     mask-image: linear-gradient(to bottom, transparent, #000);
     pointer-events: none;
