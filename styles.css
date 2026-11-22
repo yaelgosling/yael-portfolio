@@ -190,7 +190,7 @@ body.home-page {
   visibility: visible;
 }
 
-/* The project's name in the empty frame: orange Instrument Serif */
+/* The project's name in the empty frame: black Instrument Serif */
 .home-frame__name {
   position: absolute;
   inset: var(--inset);
@@ -198,7 +198,24 @@ body.home-page {
   font-family: var(--font-display);
   font-size: calc(var(--size) * var(--stage-pixel));
   line-height: 1.006;
-  color: var(--color-orange);
+  color: var(--color-black);
+}
+
+/* What kind of project it is (Illustration., Motion...), under the name: blue Inter Semi Bold 8px */
+.home-frame__type {
+  position: absolute;
+  inset: var(--inset);
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: calc(8 * var(--stage-pixel));
+  line-height: normal;
+  color: var(--color-blue);
+  white-space: nowrap;
+}
+
+.home-frame__type--right {
+  text-align: right;
 }
 
 .home-frame__name--nowrap {

@@ -682,9 +682,36 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
 });
 
 
+// Is this scroll from a mouse wheel (not a trackpad)? Trackpads send a smooth stream of pixel
+// steps, and in Chrome and Safari their old-style "wheelDeltaY" is exactly -3 times the step.
+// A mouse wheel's isn't (or it scrolls by lines)
+function isMouseWheel(event) {
+  if (event.deltaMode !== 0) return true;
+  if (event.wheelDeltaY) return event.wheelDeltaY !== event.deltaY * -3;
+  return false;
+}
+
+
+/* =========================================
+   Project page (computer): the left and right arrow keys move the strip left and right
+   ========================================= */
+document.querySelectorAll(".project-strip").forEach((strip) => {
+  window.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (!strip.offsetWidth) return;                                 // the phone version is showing
+    if (event.altKey || event.metaKey || event.ctrlKey) return;     // keep the browser's own shortcuts
+    if (document.body.matches(".is-index-open, .is-hi-open")) return;
+    if (window.scrollY > 2) return;                                 // Reach Out is open
+    event.preventDefault();
+    const step = window.innerWidth * 0.4;
+    strip.scrollBy({ left: event.key === "ArrowRight" ? step : -step, behavior: "smooth" });
+  });
+});
+
+
 /* =========================================
    Project page (computer): scrolling down with the mouse wheel or the trackpad moves the strip
-   sideways (down = right, up = left). At the end of the strip, scrolling on down brings up
+   sideways (down = right, up = left; with a mouse wheel the other way round, see above). At the end of the strip, scrolling on down brings up
    "Reach Out" as before; scrolling up from Reach Out goes back down to the strip, and then
    moves the strip back to the left. Sideways swipes on the trackpad still work as before
    ========================================= */
@@ -692,6 +719,11 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
   window.addEventListener("wheel", (event) => {
     if (!strip.offsetWidth) return;                                 // the phone version is showing
     if (event.ctrlKey) return;                                      // zooming with the trackpad
+    // WORKS or HI is open: the page underneath stays frozen until it's closed
+    if (document.body.matches(".is-index-open, .is-hi-open")) {
+      event.preventDefault();
+      return;
+    }
     if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
       // A sideways swipe moves the strip as before. At the end of the strip, swiping on to the
       // right brings up "Reach Out" from the bottom; once it's up, swiping left puts it away again
@@ -704,18 +736,40 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
       }
       return;
     }
-    if (window.scrollY > 2) return;                                 // Reach Out is open: the page scrolls
-
+    // A real mouse wheel turns the other way round from the trackpad (the Mac's "natural"
+    // scrolling feels right on the trackpad but backwards on a mouse), so for a mouse it's flipped
+    const mouse = isMouseWheel(event);
     // How far: trackpads give pixels, some mice give lines (about 40 pixels each)
-    const amount = event.deltaY * (event.deltaMode === 1 ? 40 : 1);
+    let amount = event.deltaY * (event.deltaMode === 1 ? 40 : 1);
+    if (mouse) amount = -amount;
+
+    // Reach Out is open: the page scrolls (with a mouse, the flipped way)
+    if (window.scrollY > 2) {
+      if (mouse) {
+        event.preventDefault();
+        window.scrollBy({ top: amount, behavior: "smooth" });
+      }
+      return;
+    }
+
     const end = strip.scrollWidth - strip.clientWidth;
     const atEnd = strip.scrollLeft >= end - 2;
     const atStart = strip.scrollLeft <= 2;
-    if ((amount > 0 && atEnd) || (amount < 0 && atStart)) return;  // at the end: Reach Out comes up
+    if (amount > 0 && atEnd) {                                      // at the end: Reach Out comes up
+      if (mouse) {
+        event.preventDefault();
+        window.scrollBy({ top: amount, behavior: "smooth" });
+      }
+      return;
+    }
+    if (amount < 0 && atStart) {                                    // at the start: nothing to do
+      if (mouse) event.preventDefault();
+      return;
+    }
 
     event.preventDefault();
     // A mouse wheel moves in big steps, so it glides; a trackpad follows the fingers exactly
-    if (Math.abs(amount) >= 50) strip.scrollBy({ left: amount * 1.5, behavior: "smooth" });
+    if (mouse || Math.abs(amount) >= 50) strip.scrollBy({ left: amount * 1.5, behavior: "smooth" });
     else strip.scrollLeft += amount;
   }, { passive: false });
 });
