@@ -95,7 +95,7 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    mouse, and everything drifts slowly the other way, a little. Things further from the middle
    move more (with a bit of randomness), which gives a feeling of depth. When the phone is held
    still they glide back to their places. Gentle: no bouncing, turning or shaking */
-const PHONE_MAX_MOVE = 80;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const PHONE_MAX_MOVE = 260;   // how far (Figma pixels) something at the edge can move, at a big tilt
 const PHONE_FULL_TILT = 30;  // tilting this much (degrees) is like the mouse at the edge of the screen
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
@@ -1598,20 +1598,73 @@ function phonePageReady(page, longest = 800) {
 // Opens a project: it slides up from the bottom while the bar glides to the top
 // (and an open list rolls up into the bar at the same time)
 const PHONE_LONGEST_WAIT = 500;    // the longest it waits for a project that isn't loaded yet
-async function phoneOpenProject(href) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+// Only one page change at a time: once one has started, more taps do nothing (no pile of pages)
+let phoneNavigating = false;
+function phoneStartNavigating() {
+  if (phoneNavigating) return false;
+  phoneNavigating = true;
+  document.body.classList.add("is-changing-page");   // nothing on the page can be tapped any more
+  return true;
+}
+
+// Can the page be reached right now? (asks for it, giving up after 8 seconds)
+async function phoneCanReach(href) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const answer = await fetch(href, { method: "HEAD", cache: "no-store", signal: controller.signal });
+    return answer.ok;
+  } catch (error) {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// When there's no internet (or it's so slow the page didn't open), the reload page shows until
+// the page can be reached, then goes away by itself (and the page change carries on)
+// check: also ask for the page until it answers (when the phone says it's online but the page
+// still didn't open: the internet is there but very slow)
+async function phoneWhenReachable(href, check = false) {
+  if (window.showReloadPage) window.showReloadPage("waiting");
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  while (!navigator.onLine) await wait(500);
+  if (check) while (!(await phoneCanReach(href))) await wait(2000);
+  if (window.hideReloadPage) window.hideReloadPage();
+}
+
+// Goes to the page. If it still hasn't opened after a few seconds, the internet is probably the
+// problem: the reload page shows until the page can be reached, then it opens
+let phoneLeaveTimer = null;
+function phoneLeaveTo(href) {
+  window.location.href = href;
+  clearTimeout(phoneLeaveTimer);
+  phoneLeaveTimer = setTimeout(async () => {
+    await phoneWhenReachable(href, true);
     window.location.href = href;
+  }, 6000);
+}
+// Leaving the page (or coming back to it with the back button): that check isn't needed any more
+window.addEventListener("pagehide", () => clearTimeout(phoneLeaveTimer));
+
+async function phoneOpenProject(href) {
+  if (!phoneStartNavigating()) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    phoneLeaveTo(href);
     return;
   }
   const page = phonePreparePage(href, "page-slide");
-  await phonePageReady(page, PHONE_LONGEST_WAIT);
+  // The project is waiting, ready, out of sight. If it couldn't load, check the internet first
+  const ready = await Promise.race([page.ready.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), PHONE_LONGEST_WAIT))]);
+  if (!ready && !navigator.onLine) await phoneWhenReachable(href);
   page.classList.add("is-sliding");
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
   movePhoneBar("top");
-  setTimeout(() => {
+  setTimeout(async () => {
+    if (!navigator.onLine) await phoneWhenReachable(href);   // no internet: wait for it
     sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
-    window.location.href = href;
+    phoneLeaveTo(href);
   }, PAGE_CHANGE_TIME);
 }
 
@@ -1698,24 +1751,31 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
   // Anywhere else: the project slides down to show the home page (waiting behind it), while
   // the bar glides to the middle. The opposite of how the project came up
   link.addEventListener("click", async (event) => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;   // open normally
     event.preventDefault();
+    if (!phoneStartNavigating()) return;   // a page change is already on its way
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      phoneLeaveTo(link.href);
+      return;
+    }
     const page = phonePreparePage(link.href, "page-behind");
     // If the WORKS list is open, it first rolls up into the bar, then the bar goes down
     if (document.body.classList.contains("is-phone-works-open")) {
       document.body.classList.remove("is-phone-works-open", "is-phone-works-over-hi");
       await new Promise((resolve) => setTimeout(resolve, INDEX_OPEN_TIME));
     }
-    await phonePageReady(page, 400);
+    // The home page is waiting, ready, behind. If it couldn't load, check the internet first
+    const ready = await Promise.race([page.ready.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), 400))]);
+    if (!ready && !navigator.onLine) await phoneWhenReachable(link.href);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     document.querySelector("main").style.setProperty("--scrolled", `${window.scrollY}px`);
     document.body.classList.remove("is-phone-reach-open");
     document.documentElement.style.setProperty("--reach-progress", "0");
     document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
     movePhoneBar("middle");
-    setTimeout(() => {
+    setTimeout(async () => {
+      if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: wait for it
       sessionStorage.setItem("phone-home-back", "yes");
-      window.location.href = link.href;
+      phoneLeaveTo(link.href);
     }, PAGE_CHANGE_TIME);
   });
 });
@@ -1772,6 +1832,9 @@ window.addEventListener("pageshow", (event) => {
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
     "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
   phoneChanging = false;
+  phoneNavigating = false;
+  clearTimeout(phoneLeaveTimer);
+  document.body.classList.remove("is-changing-page");
   document.querySelectorAll(".phone-frame.is-tapped, .phone-nav.is-tapped, .phone-works__row.is-tapped")
     .forEach((element) => element.classList.remove("is-tapped"));
   // The project you're on is italic again
@@ -1952,14 +2015,30 @@ const RELOAD_AFTER = 60 * 60 * 1000;   // one hour (milliseconds)
 const pageOpenedAt = Date.now();
 
 if (reloadPage && !window.frameElement) {
-  function showReloadPage() {
+  // why it shows: "offline" or "waiting" (it goes away by itself once the internet works again),
+  // or "time" (open for over an hour: only reloading helps)
+  let reloadReason = null;
+  function showReloadPage(reason = "time") {
+    if (reloadReason !== "time") reloadReason = reason;
     document.body.classList.add("is-reload");
     reloadPage.setAttribute("aria-hidden", "false");
   }
+  function hideReloadPage() {
+    if (reloadReason === "time") return;
+    reloadReason = null;
+    document.body.classList.remove("is-reload");
+    reloadPage.setAttribute("aria-hidden", "true");
+  }
+  window.showReloadPage = showReloadPage;
+  window.hideReloadPage = hideReloadPage;
 
-  window.addEventListener("offline", showReloadPage);
+  // No internet: it shows. When the internet is back it goes away, and you're back where you were
+  window.addEventListener("offline", () => showReloadPage("offline"));
+  window.addEventListener("online", () => {
+    if (reloadReason === "offline") hideReloadPage();
+  });
   const checkTime = () => {
-    if (Date.now() - pageOpenedAt > RELOAD_AFTER) showReloadPage();
+    if (Date.now() - pageOpenedAt > RELOAD_AFTER) showReloadPage("time");
   };
   setInterval(checkTime, 60 * 1000);
   // Coming back to a tab or phone that was asleep (the timer doesn't run then)

@@ -2984,3 +2984,9 @@ body.process-page:not(.is-hi-open):not(.is-index-open) .site-bar__process .roll_
     pointer-events: none;
   }
 }
+
+/* While a page is changing nothing else can be tapped, but the reload page always can */
+body.is-changing-page .reload-page,
+body.is-changing-page .reload-page * {
+  pointer-events: auto !important;
+}
