@@ -95,7 +95,7 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    mouse, and everything drifts slowly the other way, a little. Things further from the middle
    move more (with a bit of randomness), which gives a feeling of depth. When the phone is held
    still they glide back to their places. Gentle: no bouncing, turning or shaking */
-const PHONE_MAX_MOVE = 40;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const PHONE_MAX_MOVE = 80;   // how far (Figma pixels) something at the edge can move, at a big tilt
 const PHONE_FULL_TILT = 30;  // tilting this much (degrees) is like the mouse at the edge of the screen
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 

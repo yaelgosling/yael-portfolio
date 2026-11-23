@@ -2075,6 +2075,10 @@ body:not(.is-phone-works-over-hi) .phone-works__row.is-current .roll__track,
 }
 
 .phone-hi .phone-scroll {
+  /* only as tall as what shows above the phone's search bar, so it scrolls all the way: the panel
+     comes right up and the email, phone and Instagram stay above the search bar */
+  inset: 0 0 auto 0;
+  height: 100svh;
   overflow-y: auto;
   overscroll-behavior: contain;   /* the page under the Hi page never scrolls along */
 }
