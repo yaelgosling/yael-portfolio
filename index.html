@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=122">
+  <link rel="stylesheet" href="styles.css?v=127">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
@@ -35,7 +35,8 @@
     </div>
   </div>
 
-  <!-- The home page ("Home New" in Figma): a 1440 × 768 stage that fits the window -->
+  <!-- The home page ("Home New" in Figma): a 1440 × 768 stage that fits the window.
+       Its pictures load only when it is shown (loading="lazy"), so phones never download them -->
   <main class="home">
 
     <!--
@@ -47,23 +48,23 @@
 
       <!-- judges frame -->
       <a class="home-frame home-frame--link" href="judges-chapter-4.html" aria-label="Judges, Chapter 4" style="--x: 363; --y: 149; --w: 218.353; --h: 104.193; --classic-x: 653; --classic-y: 315">
-        <img class="home-frame__image" src="images/home/judges-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/judges-frame.svg" alt="">
         <!-- The Judges Chapter 4 frame from "Hover Home New": shown on hover -->
         <div class="home-frame__hover">
-          <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/home/hover/judges-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img src="images/home/hover/judges-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 37.44% 35.69% 26.39% 41.7%"><img src="images/home/hover/judges-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 37.98% 35.96% 26.89% 41.93%"><img src="images/home/hover/judges-4.png" width="57.302" height="43.456" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 38.56% 11.07% 26.21% 66.01%"><img src="images/home/hover/judges-5.png" width="59.402" height="43.571" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 38.56% 12.97% 26.21% 66.01%"><img src="images/home/hover/judges-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 37.27% 60.1% 26.6% 17.33%"><img src="images/home/hover/judges-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 37.85% 60.35% 27.18% 17.59%"><img src="images/home/hover/judges-8.png" width="57.197" height="43.255" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 38.67% 10.87% 26.1% 66.31%"><img src="images/home/hover/judges-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img loading="lazy" src="images/home/hover/judges-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img loading="lazy" src="images/home/hover/judges-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.44% 35.69% 26.39% 41.7%"><img loading="lazy" src="images/home/hover/judges-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.98% 35.96% 26.89% 41.93%"><img loading="lazy" src="images/home/hover/judges-4.png" width="57.302" height="43.456" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.56% 11.07% 26.21% 66.01%"><img loading="lazy" src="images/home/hover/judges-5.png" width="59.402" height="43.571" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.56% 12.97% 26.21% 66.01%"><img loading="lazy" src="images/home/hover/judges-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.27% 60.1% 26.6% 17.33%"><img loading="lazy" src="images/home/hover/judges-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 37.85% 60.35% 27.18% 17.59%"><img loading="lazy" src="images/home/hover/judges-8.png" width="57.197" height="43.255" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 38.67% 10.87% 26.1% 66.31%"><img loading="lazy" src="images/home/hover/judges-9.svg" alt=""></div>
         </div>
         <!-- Classic view: on hover the frame is empty, with the name in it ("Home New Organise order hover") -->
         <div class="home-frame__classic">
-          <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img src="images/home/classic/judges-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img src="images/home/classic/judges-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 25.57% 6.45% 16.56% 11.38%"><img loading="lazy" src="images/home/classic/judges-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 29.61% 8.39% 20.36% 13.24%"><img loading="lazy" src="images/home/classic/judges-2.svg" alt=""></div>
           <p class="home-frame__name home-frame__name--nowrap" style="--inset: 50% 51.79% 35.5% 21.56%; --size: 9.05">Judges, Chapter 4</p>
           <p class="home-frame__type home-frame__type--right" style="--inset: 50% 13.74% 40.38% 66.07%">Illustration.</p>
         </div>
@@ -71,18 +72,18 @@
 
       <!-- witch frame -->
       <a class="home-frame home-frame--link" href="the-witch.html" aria-label="The Witch" style="--x: 363; --y: 384; --w: 180.979; --h: 148.815; --classic-x: 75; --classic-y: 291">
-        <img class="home-frame__image" src="images/home/witch-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/witch-frame.svg" alt="">
         <!-- The The Witch frame from "Hover Home New": shown on hover -->
         <div class="home-frame__hover">
-          <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/home/hover/witch-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/home/hover/witch-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 9.02% 7.41% 12.25% 6.83%"><img src="images/home/hover/witch-3.png" width="184.25" height="139.096" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img loading="lazy" src="images/home/hover/witch-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img loading="lazy" src="images/home/hover/witch-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 9.02% 7.41% 12.25% 6.83%"><img loading="lazy" src="images/home/hover/witch-3.png" width="184.25" height="139.096" alt=""></div>
         </div>
         <!-- Classic view: on hover the frame is empty, with the name in it ("Home New Organise order hover") -->
         <div class="home-frame__classic">
-          <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img src="images/home/classic/witch-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img src="images/home/classic/witch-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 9.01% 7.41% 12.25% 6.83%"><img src="images/home/classic/witch-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 4.46% 3.25% 8.34% 2.62%"><img loading="lazy" src="images/home/classic/witch-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.65% 7.35% 11.87% 6.22%"><img loading="lazy" src="images/home/classic/witch-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 9.01% 7.41% 12.25% 6.83%"><img loading="lazy" src="images/home/classic/witch-3.svg" alt=""></div>
           <p class="home-frame__name home-frame__name--nowrap" style="--inset: 39.65% 40.88% 52.29% 37.02%; --size: 11.747">The Witch</p>
           <p class="home-frame__type" style="--inset: 49.73% 38.67% 43.55% 37.02%">Illustration.</p>
         </div>
@@ -90,61 +91,61 @@
 
       <!-- oval-lime frame -->
       <div class="home-frame" style="--x: 31; --y: 240; --w: 190.719; --h: 96.039; --classic-x: 277; --classic-y: 552">
-        <img class="home-frame__image" src="images/home/oval-lime-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/oval-lime-frame.svg" alt="">
       </div>
 
       <!-- grunge frame -->
       <a class="home-frame home-frame--link" href="grunge.html" aria-label="Grunge" style="--x: 813; --y: 559; --w: 155.384; --h: 166.709; --classic-x: 476; --classic-y: 285">
-        <img class="home-frame__image" src="images/home/grunge-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/grunge-frame.svg" alt="">
         <!-- The Grunge frame from "Hover Home New": shown on hover -->
         <div class="home-frame__hover">
-          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img src="images/home/hover/grunge-1.png" width="139.523" height="149.213" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/home/hover/grunge-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/home/hover/grunge-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/home/hover/grunge-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/home/hover/grunge-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/home/hover/grunge-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/home/hover/grunge-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/home/hover/grunge-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img src="images/home/hover/grunge-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/home/hover/grunge-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/home/hover/grunge-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/home/hover/grunge-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/home/hover/grunge-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/home/hover/grunge-14.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/home/hover/grunge-15.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/home/hover/grunge-16.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/home/hover/grunge-17.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/home/hover/grunge-18.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img src="images/home/hover/grunge-19.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img src="images/home/hover/grunge-20.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img src="images/home/hover/grunge-21.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/home/hover/grunge-22.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img loading="lazy" src="images/home/hover/grunge-1.png" width="139.523" height="149.213" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img loading="lazy" src="images/home/hover/grunge-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img loading="lazy" src="images/home/hover/grunge-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img loading="lazy" src="images/home/hover/grunge-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img loading="lazy" src="images/home/hover/grunge-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img loading="lazy" src="images/home/hover/grunge-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img loading="lazy" src="images/home/hover/grunge-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img loading="lazy" src="images/home/hover/grunge-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img loading="lazy" src="images/home/hover/grunge-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img loading="lazy" src="images/home/hover/grunge-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img loading="lazy" src="images/home/hover/grunge-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img loading="lazy" src="images/home/hover/grunge-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img loading="lazy" src="images/home/hover/grunge-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img loading="lazy" src="images/home/hover/grunge-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img loading="lazy" src="images/home/hover/grunge-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img loading="lazy" src="images/home/hover/grunge-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img loading="lazy" src="images/home/hover/grunge-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img loading="lazy" src="images/home/hover/grunge-18.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img loading="lazy" src="images/home/hover/grunge-19.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img loading="lazy" src="images/home/hover/grunge-20.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img loading="lazy" src="images/home/hover/grunge-21.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img loading="lazy" src="images/home/hover/grunge-22.svg" alt=""></div>
         </div>
         <!-- Classic view: on hover the frame is empty, with the name in it ("Home New Organise order hover") -->
         <div class="home-frame__classic">
-          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img src="images/home/classic/grunge-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img src="images/home/classic/grunge-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img src="images/home/classic/grunge-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img src="images/home/classic/grunge-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img src="images/home/classic/grunge-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img src="images/home/classic/grunge-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img src="images/home/classic/grunge-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img src="images/home/classic/grunge-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img src="images/home/classic/grunge-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img src="images/home/classic/grunge-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img src="images/home/classic/grunge-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img src="images/home/classic/grunge-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img src="images/home/classic/grunge-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img src="images/home/classic/grunge-14.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img src="images/home/classic/grunge-15.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img src="images/home/classic/grunge-16.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img src="images/home/classic/grunge-17.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img src="images/home/classic/grunge-18.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img src="images/home/classic/grunge-19.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img src="images/home/classic/grunge-20.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img src="images/home/classic/grunge-21.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/home/classic/grunge-22.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 15.69% 12.52%"><img loading="lazy" src="images/home/classic/grunge-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img loading="lazy" src="images/home/classic/grunge-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img loading="lazy" src="images/home/classic/grunge-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img loading="lazy" src="images/home/classic/grunge-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 62.82% 84.49% 35.98% 10.92%"><img loading="lazy" src="images/home/classic/grunge-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 49.34% 83.41% 49.58% 12.15%"><img loading="lazy" src="images/home/classic/grunge-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.29% 82.27% 87.73% 16.53%"><img loading="lazy" src="images/home/classic/grunge-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 8.83% 34.83% 88.46% 63.93%"><img loading="lazy" src="images/home/classic/grunge-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 20.65% 7.26% 9.26% 13.33%"><img loading="lazy" src="images/home/classic/grunge-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.8% 10.68% 35.21% 86.03%"><img loading="lazy" src="images/home/classic/grunge-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 83.25% 10.14% 11.12% 83.99%"><img loading="lazy" src="images/home/classic/grunge-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 84.56% 25.25% 13.62% 74.06%"><img loading="lazy" src="images/home/classic/grunge-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.45% 6.72% 20.7% 5.64%"><img loading="lazy" src="images/home/classic/grunge-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 78.07% 40.07% 12.64% 11.6%"><img loading="lazy" src="images/home/classic/grunge-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 42.85% 82.83% 17.56% 14.16%"><img loading="lazy" src="images/home/classic/grunge-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.7% 83.8% 57.31% 11.67%"><img loading="lazy" src="images/home/classic/grunge-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 17.42% 86.67% 81.52% 8.78%"><img loading="lazy" src="images/home/classic/grunge-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 41.1% 83.78% 55.81% 15.81%"><img loading="lazy" src="images/home/classic/grunge-18.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 80.47% 84.32% 16.87% 15.28%"><img loading="lazy" src="images/home/classic/grunge-19.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 31.54% 84.06% 64.04% 15.8%"><img loading="lazy" src="images/home/classic/grunge-20.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 26.07% 84.35% 72.57% 15.29%"><img loading="lazy" src="images/home/classic/grunge-21.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img loading="lazy" src="images/home/classic/grunge-22.svg" alt=""></div>
           <p class="home-frame__name home-frame__name--nowrap" style="--inset: 38.99% 40.79% 53.81% 39.9%; --size: 11.747">Grunge</p>
           <p class="home-frame__type home-frame__type--right" style="--inset: 47.99% 34.36% 46.01% 39.9%">Web. Print</p>
         </div>
@@ -152,48 +153,48 @@
 
       <!-- mtv-ident frame -->
       <a class="home-frame home-frame--link" href="mtv-ident.html" aria-label="MTV Ident" style="--x: 1058; --y: -13; --w: 137.49; --h: 269.543; --classic-x: 903; --classic-y: 229">
-        <img class="home-frame__image" src="images/home/mtv-ident-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/mtv-ident-frame.svg" alt="">
         <!-- The MTV Ident frame from "Hover Home New": shown on hover -->
         <div class="home-frame__hover">
-          <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/home/hover/mtv-ident-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img src="images/home/hover/mtv-ident-2.png" width="109.72" height="247.034" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/home/hover/mtv-ident-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/home/hover/mtv-ident-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/home/hover/mtv-ident-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 81.63% 68.36% 13.73% 25.72%"><img src="images/home/hover/mtv-ident-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/home/hover/mtv-ident-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/home/hover/mtv-ident-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img src="images/home/hover/mtv-ident-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/home/hover/mtv-ident-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img src="images/home/hover/mtv-ident-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img src="images/home/hover/mtv-ident-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/home/hover/mtv-ident-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img src="images/home/hover/mtv-ident-14.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/home/hover/mtv-ident-15.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img src="images/home/hover/mtv-ident-16.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/home/hover/mtv-ident-17.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/home/hover/mtv-ident-18.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img loading="lazy" src="images/home/hover/mtv-ident-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img loading="lazy" src="images/home/hover/mtv-ident-2.png" width="109.72" height="247.034" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img loading="lazy" src="images/home/hover/mtv-ident-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img loading="lazy" src="images/home/hover/mtv-ident-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img loading="lazy" src="images/home/hover/mtv-ident-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 81.63% 68.36% 13.73% 25.72%"><img loading="lazy" src="images/home/hover/mtv-ident-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img loading="lazy" src="images/home/hover/mtv-ident-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img loading="lazy" src="images/home/hover/mtv-ident-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img loading="lazy" src="images/home/hover/mtv-ident-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img loading="lazy" src="images/home/hover/mtv-ident-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img loading="lazy" src="images/home/hover/mtv-ident-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img loading="lazy" src="images/home/hover/mtv-ident-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img loading="lazy" src="images/home/hover/mtv-ident-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img loading="lazy" src="images/home/hover/mtv-ident-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img loading="lazy" src="images/home/hover/mtv-ident-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img loading="lazy" src="images/home/hover/mtv-ident-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img loading="lazy" src="images/home/hover/mtv-ident-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img loading="lazy" src="images/home/hover/mtv-ident-18.svg" alt=""></div>
         </div>
         <!-- Classic view: on hover the frame is empty, with the name in it ("Home New Organise order hover") -->
         <div class="home-frame__classic">
-          <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img src="images/home/classic/mtv-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img src="images/home/classic/mtv-2.png" width="92.428" height="208.101" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img src="images/home/classic/mtv-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img src="images/home/classic/mtv-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img src="images/home/classic/mtv-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 81.64% 68.36% 13.73% 25.72%"><img src="images/home/classic/mtv-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img src="images/home/classic/mtv-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img src="images/home/classic/mtv-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img src="images/home/classic/mtv-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img src="images/home/classic/mtv-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img src="images/home/classic/mtv-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img src="images/home/classic/mtv-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img src="images/home/classic/mtv-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img src="images/home/classic/mtv-14.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img src="images/home/classic/mtv-15.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img src="images/home/classic/mtv-16.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img src="images/home/classic/mtv-17.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/home/classic/mtv-18.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img loading="lazy" src="images/home/classic/mtv-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 20.99%"><img loading="lazy" src="images/home/classic/mtv-2.png" width="92.428" height="208.101" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img loading="lazy" src="images/home/classic/mtv-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img loading="lazy" src="images/home/classic/mtv-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 63.65% 81.34% 31.99% 14.69%"><img loading="lazy" src="images/home/classic/mtv-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 81.64% 68.36% 13.73% 25.72%"><img loading="lazy" src="images/home/classic/mtv-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 61.33% 13.03% 34.45% 83.96%"><img loading="lazy" src="images/home/classic/mtv-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 23.23% 15.58% 73.25% 79.7%"><img loading="lazy" src="images/home/classic/mtv-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 13.78% 64.64% 83.73% 29.7%"><img loading="lazy" src="images/home/classic/mtv-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 27.68% 76.7% 69.78% 19.95%"><img loading="lazy" src="images/home/classic/mtv-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 46.09% 9.62% 50.88% 88.64%"><img loading="lazy" src="images/home/classic/mtv-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 35.47% 79.52% 61.28% 18.74%"><img loading="lazy" src="images/home/classic/mtv-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 10.84% 53.29% 87.88% 42.64%"><img loading="lazy" src="images/home/classic/mtv-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 86.64% 33.1% 11.86% 62.14%"><img loading="lazy" src="images/home/classic/mtv-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 40.29% 80.83% 58.3% 15.7%"><img loading="lazy" src="images/home/classic/mtv-15.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.75% 12.77% 40.54% 85.13%"><img loading="lazy" src="images/home/classic/mtv-16.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 28.8% 15.35% 69.86% 82.76%"><img loading="lazy" src="images/home/classic/mtv-17.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img loading="lazy" src="images/home/classic/mtv-18.svg" alt=""></div>
           <p class="home-frame__name home-frame__name--nowrap" style="--inset: 46.75% 33.81% 49.92% 42.91%; --size: 9.05">MTV Ident</p>
           <p class="home-frame__type home-frame__type--right" style="--inset: 51.2% 36.72% 45.09% 43.64%">Motion</p>
         </div>
@@ -201,60 +202,60 @@
 
       <!-- tall-blue-orange frame -->
       <div class="home-frame" style="--x: 173; --y: 501; --w: 116.651; --h: 236.926; --classic-x: 498; --classic-y: 483">
-        <img class="home-frame__image" src="images/home/tall-blue-orange-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/tall-blue-orange-frame.svg" alt="">
       </div>
 
       <!-- wide-lime frame -->
       <div class="home-frame" style="--x: 779; --y: 110; --w: 263.881; --h: 163.312; --classic-x: 1084; --classic-y: 283">
-        <img class="home-frame__image" src="images/home/wide-lime-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/wide-lime-frame.svg" alt="">
       </div>
 
       <!-- wide-blue frame -->
       <div class="home-frame" style="--x: 1215; --y: 431; --w: 209.293; --h: 109.403; --classic-x: 678; --classic-y: 544">
-        <img class="home-frame__image" src="images/home/wide-blue-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/wide-blue-frame.svg" alt="">
       </div>
 
       <!-- tall-blue-lime frame -->
       <div class="home-frame" style="--x: 235; --y: 0; --w: 135.225; --h: 215.635; --classic-x: 93; --classic-y: 502">
-        <img class="home-frame__image" src="images/home/tall-blue-lime-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/tall-blue-lime-frame.svg" alt="">
       </div>
 
       <!-- dont-eat-meat frame: opens the "I Don't Touch Meat" page -->
       <a class="home-frame home-frame--link" href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat" style="--x: 648.94; --y: 420.12; --w: 177.129; --h: 191.625; --classic-x: 283; --classic-y: 272">
-        <img class="home-frame__image" src="images/home/dont-eat-meat-frame.svg" alt="">
+        <img loading="lazy" class="home-frame__image" src="images/home/dont-eat-meat-frame.svg" alt="">
         <!-- The Don't Eat Meat frame from "Hover Home New": shown on hover -->
         <div class="home-frame__hover">
-          <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/home/hover/dont-eat-meat-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img src="images/home/hover/dont-eat-meat-2.png" width="142.146" height="163.042" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/home/hover/dont-eat-meat-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img src="images/home/hover/dont-eat-meat-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img src="images/home/hover/dont-eat-meat-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/home/hover/dont-eat-meat-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/home/hover/dont-eat-meat-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/home/hover/dont-eat-meat-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/home/hover/dont-eat-meat-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img src="images/home/hover/dont-eat-meat-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.67% 16.3%"><img src="images/home/hover/dont-eat-meat-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img src="images/home/hover/dont-eat-meat-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/home/hover/dont-eat-meat-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img src="images/home/hover/dont-eat-meat-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img loading="lazy" src="images/home/hover/dont-eat-meat-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img loading="lazy" src="images/home/hover/dont-eat-meat-2.png" width="142.146" height="163.042" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img loading="lazy" src="images/home/hover/dont-eat-meat-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img loading="lazy" src="images/home/hover/dont-eat-meat-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img loading="lazy" src="images/home/hover/dont-eat-meat-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img loading="lazy" src="images/home/hover/dont-eat-meat-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img loading="lazy" src="images/home/hover/dont-eat-meat-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img loading="lazy" src="images/home/hover/dont-eat-meat-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img loading="lazy" src="images/home/hover/dont-eat-meat-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img loading="lazy" src="images/home/hover/dont-eat-meat-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.67% 16.3%"><img loading="lazy" src="images/home/hover/dont-eat-meat-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img loading="lazy" src="images/home/hover/dont-eat-meat-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img loading="lazy" src="images/home/hover/dont-eat-meat-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img loading="lazy" src="images/home/hover/dont-eat-meat-14.svg" alt=""></div>
         </div>
         <!-- Classic view: on hover the frame is empty, with the name in it ("Home New Organise order hover") -->
         <div class="home-frame__classic">
-          <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/home/classic/meat-1.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img src="images/home/classic/meat-2.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/home/classic/meat-3.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img src="images/home/classic/meat-4.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img src="images/home/classic/meat-5.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/home/classic/meat-6.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/home/classic/meat-7.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/home/classic/meat-8.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/home/classic/meat-9.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img src="images/home/classic/meat-10.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img src="images/home/classic/meat-11.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img src="images/home/classic/meat-12.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/home/classic/meat-13.svg" alt=""></div>
-          <div class="home-frame__layer" style="--inset: 50.34% 84.87% 48.44% 14.71%"><img src="images/home/classic/meat-14.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img loading="lazy" src="images/home/classic/meat-1.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.32% 21.26% 14% 11.14%"><img loading="lazy" src="images/home/classic/meat-2.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img loading="lazy" src="images/home/classic/meat-3.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img loading="lazy" src="images/home/classic/meat-4.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 24.84% 84.95% 49.29% 13.11%"><img loading="lazy" src="images/home/classic/meat-5.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img loading="lazy" src="images/home/classic/meat-6.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img loading="lazy" src="images/home/classic/meat-7.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img loading="lazy" src="images/home/classic/meat-8.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img loading="lazy" src="images/home/classic/meat-9.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img loading="lazy" src="images/home/classic/meat-10.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img loading="lazy" src="images/home/classic/meat-11.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img loading="lazy" src="images/home/classic/meat-12.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img loading="lazy" src="images/home/classic/meat-13.svg" alt=""></div>
+          <div class="home-frame__layer" style="--inset: 50.34% 84.87% 48.44% 14.71%"><img loading="lazy" src="images/home/classic/meat-14.svg" alt=""></div>
           <p class="home-frame__name" style="--inset: 40.7% 39.03% 45.73% 35%; --size: 11.747">I Don’t Touch Meat</p>
           <p class="home-frame__type home-frame__type--right" style="--inset: 54.79% 49.75% 39.99% 35%">Motion</p>
         </div>
@@ -330,7 +331,7 @@
            Tapping a frame opens the project (data-href).
            The frame drawings are written right into the page, so they show from the very first moment -->
       <div class="phone-home__frames">
-      <div class="phone-frame phone-frame--over" style="--x: 21; --y: 482; --w: 216.472; --h: 178; --order: 1" data-hover="images/home/witch-frame.svg" data-href="the-witch.html" aria-label="The Witch">
+      <div class="phone-frame phone-frame--over" style="--x: 20; --y: 427; --w: 216.472; --h: 178; --order: 1" data-hover="images/home/witch-frame.svg" data-href="the-witch.html" aria-label="The Witch">
         <!-- images/phone/witch-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="121.22" height="99.6762" viewBox="0 0 121.22 99.6762" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -352,7 +353,7 @@
           <div class="home-frame__layer" style="--inset: 9.02% 7.41% 12.25% 6.83%"><img src="images/home/hover/witch-3.png" width="184.25" height="139.096" alt=""></div>
         </div>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 220; --y: 660; --w: 146; --h: 156.641; --order: 4" data-hover="images/home/grunge-frame.svg" data-href="grunge.html" aria-label="Grunge">
+      <div class="phone-frame phone-frame--over" style="--x: 199; --y: 567; --w: 161; --h: 172.735; --order: 4" data-hover="images/home/grunge-frame.svg" data-href="grunge.html" aria-label="Grunge">
         <!-- images/phone/grunge-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="104.076" height="111.662" viewBox="0 0 104.076 111.662" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -412,7 +413,7 @@
           <div class="home-frame__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img src="images/home/hover/grunge-22.svg" alt=""></div>
         </div>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 38; --y: 299; --w: 228.391; --h: 108.983; --order: 3" data-hover="images/home/judges-frame.svg" data-href="judges-chapter-4.html" aria-label="Judges, Chapter 4">
+      <div class="phone-frame phone-frame--over" style="--x: 29; --y: 281; --w: 268.243; --h: 128; --order: 3" data-hover="images/home/judges-frame.svg" data-href="judges-chapter-4.html" aria-label="Judges, Chapter 4">
         <!-- images/phone/judges-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="146.252" height="69.7885" viewBox="0 0 146.252 69.7885" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -454,7 +455,7 @@
           <div class="home-frame__layer" style="--inset: 38.67% 10.87% 26.1% 66.31%"><img src="images/home/hover/judges-9.svg" alt=""></div>
         </div>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 225; --y: 93; --w: 105.006; --h: 205.86; --order: 2" data-hover="images/home/mtv-ident-frame.svg" data-href="mtv-ident.html" aria-label="MTV Ident">
+      <div class="phone-frame phone-frame--over" style="--x: 225; --y: 59.684; --w: 122; --h: 239.176; --order: 2" data-hover="images/home/mtv-ident-frame.svg" data-href="mtv-ident.html" aria-label="MTV Ident">
         <!-- images/phone/mtv-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="92.0905" height="180.54" viewBox="0 0 92.0905 180.54" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -506,7 +507,7 @@
           <div class="home-frame__layer" style="--inset: 51.01% 82.18% 48.82% 16.44%"><img src="images/home/hover/mtv-ident-18.svg" alt=""></div>
         </div>
       </div>
-      <div class="phone-frame phone-frame--over" style="--x: 9; --y: 53; --w: 177.129; --h: 191.625; --order: 0" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
+      <div class="phone-frame phone-frame--over" style="--x: 9; --y: 41; --w: 188.221; --h: 203.625; --order: 0" data-hover="images/home/dont-eat-meat-frame.svg" data-href="i-dont-touch-meat.html" aria-label="I Don't Touch Meat">
         <!-- images/phone/dont-eat-meat-frame.svg, written right into the page so it shows at once -->
         <svg class="phone-frame__image" aria-hidden="true" preserveAspectRatio="none" overflow="visible" width="118.641" height="128.35" viewBox="0 0 118.641 128.35" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -728,7 +729,7 @@
     <div class="phone-top-line" aria-hidden="true"></div>
   </section>
 
-  <script src="script.js?v=96"></script>
+  <script src="script.js?v=101"></script>
 
 </body>
 </html>

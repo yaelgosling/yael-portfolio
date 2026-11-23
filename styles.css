@@ -1311,7 +1311,7 @@ a.project-nav {
   --phone-top: 49;                                  /* the phone's own strip at the top of the Figma frames */
   --phone-home-top: 0;                              /* where the home page starts in Figma (the "phone home playful" frame starts at the top of the screen) */
   --phone-home-height: 844;                         /* and where it ends */
-  --phone-bar-middle: 422;                          /* the middle of the home bar in Figma (y) */
+  --phone-bar-middle: 796;                          /* the middle of the home bar in Figma (y): at the bottom of the home page */
   --phone-bar-top: 20;                              /* the bar's top edge when it is at the top of the screen */
   --phone-pixel: calc(100vw / 390);                 /* one Figma pixel across the phone home page */
   /* The home page doesn't scroll: the whole Figma frame (y 49 to 844) fits the screen. Up and down
@@ -1542,6 +1542,7 @@ a.project-nav {
 .phone-bar__box--blue { background-color: var(--color-blue); }
 .phone-bar__box--orange { background-color: var(--color-orange); }
 .phone-bar__box--lime { background-color: var(--color-lime); }
+
 
 /* For people who turn off movement: the frames just appear */
 @media (prefers-reduced-motion: reduce) {

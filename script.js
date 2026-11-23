@@ -1495,7 +1495,7 @@ const phoneBar = document.querySelector(".phone-bar");
 const isPhoneHome = Boolean(document.querySelector(".phone-home"));
 const PHONE_TOP = 49;        // like --phone-top in styles.css
 const PHONE_HOME_TOP = 0;    // like --phone-home-top
-const PHONE_BAR_MIDDLE = 422;   // like --phone-bar-middle (the middle of the home bar in Figma)
+const PHONE_BAR_MIDDLE = 796;   // like --phone-bar-middle (the middle of the home bar in Figma)
 const INDEX_OPEN_TIME = 700;     // like --index-open-time (the WORKS list rolling up or down)
 
 // The bar's height in Figma ("phone bar", 354 × 36 on every page)
@@ -1503,7 +1503,7 @@ const BAR_HEIGHT = 36;
 const PHONE_BAR_TOP = 20;   // like --phone-bar-top: its top edge when it is at the top of the screen
 
 // Where the top edge of the bar is (screen pixels) in a spot: "top" (20 from the top of the
-// screen, "phone works placement" in Figma, on every page) or "middle" (the home page: its middle at y 422.65)
+// screen, "phone works placement" in Figma, on every page) or "middle" (the home page: its middle at y 796, at the bottom)
 // The height of the screen without the phone's search bar (100svh in styles.css)
 const screenProbe = document.createElement("div");
 screenProbe.style.cssText = "position: fixed; top: 0; height: 100svh; width: 0; visibility: hidden; pointer-events: none";
@@ -1740,27 +1740,34 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
   });
 });
 
+// The computer home page's pictures wait until they're needed (loading="lazy", so phones never
+// download them). On a computer they all load straight away, also the tiny pieces of the drawings
+if (!window.matchMedia("(max-width: 700px)").matches) {
+  document.querySelectorAll('.home img[loading="lazy"]').forEach((img) => { img.loading = "eager"; });
+}
+
 // Get the next pages ready in the background a moment after this one has opened, so a tap
-// changes the page straight away: on the home page I Don't Touch Meat (the others get ready
-// when a finger touches their frame), elsewhere the home page
-window.addEventListener("load", () => {
-  if (window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
-  setTimeout(() => {
-    if (isPhoneHome) {
-      // The projects get ready one after the other (not all at once), so a tap opens them straight away
-      const hrefs = [...document.querySelectorAll(".phone-frame[data-href]")].map((frame) => frame.dataset.href);
-      const next = () => {
-        const href = hrefs.shift();
-        if (href) phonePreparePage(href, "page-slide").ready.then(next);
-      };
-      next();
-    } else {
-      document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
-        phonePreparePage(link.href, "page-behind");
-      });
-    }
-  }, 1500);
-});
+// changes the page straight away: on the home page the projects (one after the other),
+// elsewhere the home page. On a project page the home page gets ready soon (2 seconds after the
+// page opens at the latest), without waiting for every picture of the project to load first
+function prepareNextPages() {
+  if (prepareNextPages.done || window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
+  prepareNextPages.done = true;
+  if (isPhoneHome) {
+    const hrefs = [...document.querySelectorAll(".phone-frame[data-href]")].map((frame) => frame.dataset.href);
+    const next = () => {
+      const href = hrefs.shift();
+      if (href) phonePreparePage(href, "page-slide").ready.then(next);
+    };
+    next();
+  } else {
+    document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
+      phonePreparePage(link.href, "page-behind");
+    });
+  }
+}
+window.addEventListener("load", () => setTimeout(prepareNextPages, isPhoneHome ? 1500 : 300));
+if (!isPhoneHome) setTimeout(prepareNextPages, 2000);
 
 // Arriving back home from another page: the frames are already out (they came out while
 // the home page rolled down), so they are there straight away
@@ -2009,3 +2016,4 @@ document.querySelectorAll(".phone-hi").forEach((hi) => {
   box.addEventListener("scroll", check, { passive: true });
   window.addEventListener("resize", check);
 });
+
