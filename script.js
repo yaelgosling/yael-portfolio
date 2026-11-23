@@ -767,15 +767,27 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
    moves the strip back to the left. Sideways swipes on the trackpad still work as before
    ========================================= */
 document.querySelectorAll(".project-strip").forEach((strip) => {
+  // One swipe keeps one direction from start to end. (A trackpad swipe is never perfectly straight:
+  // some of its little steps are more up-down than sideways. Each one used to pick its own way,
+  // so "Reach Out" was pushed up and pulled down in turns and shook as it moved)
+  // (The way is what the swipe has done most so far, so one odd step can't turn it around)
+  let swipeSideways = 0;
+  let swipeUpDown = 0;
+  let lastWheelAt = -Infinity;
   window.addEventListener("wheel", (event) => {
     if (!strip.offsetWidth) return;                                 // the phone version is showing
+    if (event.timeStamp - lastWheelAt > 160) swipeSideways = swipeUpDown = 0;   // a new swipe
+    lastWheelAt = event.timeStamp;
+    swipeSideways += Math.abs(event.deltaX);
+    swipeUpDown += Math.abs(event.deltaY);
+    const swipeWay = swipeSideways > swipeUpDown ? "sideways" : "up-down";
     if (event.ctrlKey) return;                                      // zooming with the trackpad
     // WORKS or HI is open: the page underneath stays frozen until it's closed
     if (document.body.matches(".is-index-open, .is-hi-open")) {
       event.preventDefault();
       return;
     }
-    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+    if (swipeWay === "sideways") {
       // A sideways swipe moves the strip as before. At the end of the strip, swiping on to the
       // right brings up "Reach Out" from the bottom; once it's up, swiping left puts it away again
       const sideways = event.deltaX * (event.deltaMode === 1 ? 40 : 1);
@@ -1640,6 +1652,9 @@ function phoneLeaveTo(href) {
   window.location.href = href;
   clearTimeout(phoneLeaveTimer);
   phoneLeaveTimer = setTimeout(async () => {
+    // The page answers: it's just slow, and still on its way (asking for it again would only
+    // start it over, with a white flash). Only if it can't be reached does the reload page show
+    if (navigator.onLine && (await phoneCanReach(href))) return;
     await phoneWhenReachable(href, true);
     window.location.href = href;
   }, 6000);
@@ -1780,10 +1795,10 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
   });
 });
 
-// The computer home page's pictures wait until they're needed (loading="lazy", so phones never
+// The computer home, project and Hi pictures wait until they're needed (loading="lazy", so phones never
 // download them). On a computer they all load straight away, also the tiny pieces of the drawings
 if (!window.matchMedia("(max-width: 700px)").matches) {
-  document.querySelectorAll('.home img[loading="lazy"]').forEach((img) => { img.loading = "eager"; });
+  document.querySelectorAll('.home img[loading="lazy"], .project-work img[loading="lazy"], .hi-page img[loading="lazy"]').forEach((img) => { img.loading = "eager"; });
 }
 
 // Get the next pages ready in the background a moment after this one has opened, so a tap

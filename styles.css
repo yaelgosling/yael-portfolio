@@ -2990,3 +2990,9 @@ body.is-changing-page .reload-page,
 body.is-changing-page .reload-page * {
   pointer-events: auto !important;
 }
+
+/* Project page (computer): the page doesn't bounce at its top or bottom (on a Mac it springs
+   past the end and back, so "Reach Out" jumped a little up and down when it arrived) */
+html:has(body.project-page) {
+  overscroll-behavior-y: none;
+}

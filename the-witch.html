@@ -16,7 +16,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=135">
+  <link rel="preload" as="image" href="images/the-witch/animation-poster.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/project/new-pause-play.png" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/project/new-pause-play-hover.svg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/cover.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/forzats.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/spread-6.png" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=138">
 </head>
 <body class="project-page">
 
@@ -120,16 +126,16 @@
           <video class="project-strip__piece project-video" style="--x: 738; --y: 112; --w: 914.262; --h: 658.142" src="images/the-witch/animation.mp4" poster="images/the-witch/animation-poster.jpg" preload="metadata" playsinline aria-label="The Witch book, page by page. Click to play or pause"></video>
           <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
                Over the video it changes to "new pause play hover" (orange) -->
-          <img class="project-video__play" style="--x: 1159.13; --y: 397.6; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
-          <img class="project-video__play project-video__play--hover" style="--x: 1159.13; --y: 397.62; --w: 72; --h: 86.906" src="images/project/new-pause-play-hover.svg" alt="">
+          <img loading="lazy" class="project-video__play" style="--x: 1159.13; --y: 397.6; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
+          <img loading="lazy" class="project-video__play project-video__play--hover" style="--x: 1159.13; --y: 397.62; --w: 72; --h: 86.906" src="images/project/new-pause-play-hover.svg" alt="">
 
           <!-- The pictures -->
-          <img class="project-strip__piece" style="--x: 1735; --y: 347; --w: 416; --h: 299.52" src="images/the-witch/cover.jpg" alt="The Witch book cover">
-          <img class="project-strip__piece" style="--x: 2081; --y: 183; --w: 415.973; --h: 299.5" src="images/the-witch/forzats.jpg" alt="The Witch book's endpapers">
-          <img class="project-strip__piece" style="--x: 2918; --y: 155; --w: 820; --h: 615" src="images/the-witch/books.jpg" alt="Copies of The Witch book">
-          <img class="project-strip__piece" style="--x: 4041; --y: 262; --w: 413.811; --h: 275.908" src="images/the-witch/process-2.jpg" alt="Painting The Witch">
-          <img class="project-strip__piece" style="--x: 4624; --y: 497; --w: 413.811; --h: 275.908" src="images/the-witch/process-3.jpg" alt="Painting The Witch">
-          <img class="project-strip__piece" style="--x: 4922; --y: 195; --w: 413.811; --h: 275.908" src="images/the-witch/process-4.jpg" alt="Painting The Witch">
+          <img loading="lazy" class="project-strip__piece" style="--x: 1735; --y: 347; --w: 416; --h: 299.52" src="images/the-witch/cover.jpg" alt="The Witch book cover">
+          <img loading="lazy" class="project-strip__piece" style="--x: 2081; --y: 183; --w: 415.973; --h: 299.5" src="images/the-witch/forzats.jpg" alt="The Witch book's endpapers">
+          <img loading="lazy" class="project-strip__piece" style="--x: 2918; --y: 155; --w: 820; --h: 615" src="images/the-witch/books.jpg" alt="Copies of The Witch book">
+          <img loading="lazy" class="project-strip__piece" style="--x: 4041; --y: 262; --w: 413.811; --h: 275.908" src="images/the-witch/process-2.jpg" alt="Painting The Witch">
+          <img loading="lazy" class="project-strip__piece" style="--x: 4624; --y: 497; --w: 413.811; --h: 275.908" src="images/the-witch/process-3.jpg" alt="Painting The Witch">
+          <img loading="lazy" class="project-strip__piece" style="--x: 4922; --y: 195; --w: 413.811; --h: 275.908" src="images/the-witch/process-4.jpg" alt="Painting The Witch">
 
           <!--
             Next and previous project. On hover they change to their "next page hovers" version.
@@ -137,32 +143,32 @@
           -->
           <a class="project-strip__piece project-nav" href="i-dont-touch-meat.html" aria-label="Next project: I Don't Touch Meat" style="--x: 6052; --y: 115; --w: 177.129; --h: 191.625">
             <div class="project-nav__frame">
-              <div class="project-nav__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/the-witch/meat-frame-1.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/the-witch/meat-frame-2.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img src="images/the-witch/meat-frame-3.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 24.83% 84.95% 49.29% 13.11%"><img src="images/the-witch/meat-frame-4.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/the-witch/meat-frame-5.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/the-witch/meat-frame-6.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/the-witch/meat-frame-7.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/the-witch/meat-frame-8.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 67.59% 83.09% 30.16% 16.53%"><img src="images/the-witch/meat-frame-9.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img src="images/the-witch/meat-frame-10.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img src="images/the-witch/meat-frame-11.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/the-witch/meat-frame-12.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img src="images/the-witch/meat-frame-13.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img loading="lazy" src="images/the-witch/meat-frame-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img loading="lazy" src="images/the-witch/meat-frame-2.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 12.19% 20.91% 81.34% 10.84%"><img loading="lazy" src="images/the-witch/meat-frame-3.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 24.83% 84.95% 49.29% 13.11%"><img loading="lazy" src="images/the-witch/meat-frame-4.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img loading="lazy" src="images/the-witch/meat-frame-5.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img loading="lazy" src="images/the-witch/meat-frame-6.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img loading="lazy" src="images/the-witch/meat-frame-7.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img loading="lazy" src="images/the-witch/meat-frame-8.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 67.59% 83.09% 30.16% 16.53%"><img loading="lazy" src="images/the-witch/meat-frame-9.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img loading="lazy" src="images/the-witch/meat-frame-10.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 66.34% 83.21% 31.72% 16.45%"><img loading="lazy" src="images/the-witch/meat-frame-11.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img loading="lazy" src="images/the-witch/meat-frame-12.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img loading="lazy" src="images/the-witch/meat-frame-13.svg" alt=""></div>
               <p class="project-nav__text" style="--inset: 37.57% 35.08% 30.59% 29.92%"><span class="project-nav__label">NEXT PROJECT</span><br><br>I Don’t Touch Meat</p>
             </div>
-            <img class="project-nav__hover" src="images/home/dont-eat-meat-frame.svg" alt="">
+            <img loading="lazy" class="project-nav__hover" src="images/home/dont-eat-meat-frame.svg" alt="">
           </a>
 
           <div class="project-strip__piece project-nav project-nav--soon" style="--x: 6020; --y: 654; --w: 209.293; --h: 109.403">
             <div class="project-nav__frame">
-              <div class="project-nav__layer" style="--inset: 12.44% 11.32% 9.2% 3.25%"><img src="images/the-witch/previous-soon-1.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 27.75% 18.94% 52.78% 12.34%"><img src="images/the-witch/previous-soon-2.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 24.2% 19.16% 19.14% 8.79%"><img src="images/the-witch/previous-soon-3.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 23.89% 52.85% 50.42% 10.11%"><img src="images/the-witch/previous-soon-4.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 25.05% 18.99% 71.87% 45.89%"><img src="images/the-witch/previous-soon-5.svg" alt=""></div>
-              <div class="project-nav__layer" style="--inset: 79.78% 20.65% 19.23% 66.97%"><img src="images/the-witch/previous-soon-6.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 12.44% 11.32% 9.2% 3.25%"><img loading="lazy" src="images/the-witch/previous-soon-1.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 27.75% 18.94% 52.78% 12.34%"><img loading="lazy" src="images/the-witch/previous-soon-2.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 24.2% 19.16% 19.14% 8.79%"><img loading="lazy" src="images/the-witch/previous-soon-3.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 23.89% 52.85% 50.42% 10.11%"><img loading="lazy" src="images/the-witch/previous-soon-4.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 25.05% 18.99% 71.87% 45.89%"><img loading="lazy" src="images/the-witch/previous-soon-5.svg" alt=""></div>
+              <div class="project-nav__layer" style="--inset: 79.78% 20.65% 19.23% 66.97%"><img loading="lazy" src="images/the-witch/previous-soon-6.svg" alt=""></div>
               <p class="project-nav__text" style="--inset: 40.22% 52.7% 32.36% 17.68%"><span class="project-nav__label">COMING SOON</span></p>
               <p class="project-nav__text" style="--inset: 40.22% 24.51% 35.1% 51.12%">Paintings / Illustrations</p>
             </div>
@@ -170,8 +176,8 @@
 
           <!-- "flip back button": swipes the strip back to the start. On hover: "flip back button hover" -->
           <button class="project-strip__piece project-flip" style="--x: 6165; --y: 458; --w: 53; --h: 45" type="button" aria-label="Back to the start">
-            <img class="project-flip__image" src="images/project/flip-back.svg" alt="">
-            <img class="project-flip__image project-flip__image--hover" src="images/project/flip-back-hover.svg" alt="">
+            <img loading="lazy" class="project-flip__image" src="images/project/flip-back.svg" alt="">
+            <img loading="lazy" class="project-flip__image project-flip__image--hover" src="images/project/flip-back-hover.svg" alt="">
           </button>
 
           <!--
@@ -179,10 +185,10 @@
             than the rest when you swipe, which gives the page depth (script.js)
           -->
           <div class="project-strip__fast">
-            <img class="project-strip__piece project-strip__fast-piece" style="--x: 2325; --y: 388.99; --w: 348.91; --h: 277.704" src="images/the-witch/spread-6.png" alt="A spread from The Witch">
-            <img class="project-strip__piece project-strip__fast-piece" style="--x: 3634; --y: 528; --w: 339.18; --h: 250.395" src="images/the-witch/insta-6.png" alt="A drawing from The Witch">
-            <img class="project-strip__piece project-strip__fast-piece" style="--x: 4388.7; --y: 62.53; --w: 227.677; --h: 363.324" src="images/the-witch/insta-4.png" alt="A drawing from The Witch">
-            <img class="project-strip__piece project-strip__fast-piece" style="--x: 5129; --y: 280; --w: 716.892; --h: 460.834" src="images/the-witch/spread-5.png" alt="A spread from The Witch">
+            <img loading="lazy" class="project-strip__piece project-strip__fast-piece" style="--x: 2325; --y: 388.99; --w: 348.91; --h: 277.704" src="images/the-witch/spread-6.png" alt="A spread from The Witch">
+            <img loading="lazy" class="project-strip__piece project-strip__fast-piece" style="--x: 3634; --y: 528; --w: 339.18; --h: 250.395" src="images/the-witch/insta-6.png" alt="A drawing from The Witch">
+            <img loading="lazy" class="project-strip__piece project-strip__fast-piece" style="--x: 4388.7; --y: 62.53; --w: 227.677; --h: 363.324" src="images/the-witch/insta-4.png" alt="A drawing from The Witch">
+            <img loading="lazy" class="project-strip__piece project-strip__fast-piece" style="--x: 5129; --y: 280; --w: 716.892; --h: 460.834" src="images/the-witch/spread-5.png" alt="A spread from The Witch">
           </div>
 
         </div>
@@ -254,12 +260,12 @@
       <!-- The video: tap to play or pause. The "pause play" symbol sits in the middle. It turns orange for a moment
            when tapped, then the video starts -->
       <video class="phone-piece phone-video" style="--x: 17; --y: 195; --w: 356; --h: 256.271" src="images/the-witch/animation.mp4#t=0.1" poster="images/the-witch/animation-poster.jpg" preload="metadata" playsinline aria-label="The Witch book, page by page. Tap to play or pause."></video>
-      <img class="phone-piece phone-video__play" style="--x: 177.423; --y: 301.904; --w: 35.154; --h: 42.462" src="images/project/new-pause-play.png" alt="">
-      <img class="phone-piece phone-video__play phone-video__play--orange" style="--x: 177.423; --y: 301.906; --w: 35.154; --h: 42.448" src="images/project/new-pause-play-hover.svg" alt="">
+      <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play" style="--x: 177.423; --y: 301.904; --w: 35.154; --h: 42.462" src="images/project/new-pause-play.png" alt="">
+      <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play phone-video__play--orange" style="--x: 177.423; --y: 301.906; --w: 35.154; --h: 42.448" src="images/project/new-pause-play-hover.svg" alt="">
 
       <!-- The pictures -->
-      <img class="phone-piece" style="--x: 45; --y: 805; --w: 200; --h: 144" src="images/the-witch/cover.jpg" alt="The Witch book cover">
-      <img class="phone-piece" style="--x: 145; --y: 969; --w: 199.836; --h: 143.882" src="images/the-witch/forzats.jpg" alt="The Witch book's endpapers">
+      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 45; --y: 805; --w: 200; --h: 144" src="images/the-witch/cover.jpg" alt="The Witch book cover">
+      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 145; --y: 969; --w: 199.836; --h: 143.882" src="images/the-witch/forzats.jpg" alt="The Witch book's endpapers">
       <img class="phone-piece" style="--x: 18; --y: 1288; --w: 292; --h: 219" src="images/the-witch/books.jpg" alt="Copies of The Witch book">
       <img class="phone-piece" style="--x: 30; --y: 2056; --w: 215.405; --h: 143.621" src="images/the-witch/process-2.jpg" alt="Painting The Witch">
       <img class="phone-piece" style="--x: 118; --y: 2226; --w: 215.405; --h: 143.621" src="images/the-witch/process-4.jpg" alt="Painting The Witch">
@@ -304,7 +310,7 @@
       <!-- The top pictures: on top of everything, they move a bit faster than the rest
            when you scroll, which gives the page depth (script.js) -->
       <div class="phone-project__fast">
-        <img class="phone-piece phone-fast-piece" style="--x: 40; --y: 1036; --w: 129.564; --h: 103.122" src="images/the-witch/spread-6.png" alt="A spread from The Witch">
+        <img decoding="sync" fetchpriority="high" class="phone-piece phone-fast-piece" style="--x: 40; --y: 1036; --w: 129.564; --h: 103.122" src="images/the-witch/spread-6.png" alt="A spread from The Witch">
         <img class="phone-piece phone-fast-piece" style="--x: 247; --y: 1475; --w: 144.12; --h: 106.395" src="images/the-witch/insta-6.png" alt="A drawing from The Witch">
         <img class="phone-piece phone-fast-piece" style="--x: 256; --y: 2135; --w: 126; --h: 201.069" src="images/the-witch/insta-4.png" alt="A drawing from The Witch">
         <img class="phone-piece phone-fast-piece" style="--x: 138; --y: 2661; --w: 225.441; --h: 144.919" src="images/the-witch/spread-5.png" alt="A spread from The Witch">
@@ -350,48 +356,48 @@
       <h2 class="project-title" style="--x: 15; --y: 56">HIIII I’M YAEL</h2>
 
       <p class="project-text" style="--x: 15; --y: 212; --w: 87">Background</p>
-      <p class="project-text" style="--x: 134; --y: 212; --w: 216">Born in New Zealand.<br>Moved to Australia with family.<br>Immigrated to Israel by myself at 18 in 2019.<br><br>Currently studying Visual Communication at Bezalel, focusing on illustration and design.<br>My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
+      <p class="project-text" style="--x: 134; --y: 212; --w: 216">I’m Yael Gosling.<br>Born in New Zealand, moved to Australia with my family, then immigrated to Israel by myself at 18.<br><br>Currently studying Visual Communication at Bezalel, focusing on illustration and design.<br>My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
 
       <!-- The drawings. Hovering over one changes it to its "Hi page hover" drawing and shows the text next to it.
            The drawings are cut from sheets (the hover drawings all from one sheet) -->
       <div class="hi-doodle hi-doodle--mic">
-        <div class="hi-doodle__picture" style="--x: 325.498; --y: 62.227; --w: 144; --h: 95.625; --rotate: 16.24deg"><img style="--iw: 612.5%; --ih: 922.35%; --il: -372.66%; --it: -343.53%" src="images/hi/mic-sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 372.107; --y: 65.14; --w: 79; --h: 114; --rotate: -17.22deg"><img style="--iw: 1097.47%; --ih: 760.53%; --il: -737.97%; --it: -271.05%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 325.498; --y: 62.227; --w: 144; --h: 95.625; --rotate: 16.24deg"><img loading="lazy" style="--iw: 612.5%; --ih: 922.35%; --il: -372.66%; --it: -343.53%" src="images/hi/mic-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 372.107; --y: 65.14; --w: 79; --h: 114; --rotate: -17.22deg"><img loading="lazy" style="--iw: 1097.47%; --ih: 760.53%; --il: -737.97%; --it: -271.05%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 446; --y: 122; --w: 96">I sing the words wrong to every song</p>
       </div>
       <div class="hi-doodle hi-doodle--cheese">
-        <div class="hi-doodle__picture" style="--x: 999; --y: 142; --w: 90.625; --h: 70"><img style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 995; --y: 126.92; --w: 132; --h: 104.077"><img style="--iw: 833.65%; --ih: 1057.32%; --il: -72.12%; --it: -229.27%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 999; --y: 142; --w: 90.625; --h: 70"><img loading="lazy" style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 995; --y: 126.92; --w: 132; --h: 104.077"><img loading="lazy" style="--iw: 833.65%; --ih: 1057.32%; --il: -72.12%; --it: -229.27%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text hi-page__nowrap" style="--x: 1079; --y: 142">I love cheese</p>
       </div>
       <div class="hi-doodle hi-doodle--cow">
-        <div class="hi-doodle__picture" style="--x: 547; --y: 400; --w: 92.432; --h: 121.338"><img style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 549.52; --y: 370; --w: 80.427; --h: 156"><img style="--iw: 747.41%; --ih: 385.33%; --il: -152.59%; --it: -135.11%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 547; --y: 400; --w: 92.432; --h: 121.338"><img loading="lazy" style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 549.52; --y: 370; --w: 80.427; --h: 156"><img loading="lazy" style="--iw: 747.41%; --ih: 385.33%; --il: -152.59%; --it: -135.11%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 488; --y: 479; --w: 96">Dancing cows are funny</p>
       </div>
       <div class="hi-doodle hi-doodle--drogo">
-        <div class="hi-doodle__picture" style="--x: 115; --y: 593; --w: 93.252; --h: 92.091"><img style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 126; --y: 593; --w: 95; --h: 80"><img style="--iw: 721.05%; --ih: 856.25%; --il: -195.79%; --it: -198.75%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 115; --y: 593; --w: 93.252; --h: 92.091"><img loading="lazy" style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 126; --y: 593; --w: 95; --h: 80"><img loading="lazy" style="--iw: 721.05%; --ih: 856.25%; --il: -195.79%; --it: -198.75%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 213; --y: 625; --w: 96">I have a cat named Drogo who loves plastic bags</p>
       </div>
       <div class="hi-doodle hi-doodle--ted-lasso">
-        <div class="hi-doodle__picture" style="--x: 1203; --y: 342; --w: 73; --h: 85.943"><img style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 1203; --y: 344; --w: 107; --h: 87"><img style="--iw: 854.21%; --ih: 1050.57%; --il: -351.4%; --it: -357.47%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 1203; --y: 342; --w: 73; --h: 85.943"><img loading="lazy" style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 1203; --y: 344; --w: 107; --h: 87"><img loading="lazy" style="--iw: 854.21%; --ih: 1050.57%; --il: -351.4%; --it: -357.47%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 1232; --y: 423; --w: 116">Ted Lasso is&nbsp; my favourite tv show</p>
       </div>
       <div class="hi-doodle hi-doodle--footy">
-        <div class="hi-doodle__picture" style="--x: 639; --y: 532; --w: 63.439; --h: 53"><img style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 639; --y: 516; --w: 76; --h: 57"><img style="--iw: 597.37%; --ih: 796.49%; --il: -298.68%; --it: -149.12%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 639; --y: 532; --w: 63.439; --h: 53"><img loading="lazy" style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 639; --y: 516; --w: 76; --h: 57"><img loading="lazy" style="--iw: 597.37%; --ih: 796.49%; --il: -298.68%; --it: -149.12%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 715; --y: 509; --w: 116">I have played AFL internationally representing Israel</p>
       </div>
       <div class="hi-doodle hi-doodle--hand">
-        <div class="hi-doodle__picture" style="--x: 1139; --y: 498; --w: 77.564; --h: 68.236"><img style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
-        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 1135; --y: 463; --w: 79; --h: 105"><img style="--iw: 1097.47%; --ih: 825.71%; --il: -817.72%; --it: -467.62%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="hi-doodle__picture" style="--x: 1139; --y: 498; --w: 77.564; --h: 68.236"><img loading="lazy" style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
+        <div class="hi-doodle__picture hi-doodle__picture--hover" style="--x: 1135; --y: 463; --w: 79; --h: 105"><img loading="lazy" style="--iw: 1097.47%; --ih: 825.71%; --il: -817.72%; --it: -467.62%" src="images/hi/hover-sheet.png" alt=""></div>
         <p class="project-text hi-doodle__text" style="--x: 1134; --y: 543; --w: 116">I’m marrrriiiieeedddd</p>
       </div>
       <!-- Me, moving ("Untitled_Artwork 89", a GIF that keeps playing). It stays still when the mouse moves -->
       <div class="hi-doodle hi-doodle--me">
-        <div class="hi-doodle__picture" style="--x: 487; --y: 125; --w: 404; --h: 227.25"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
+        <div class="hi-doodle__picture" style="--x: 487; --y: 125; --w: 404; --h: 227.25"><img loading="lazy" style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving.gif" alt="A drawing of me, moving"></div>
       </div>
 
       <a class="project-text project-text--email hi-page__big hi-page__instagram" style="--x: 617; --y: 720; --w: 207" href="https://www.instagram.com/yael.gosling/" data-roll-next="yael.gosling" target="_blank" rel="noopener">INSTAGRAM</a>
@@ -483,7 +489,7 @@
            drawings when you scroll down -->
       <div class="phone-hi__panel">
         <div class="phone-hi__panel-line" aria-hidden="true"></div>
-        <p class="phone-text phone-hi__text" style="--x: 17; --y: 45; --w: 223">Born in New Zealand.<br>Moved to Australia with my family.<br>Immigrated to Israel by myself at 18 in 2019.</p>
+        <p class="phone-text phone-hi__text" style="--x: 17; --y: 45; --w: 223">I’m Yael Gosling.<br>Born in New Zealand, moved to Australia with my family, then immigrated to Israel by myself at 18.</p>
         <p class="phone-text phone-hi__text" style="--x: 145; --y: 166; --w: 227">I’m currently studying Visual Communication at Bezalel, focusing on illustration and design. My work combines a multicultural perspective, handmade textures and a little creative chaos.</p>
 
         <!-- On the right, one under the other. Tapping the email address copies it ("Copied" rolls up
@@ -522,7 +528,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=108"></script>
+  <script src="script.js?v=111"></script>
 
 </body>
 </html>
