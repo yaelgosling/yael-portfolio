@@ -1736,8 +1736,19 @@ a.project-nav {
 }
 
 /* A list with dots, and an empty line between the points (like in Figma) */
+/* The project pages: the text is Inter Medium 15, the labels (Project, Year, Field, Challenges)
+   Inter Semi Bold 15 */
+.phone-project .phone-text {
+  font-size: calc(15 * var(--phone-page-pixel));
+  font-weight: 500;
+}
+
+.phone-project .phone-text--label {
+  font-weight: 600;
+}
+
 .phone-text--list {
-  padding-left: calc(24 * var(--phone-page-pixel));
+  padding-left: 1.5em;         /* 22.5 at 15px, 24 at 16px (like in Figma) */
   list-style: disc;
 }
 
