@@ -90,42 +90,34 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
   return { rest };
 }
 
-/* ---------- Phone: the frames swing around when the phone moves ----------
-   Like things on a tray: tilting the phone (to the side, forwards or backwards) makes them
-   slide downhill, they bump off the edges of the screen, and shaking the phone throws them
-   around. Each one is a bit heavier or lighter than the others, turns a little while it moves,
-   and springs back to its place when the phone is still. */
-const SWAY_GRAVITY = 2;      // how strongly tilting pulls (bigger = slides further)
-const SWAY_SPRING = 0.02;    // how strongly each one is pulled back to its place
-const SWAY_FRICTION = 0.07;  // how quickly the swinging calms down (smaller = swings longer)
-const SWAY_SHAKE = 0.3;      // how much a shake throws them
-const SWAY_BOUNCE = 0.5;     // how much speed they keep when they bump into an edge
-const SWAY_TURN = 0.7;       // how much they turn while moving (degrees per unit of speed)
+/* ---------- Phone: the frames drift when the phone tilts ----------
+   Like the frames on the computer following the mouse: tilting the phone is like moving the
+   mouse, and everything drifts slowly the other way, a little. Things further from the middle
+   move more (with a bit of randomness), which gives a feeling of depth. When the phone is held
+   still they glide back to their places. Gentle: no bouncing, turning or shaking */
+const PHONE_MAX_MOVE = 40;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const PHONE_FULL_TILT = 30;  // tilting this much (degrees) is like the mouse at the edge of the screen
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
-// items: elements with --x --y --w --h (Figma pixels). area: the edges they bump into.
-function swayWithPhone(elements, area) {
-  const items = elements.map((element) => {
+// elements with --x --y --w --h (Figma pixels), in a frame width x height
+function driftWithPhone(elements, width, height) {
+  const between = (min, max) => min + Math.random() * (max - min);
+  return elements.map((element) => {
     const read = (name) => parseFloat(element.style.getPropertyValue(name));
-    const x = read("--x"), y = read("--y"), w = read("--w"), h = read("--h");
+    const middleX = read("--x") + read("--w") / 2;
+    const middleY = read("--y") + read("--h") / 2;
     return {
       element,
-      weight: 0.7 + Math.random() * 0.6,   // some slide more than others
-      // how far it can go before it touches an edge (a frame that already goes past an edge
-      // in Figma can stay where it is)
-      minX: Math.min(0, area.left - x), maxX: Math.max(0, area.right - (x + w)),
-      minY: Math.min(0, area.top - y), maxY: Math.max(0, area.bottom - (y + h)),
-      x: 0, y: 0, speedX: 0, speedY: 0,
+      strengthX: Math.max(0.3, Math.abs(middleX - width / 2) / (width / 2)) * between(0.5, 1.2),
+      strengthY: Math.max(0.3, Math.abs(middleY - height / 2) / (height / 2)) * between(0.5, 1.2),
+      x: 0, y: 0,
     };
   });
-  return items;
 }
 
-const swayGroups = [];   // every group of things that sways, with its isActive()
-let pullX = 0;           // which way "downhill" is right now (-1 to 1)
-let pullY = 0;
-let shakeX = 0;          // a shake waiting to be added
-let shakeY = 0;
+const swayGroups = [];   // every group of things that drifts, with its isActive()
+let tiltX = 0;           // how the phone is tilted, like the mouse: from -0.5 to 0.5
+let tiltY = 0;
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const phoneFrames = [...document.querySelectorAll(".phone-frame")];
@@ -133,8 +125,7 @@ const phoneDoodles = [...document.querySelectorAll(".phone-doodle:not(.phone-doo
 
 if (!reducedMotion && phoneFrames.length) {
   swayGroups.push({
-    // the home page (Figma 390 wide, from y 49 to 844)
-    items: swayWithPhone(phoneFrames, { left: 0, right: 390, top: 0, bottom: 844 }),
+    items: driftWithPhone(phoneFrames, 390, 844),   // the home page ("phone home playful", 390 x 844)
     // only after they came out, and not behind WORKS or HI
     isActive: () => phoneFrames[0].closest(".phone-home").classList.contains("is-playful") &&
                     !document.body.matches(".is-phone-works-open, .is-phone-hi-open, .is-phone-reach-open"),
@@ -143,77 +134,51 @@ if (!reducedMotion && phoneFrames.length) {
 
 if (!reducedMotion && phoneDoodles.length) {
   swayGroups.push({
-    // the phone Hi page (390 wide, 844 high)
-    items: swayWithPhone(phoneDoodles, { left: 0, right: 390, top: 0, bottom: 844 }),
+    items: driftWithPhone(phoneDoodles, 390, 844),
     isActive: () => document.body.classList.contains("is-phone-hi-open"),
   });
 }
 
-// Every screen refresh: move everything a small step
+// Every screen refresh: each one moves a small step towards where it should be (like on the computer)
 let lastStep = performance.now();
 function swayStep(now) {
   const steps = Math.min((now - lastStep) / 16.7, 3);   // about 1 per screen refresh
   lastStep = now;
+  const ease = 1 - Math.pow(1 - EASING, steps);
 
   swayGroups.forEach(({ items, isActive }) => {
     const active = isActive();
     items.forEach((item) => {
-      const pushX = active ? pullX * SWAY_GRAVITY * item.weight + shakeX : 0;
-      const pushY = active ? pullY * SWAY_GRAVITY * item.weight + shakeY : 0;
-      item.speedX += (pushX - item.x * SWAY_SPRING) * steps;
-      item.speedY += (pushY - item.y * SWAY_SPRING) * steps;
-      item.speedX *= Math.pow(1 - SWAY_FRICTION, steps);
-      item.speedY *= Math.pow(1 - SWAY_FRICTION, steps);
-      item.x += item.speedX * steps;
-      item.y += item.speedY * steps;
-
-      // Bump off the edges of the screen
-      if (item.x < item.minX) { item.x = item.minX; item.speedX *= -SWAY_BOUNCE; }
-      if (item.x > item.maxX) { item.x = item.maxX; item.speedX *= -SWAY_BOUNCE; }
-      if (item.y < item.minY) { item.y = item.minY; item.speedY *= -SWAY_BOUNCE; }
-      if (item.y > item.maxY) { item.y = item.maxY; item.speedY *= -SWAY_BOUNCE; }
-
-      const turn = Math.max(-15, Math.min(15, item.speedX * SWAY_TURN));
+      const targetX = active ? -tiltX * 2 * PHONE_MAX_MOVE * item.strengthX : 0;
+      const targetY = active ? -tiltY * 2 * PHONE_MAX_MOVE * item.strengthY : 0;
+      item.x += (targetX - item.x) * ease;
+      item.y += (targetY - item.y) * ease;
       item.element.style.setProperty("--move-x", item.x.toFixed(2));
       item.element.style.setProperty("--move-y", item.y.toFixed(2));
-      item.element.style.setProperty("--turn", turn.toFixed(2));
     });
   });
 
-  shakeX = 0;
-  shakeY = 0;
   requestAnimationFrame(swayStep);
 }
 
 if (swayGroups.length) {
-  // Tilting: "downhill" follows the phone. Side to side counts from upright; forwards and
-  // backwards count from the way you usually hold it (which slowly becomes the new flat)
+  // Tilting: side to side counts from upright; forwards and backwards count from the way you
+  // usually hold it (which slowly becomes the new "flat")
   let usualForwards = null;
+  const limit = (value) => Math.max(-0.5, Math.min(0.5, value));
   window.addEventListener("deviceorientation", (event) => {
     if (event.gamma === null || event.beta === null) return;   // no tilt sensor
     if (usualForwards === null) usualForwards = event.beta;
     usualForwards += (event.beta - usualForwards) * TILT_SETTLE;
-    const toRadians = Math.PI / 180;
-    pullX = Math.sin(event.gamma * toRadians);
-    pullY = Math.sin((event.beta - usualForwards) * toRadians);
+    tiltX = limit(event.gamma / PHONE_FULL_TILT / 2);
+    tiltY = limit((event.beta - usualForwards) / PHONE_FULL_TILT / 2);
   });
 
-  // Shaking: when the phone jerks one way, the frames are left behind and fly the other way
-  window.addEventListener("devicemotion", (event) => {
-    const a = event.acceleration;
-    if (!a || a.x === null) return;
-    shakeX += -a.x * SWAY_SHAKE;
-    shakeY += a.y * SWAY_SHAKE;   // the phone's "up" is the screen's "up"
-  });
-
-  // iPhones only share the movement after asking ("Allow motion and orientation access?"),
+  // iPhones only share the tilt after asking ("Allow motion and orientation access?"),
   // and only right after a tap, so they ask on the first tap on the screen
   if (typeof DeviceOrientationEvent !== "undefined" && DeviceOrientationEvent.requestPermission) {
     document.addEventListener("touchend", () => {
       DeviceOrientationEvent.requestPermission().catch(() => {});
-      if (typeof DeviceMotionEvent !== "undefined" && DeviceMotionEvent.requestPermission) {
-        DeviceMotionEvent.requestPermission().catch(() => {});
-      }
     }, { once: true });
   }
 
@@ -1277,7 +1242,8 @@ document.querySelectorAll(".process-card__tab").forEach((tab) => {
     clearTimeout(card.videoReset);
     const videos = card.querySelectorAll("video");
     if (isOpen) {
-      videos.forEach((video) => { video.currentTime = 0; video.play().catch(() => {}); });
+      // (always without sound: the videos are silent, and kept muted to be sure)
+      videos.forEach((video) => { video.muted = true; video.currentTime = 0; video.play().catch(() => {}); });
     } else {
       card.videoReset = setTimeout(() => {
         videos.forEach((video) => { video.pause(); video.currentTime = 0; });

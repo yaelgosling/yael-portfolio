@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=129">
+  <link rel="stylesheet" href="styles.css?v=131">
 </head>
 <body class="project-page process-page">
 
@@ -84,7 +84,7 @@
   <main>
 
     <!--
-      The process page ("Process" in Figma, 1967 × 800): one card per week, oldest on the left.
+      The process page ("Process" in Figma, 2304 × 800): one card per week, oldest on the left.
       Everything is in one strip: swipe (or scroll, or use the arrow keys) left and right to move it.
       Numbers are Figma pixels from the strip's top left corner.
 
@@ -96,7 +96,7 @@
       <!-- The thin black line across the top ("Line 27") -->
       <div class="project-line process-work__line" style="--y: 0"></div>
       <div class="project-strip">
-        <div class="project-strip__track" style="--w: 1967">
+        <div class="project-strip__track" style="--w: 2304">
 
           <!-- 19/10: the Coming Soon page -->
           <article class="process-card">
@@ -208,6 +208,28 @@
               <video class="project-strip__piece process-snap process-image" style="--x: 1404.32; --y: 202.31; --w: 341.468; --h: 189.111" src="images/process/website-phone-trial.mp4" poster="images/process/website-phone-trial-poster.jpg" preload="metadata" muted loop playsinline aria-label="A recording of the website trial"></video>
               <video class="project-strip__piece process-snap process-image" style="--x: 1404.48; --y: 415; --w: 111.539; --h: 241.382" src="images/process/phone-trial.mp4" poster="images/process/phone-trial-poster.jpg" preload="metadata" muted loop playsinline aria-label="A recording of the phone trial"></video>
               <div class="project-strip__piece process-snap process-line" style="--x: 1369; --y: 680; --w: 415; --h: 0; --oy: 1"></div>
+            </div>
+          </article>
+          <!-- 23/11: website and phone trial -->
+          <article class="process-card">
+            <!-- The top bar of the card (date and title): all you see until you click it.
+                 Closed, the card waits in the middle of the page; opening, it glides up -->
+            <div class="process-card__head">
+              <div class="project-strip__piece process-snap process-block--blue" style="--x: 2045; --y: 114; --w: 207; --h: 58"></div>
+              <p class="process-text process-text--nowrap" style="--x: 2089.48; --y: 137">WEBSITE AND PHONE TRIAL</p>
+              <div class="project-strip__piece process-snap process-line" style="--x: 1837; --y: 172; --w: 415; --h: 0; --oy: 1"></div>
+            </div>
+            <button class="project-strip__piece process-snap process-block--orange process-card__tab" style="--x: 1837; --y: 144; --w: 208; --h: 28" type="button" aria-expanded="false">
+              <time class="process-text process-card__date" style="--x: 19.48; --y: 9.25" datetime="2026-11-23">23/11</time>
+            </button>
+            <!-- Everything that opens: it unrolls downwards from under the top bar
+                 (--ax, --ay, --aw, --ah: the part of the strip it shows) -->
+            <div class="process-card__content" style="--ax: 1837; --ay: 172; --aw: 415; --ah: 535" aria-hidden="true">
+              <div class="project-strip__piece process-snap process-block--lime" style="--x: 1837; --y: 154; --w: 415; --h: 526"></div>
+              <div class="project-strip__piece process-snap process-block--orange" style="--x: 1837; --y: 680; --w: 415; --h: 27"></div>
+              <video class="project-strip__piece process-snap process-image" style="--x: 1875; --y: 202; --w: 341.27; --h: 189" src="images/process/website-phone-trial-2.mp4" poster="images/process/website-phone-trial-2-poster.jpg" preload="metadata" muted loop playsinline aria-label="A recording of the website trial"></video>
+              <video class="project-strip__piece process-snap process-image" style="--x: 1875; --y: 417; --w: 111.36; --h: 241" src="images/process/phone-trial-2.mp4" poster="images/process/phone-trial-2-poster.jpg" preload="metadata" muted loop playsinline aria-label="A recording of the phone trial"></video>
+              <div class="project-strip__piece process-snap process-line" style="--x: 1837; --y: 680; --w: 415; --h: 0; --oy: 1"></div>
             </div>
           </article>
 
@@ -326,7 +348,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=102"></script>
+  <script src="script.js?v=104"></script>
 
 </body>
 </html>
