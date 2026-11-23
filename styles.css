@@ -705,54 +705,21 @@ html.is-hi-open-page body {
   white-space: nowrap;
 }
 
-/* The COPIED label on the Hi page ("Group 19" in Figma): a black box with white Instrument Serif
-   italic 45px, over "Email me" or "Let's talk" once it's clicked. It rolls up the same way as
-   on Reach Out. script.js sets its width (at least 422, and always wide enough to cover the
-   address or number). Numbers are Figma pixels from the top left of "Email me" */
-.hi-page__copied {
-  position: absolute;
-  left: calc(-6 * var(--stage-pixel));    /* a little further left than Figma, to cover the italic letters' tails */
-  top: 0;                                  /* taller and higher than in Figma, so that */
-  width: calc(422 * var(--stage-pixel));
-  height: calc(65 * var(--stage-pixel));   /* COPIED sits on the same line as INSTAGRAM */
-  box-sizing: border-box;
-  padding: calc(9 * var(--stage-pixel)) 0 0 calc(19 * var(--stage-pixel));
-  background-color: var(--color-black);
-  color: var(--color-white);
+/* Copied ("Email me" or "Let's talk" clicked): it rolls up one more word, to "Copied":
+   purple Instrument Serif italic 50px (the size of the line). It rolls back down after a few seconds */
+.hi-page__reveal.is-copied.roll-host .roll__track {
+  transform: translateY(calc(-2em * var(--roll-line)));
+}
+
+.hi-page__reveal .roll__word--copied {
+  color: var(--color-blue);
+  text-transform: uppercase;   /* COPIED, in capitals like INSTAGRAM and LET'S TALK */
   font-family: var(--font-display);
-  font-size: calc(45 * var(--stage-pixel));
   font-style: italic;
-  font-weight: 400;
-  line-height: 1.006;
-  text-align: left;
-  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
-  transition: clip-path var(--roll-time) var(--page-change-easing);
-  pointer-events: none;
 }
 
-/* "Let's talk" is on the right: its label lines up with its right edge */
-.hi-page__reveal--right .hi-page__copied {
-  left: auto;
-  right: calc(-6 * var(--stage-pixel));
-}
-
-.hi-page__reveal.is-copied .hi-page__copied {
-  clip-path: inset(0);
-}
-
-/* Once the label has rolled all the way up, the words under it are hidden, so moving the mouse
-   can't make them roll behind the label. They come back as soon as the label rolls down */
-.hi-page__reveal .roll {
-  transition: visibility 0s;
-}
-
-.hi-page__reveal.is-copied .roll {
-  visibility: hidden;
-  transition: visibility 0s linear var(--roll-time);
-}
-
-/* The Hi page closed: the label disappears at once, without rolling */
-.hi-page__reveal.is-resetting .hi-page__copied {
+/* The Hi page closed: it's back at once, without rolling */
+.hi-page__reveal.is-resetting .roll__track {
   transition: none;
 }
 
@@ -1143,36 +1110,24 @@ img.project-strip__piece {
   font-weight: 400;
 }
 
-/* The COPIED label on Reach Out ("Group 19" in Figma): a black box with white Instrument Serif
-   italic, over the email address or phone number. It rolls up the same way as COMING SOON in the index.
-   It covers the whole address or number (script.js sets its width), so nothing shows
-   behind it. Numbers are Figma pixels from the top left of the address */
-.project-reach__copied {
+/* Copied (the email address or phone number clicked on Reach Out): it rolls up one more word, to
+   "Copied": black Instrument Serif italic 24px (the size of the address) */
+.project-reach__copy .roll__word--copied {
   position: absolute;
-  left: calc(-7 * var(--stage-pixel));
-  top: 0;
-  width: calc(202 * var(--stage-pixel));
-  height: calc(100% + 2 * var(--stage-pixel));
-  box-sizing: border-box;
-  padding: calc(10 * var(--stage-pixel)) 0 0 calc(14 * var(--stage-pixel));
-  background-color: var(--color-black);
-  color: var(--color-white);
+  top: 200%;
+  left: 0;
+  color: var(--color-black);
   font-family: var(--font-display);
-  font-size: var(--index-hover-name-size);
   font-style: italic;
   font-weight: 400;
-  line-height: 1.006;
-  clip-path: inset(100% 0 0 0);    /* hidden below its bottom edge */
-  transition: clip-path var(--roll-time) var(--page-change-easing);
-  pointer-events: none;
 }
 
-.project-reach__copy.is-copied .project-reach__copied {
-  clip-path: inset(0);
+.project-reach__copy.is-copied.roll-host .roll__track {
+  transform: translateY(calc(-2em * var(--roll-line)));
 }
 
-/* Reach Out went away: the label disappears at once, without rolling */
-.project-reach__copy.is-resetting .project-reach__copied {
+/* Reach Out went away: it's back at once, without rolling */
+.project-reach__copy.is-resetting .roll__track {
   transition: none;
 }
 

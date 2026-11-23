@@ -268,6 +268,20 @@ if (canMove) {
    and Reach Out. Each word becomes two words on top of each other, in a window one
    word high. align: where the next word lines up ("center", "start" or "end")
    ========================================= */
+const COPIED_TIME = 2500;   // how long "Copied" stays before it rolls back down (milliseconds)
+
+// The email address and phone number (Reach Out, and "Email me" and "Let's talk" on the Hi page):
+// a third word, "Copied", waits under the others. Clicking copies and rolls up to it
+function addCopiedWord(element) {
+  const track = element.querySelector(".roll__track");
+  if (!track || track.querySelector(".roll__word--copied")) return;
+  const word = document.createElement("span");
+  word.className = "roll__word roll__word--copied";
+  word.setAttribute("aria-hidden", "true");
+  word.textContent = "Copied";
+  track.append(word);
+}
+
 function makeRoll(element, word, nextWord, align = "center", nextClass = "") {
   element.innerHTML = "";
   element.classList.add("roll-host");
@@ -332,33 +346,20 @@ function rollBarWord(element, text) {
 ].forEach(([selector, align]) => {
   document.querySelectorAll(selector).forEach((element) => {
     if (element.querySelector(":scope > .roll")) return;   // already written rolled in the page (the bar)
-    const copied = element.querySelector(".project-reach__copied");   // the COPIED label stays (see below)
-    if (copied) copied.remove();
     const word = element.textContent.trim();
     makeRoll(element, word, element.dataset.rollNext || word, align);   // data-roll-next: a different next word
-    if (copied) element.append(copied);
+    if (element.classList.contains("project-reach__copy")) addCopiedWord(element);
   });
 });
 
 /* Reach Out: clicking the email address copies it instead of opening an email.
    The phone number works the same way (on the computer a phone link would only open FaceTime;
    the phone version of the page still calls the number).
-   A black COPIED label rolls up over it (like COMING SOON in the index) and covers it.
+   It rolls up to "Copied" (black Instrument Serif italic, the same size), like the other words.
    It rolls back down when one of the other links is clicked (the email, the phone number or
    Instagram), and it's gone whenever Reach Out is opened again */
 document.querySelectorAll(".project-reach__copy").forEach((link) => {
   const reach = link.closest(".project-reach");
-  const copied = link.querySelector(".project-reach__copied");
-
-  // The label is as wide as the address or number (the wider, italic one), so nothing shows behind it
-  function fitLabel() {
-    const words = [...link.querySelectorAll(".roll__word")];
-    const widest = Math.max(...words.map((word) => word.scrollWidth));
-    copied.style.width = `${widest + 22}px`;   // a little extra for the italic letters' tails
-  }
-  fitLabel();
-  document.fonts.ready.then(fitLabel);
-  window.addEventListener("resize", fitLabel);
 
   link.addEventListener("mousedown", (event) => event.preventDefault());   // no text selection
   link.addEventListener("click", async (event) => {
@@ -371,6 +372,9 @@ document.querySelectorAll(".project-reach__copy").forEach((link) => {
       // Copying isn't allowed here: it can still be selected and copied by hand
     }
     link.classList.add("is-copied");
+    // "Copied" rolls back down after a few seconds
+    clearTimeout(link.copiedTimer);
+    link.copiedTimer = setTimeout(() => link.classList.remove("is-copied"), COPIED_TIME);
   });
 
   // Clicking one of the other links (email, phone number, Instagram) rolls this label back down
@@ -395,6 +399,7 @@ document.querySelectorAll(".hi-page__reveal").forEach((reveal) => {
   const value = reveal.querySelector(".hi-page__reveal-value").textContent.trim();
   const align = reveal.classList.contains("hi-page__reveal--right") ? "end" : "start";
   makeRoll(reveal, label, value, align, "hi-page__reveal-value");
+  addCopiedWord(reveal);
 });
 
 
@@ -1206,8 +1211,8 @@ if (hiButton && hiPage) {
   });
 
   // "Email me" and "Let's talk": a click copies the email address or the phone number
-  // (instead of opening an email or FaceTime), and a black COPIED label rolls up over it,
-  // like on Reach Out. It stays until something else is clicked
+  // (instead of opening an email or FaceTime), and it rolls up to "Copied", like on Reach Out.
+  // It stays until something else is clicked
   async function copy(reveal) {
     reveal.classList.add("is-showing");
     const value = reveal.querySelector(".hi-page__reveal-value").textContent;
@@ -1217,28 +1222,14 @@ if (hiButton && hiPage) {
       // Copying isn't allowed here: it can still be selected and copied by hand
     }
     reveal.classList.add("is-copied");
-    window.getSelection().removeAllRanges();   // no blue "selected" highlight under the label
+    window.getSelection().removeAllRanges();   // no blue "selected" highlight
+    // "Copied" rolls back down after a few seconds
+    clearTimeout(reveal.copiedTimer);
+    reveal.copiedTimer = setTimeout(() => reveal.classList.remove("is-copied"), COPIED_TIME);
   }
 
   const reveals = [...hiPage.querySelectorAll(".hi-page__reveal")];
   reveals.forEach((reveal) => {
-    // The COPIED label ("Group 19" in Figma), made here because the rolling words are rebuilt above
-    const copied = document.createElement("span");
-    copied.className = "hi-page__copied";
-    copied.setAttribute("aria-hidden", "true");
-    copied.textContent = "COPIED";
-    reveal.append(copied);
-
-    // At least as wide as in Figma, and always wide enough to cover the address or number
-    function fitLabel() {
-      const pixel = Math.min(window.innerWidth / 1440, window.innerHeight / 800);   // like --stage-pixel
-      const widest = Math.max(...[...reveal.querySelectorAll(".roll__word")].map((word) => word.scrollWidth));
-      copied.style.width = `${Math.max(429 * pixel, widest + 33 * pixel)}px`;
-    }
-    fitLabel();
-    document.fonts.ready.then(fitLabel);
-    window.addEventListener("resize", fitLabel);
-
     reveal.addEventListener("mousedown", (event) => event.preventDefault());   // no text selection
     reveal.addEventListener("click", (event) => {
       event.preventDefault();
