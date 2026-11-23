@@ -152,7 +152,21 @@ body.home-page {
 .home__frames .home-frame {
   transition:
     left var(--page-change-time) var(--page-change-easing),
-    top var(--page-change-time) var(--page-change-easing);
+    top var(--page-change-time) var(--page-change-easing),
+    translate var(--phone-frames-time) var(--phone-frames-easing) calc(var(--order, 0) * var(--phone-frames-gap)),
+    scale var(--phone-frames-time) var(--phone-frames-easing) calc(var(--order, 0) * var(--phone-frames-gap)),
+    opacity 0.2s ease calc(var(--order, 0) * var(--phone-frames-gap));
+}
+
+/* Opening or refreshing the home page (is-home-intro, set in the page's head and taken away by
+   script.js): the frames start small and hidden behind the middle of the bar (x 720, y 347), then
+   jump out to their places one after the other, like on the phone */
+.is-home-intro .home__frames .home-frame {
+  opacity: 0;
+  translate:
+    calc((720 - var(--x) - var(--w) / 2) * var(--stage-pixel))
+    calc((347 - var(--y) - var(--h) / 2) * var(--stage-pixel));
+  scale: 0.1;
 }
 
 .home.is-classic .home__frames .home-frame {

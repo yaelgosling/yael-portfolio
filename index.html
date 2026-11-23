@@ -8,20 +8,28 @@
   <title>Yael Gosling</title>
 
   <!-- The little picture in the browser tab (and on a phone's home screen): my face from the Hi page GIF -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32.png">
-  <link rel="apple-touch-icon" href="images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32.png?v=2">
+  <link rel="apple-touch-icon" href="images/favicon/apple-touch-icon.png?v=2">
 
   <!-- The Instrument Serif font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=127">
+  <link rel="stylesheet" href="styles.css?v=128">
   <!-- Coming back from another page on a phone: the frames are already out from the very first
        moment (script.js finishes the job), so nothing flashes -->
   <script>
     try {
       if (sessionStorage.getItem("phone-home-back")) document.documentElement.classList.add("is-phone-home-back");
+    } catch (error) {}
+    // Computer: opening or refreshing the home page, the frames start hidden behind the bar and jump
+    // out (script.js). Not when coming back from another page, and not in a waiting copy of the page
+    try {
+      if (!sessionStorage.getItem("home-slid-back") && window.self === window.top &&
+          !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.documentElement.classList.add("is-home-intro");
+      }
     } catch (error) {}
   </script>
 </head>
@@ -733,7 +741,7 @@
     <div class="phone-top-line" aria-hidden="true"></div>
   </section>
 
-  <script src="script.js?v=101"></script>
+  <script src="script.js?v=102"></script>
 
 </body>
 </html>

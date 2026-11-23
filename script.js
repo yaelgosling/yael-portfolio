@@ -668,6 +668,20 @@ if (home) {
 
   // Arriving back from another page: CLASSIC VIEW already rolled in while the bar moved
   sessionStorage.removeItem("home-slid-back");
+
+  // Opening or refreshing the home page: the frames jump out from behind the bar, one after
+  // the other (like on the phone), once the page has loaded and has been there a moment
+  if (document.documentElement.classList.contains("is-home-intro")) {
+    home.querySelectorAll(".home__frames .home-frame").forEach((frame, index) => frame.style.setProperty("--order", index));
+    const openedAt = performance.now();
+    const HOME_INTRO_WAIT = 700;   // the bar shows alone this long first (milliseconds)
+    const jumpOut = () => {
+      setTimeout(() => document.documentElement.classList.remove("is-home-intro"),
+        Math.max(0, HOME_INTRO_WAIT - (performance.now() - openedAt)));
+    };
+    if (document.readyState === "complete") jumpOut();
+    else window.addEventListener("load", jumpOut, { once: true });
+  }
 } else {
   homeLinks.forEach((link) => {
     let behind = null;
