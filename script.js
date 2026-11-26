@@ -1870,6 +1870,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
       return;
     }
     if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: the reload page, then on
+    const worksWasOpen = document.body.classList.contains("is-phone-works-open");
     sessionStorage.setItem("phone-home-back", "yes");   // the frames are there straight away
     // An open WORKS list (or HI page) closes straight away, here, with its usual roll, while the
     // home page loads (so there's no frozen moment). Then the project rolls down to show home
@@ -1877,6 +1878,8 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     document.body.classList.add("is-phone-to-home");   // (keeps the list's own part in the page change)
     try { sessionStorage.setItem("phone-transition", "down"); } catch (error) { /* private window */ }
+    // The WORKS list rolls up at its usual speed first; the page changes once it's up
+    if (worksWasOpen) await new Promise((resolve) => setTimeout(resolve, INDEX_OPEN_TIME));
     phoneLeaveTo(link.href);
   });
 });
