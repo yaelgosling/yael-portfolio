@@ -37,12 +37,14 @@
           // (in shares, not pixels: at this moment the new page can't count pixels properly yet.
           // The project moves by a share of the screen, the list by a share of its own height)
           var height = size.height, listTop = size.listTop || 0, listBottom = size.listBottom || 0;
+          // (the picture of the new page can be a little taller than the screen: measure it)
+          try { var real = parseFloat(getComputedStyle(root, "::view-transition-new(root)").height); if (real > 0) height = real * (size.height / innerHeight || 1); } catch (e) {}
           var listHeight = Math.max(1, listBottom - listTop), page = [], list = [];
           for (var i = 0; i <= 48; i++) {
             var t = i / 48, left = 1 - ease(t), top = height * left;
             var pushed = Math.min(100, Math.max(0, (listBottom - top) / listHeight * 100));
             page.push({ offset: t, translate: "0 " + (left * 100) + "%" });
-            list.push({ offset: t, translate: "0 " + (-pushed) + "%", clipPath: "inset(" + pushed + "% 0 0 0)" });
+            list.push({ offset: t, clipPath: "inset(0 0 " + pushed + "% 0)" });   // it rolls up from the bottom, just above the project's top line
           }
           var timing = { duration: 900, easing: "linear", fill: "both" };
           try {
@@ -566,7 +568,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=132"></script>
+  <script src="script.js?v=134"></script>
 
 </body>
 </html>

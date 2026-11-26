@@ -1810,7 +1810,8 @@ phoneWorksRows.forEach((row) => {
       // The name rolls to italic, then the list closes and the project opens
       phoneChanging = true;
       phonePreparePage(href, "page-slide");
-      setTimeout(() => phoneOpenProject(href), PHONE_ROLL_WAIT);
+      // The page change starts as soon as the name has rolled to italic (0.45s)
+      setTimeout(() => phoneOpenProject(href), 450);
     }
   });
 });
