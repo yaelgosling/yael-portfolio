@@ -3219,19 +3219,10 @@ html:has(body.project-page) {
   }
 }
 
-/* The black line at the top of a phone project page is never blurred: it is drawn once more on
-   top of everything at the very top of the screen (over the blur behind WORKS and HI; the bar
-   and the list are below it, so it covers nothing) */
+/* The black line at the top of a phone project page is never blurred: the blur behind WORKS
+   starts just under it */
 @media (max-width: 700px) {
-  body.project-page::after {
-    content: "";
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: var(--project-line);
-    background-color: var(--color-black);
-    z-index: 6;
-    pointer-events: none;
+  body.project-page .phone-works-blur {
+    top: var(--project-line);
   }
 }
