@@ -3310,3 +3310,13 @@ html:has(body.project-page) {
     display: none !important;
   }
 }
+
+/* Phone page changes: the frame that holds the pages doesn't move or resize by itself (Safari
+   eases it from the old page's size to the new one's when the toolbar changes, which made the new
+   page lag behind the WORKS list at the start); only our own movement plays */
+@media (max-width: 700px) {
+  html.is-rolling-up::view-transition-group(root),
+  html.is-rolling-down::view-transition-group(root) {
+    animation: none;
+  }
+}
