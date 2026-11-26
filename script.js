@@ -1662,7 +1662,29 @@ function setPhoneOpen(which) {
   const hiUnderWorks = which === "hi" && document.body.classList.contains("is-phone-works-open") &&
     !document.body.classList.contains("is-phone-hi-open");
   document.body.classList.toggle("is-phone-hi-instant", hiUnderWorks);
-  if (hiUnderWorks) setTimeout(() => document.body.classList.remove("is-phone-hi-instant"), 1000);
+  if (hiUnderWorks) {
+    // HI rises from the bottom; its top edge pushes the list up into the bar as it comes
+    const hi = document.querySelector(".phone-hi");
+    const list = document.querySelector(".phone-works");
+    hi.querySelectorAll(".phone-scroll").forEach((box) => { box.scrollTop = 0; });   // panel down
+    document.body.classList.add("is-phone-hi-open", "is-phone-hi-rising");
+    if (isPhoneHome) document.querySelectorAll(".phone-hi").forEach((page) => page.style.setProperty("--hi-shift", "0px"));
+    const listBottom = list.getBoundingClientRect().bottom;
+    const rise = hi.animate([{ translate: `0 ${window.innerHeight}px` }, { translate: "0 0" }],
+      { duration: 900, easing: "cubic-bezier(0.7, 0, 0.2, 1)" });
+    const follow = () => {
+      const top = hi.getBoundingClientRect().top;
+      list.style.clipPath = `inset(0 0 ${Math.max(0, listBottom - top)}px 0)`;
+      if (rise.playState === "running") requestAnimationFrame(follow);
+    };
+    requestAnimationFrame(follow);
+    rise.finished.then(() => {
+      document.body.classList.remove("is-phone-works-open", "is-phone-works-over-hi");
+      list.style.clipPath = "";
+      setTimeout(() => document.body.classList.remove("is-phone-hi-rising", "is-phone-hi-instant"), 50);
+    }, () => {});
+    return;
+  }
   // Opening HI: it always starts as it first was, with the panel down
   if (which === "hi" && !document.body.classList.contains("is-phone-hi-open")) {
     document.querySelectorAll(".phone-hi .phone-scroll").forEach((box) => { box.scrollTop = 0; });

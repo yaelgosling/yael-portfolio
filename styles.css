@@ -3446,6 +3446,17 @@ html:has(body.project-page) {
     --hi-start: 0px;
   }
 
+  /* while HI rises under the WORKS list, the blur doesn't cover it */
+  body.is-phone-hi-rising .phone-works-blur {
+    display: none !important;
+    opacity: 0 !important;
+    transition: none !important;
+  }
+
+  body.is-phone-hi-rising .phone-works {
+    transition: none !important;
+  }
+
   @starting-style {
     body.is-phone-hi-instant .phone-hi,
     html.is-phone-home-page body.is-phone-hi-instant.is-phone-hi-open .phone-hi {
