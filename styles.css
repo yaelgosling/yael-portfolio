@@ -3464,3 +3464,16 @@ html:has(body.project-page) {
     }
   }
 }
+
+/* Keyboard: a home frame that has the focus (Tab) shows its work, like with the mouse over it */
+.home-frame--link:focus-visible {
+  z-index: 1;
+}
+
+.home-frame--link:focus-visible .home-frame__image {
+  visibility: hidden;
+}
+
+.home-frame--link:focus-visible .home-frame__hover {
+  visibility: visible;
+}

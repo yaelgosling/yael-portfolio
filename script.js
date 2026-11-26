@@ -594,7 +594,8 @@ document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
 
   link.addEventListener("click", async (event) => {
     // Only a click on the drawn frame itself counts, not on the empty space around it
-    if (window.matchMedia("(hover: hover)").matches && !link.classList.contains("is-hovered")) {
+    // (a keyboard's Enter counts too: event.detail is 0 for it, and there's no mouse to aim)
+    if (event.detail !== 0 && window.matchMedia("(hover: hover)").matches && !link.classList.contains("is-hovered")) {
       event.preventDefault();
       return;
     }
@@ -2265,3 +2266,23 @@ document.querySelectorAll(".phone-hi").forEach((hi) => {
   window.addEventListener("resize", check);
 });
 
+
+
+/* =========================================
+   Keyboard (computer): someone using only the keyboard sees and reaches everything
+   - A home frame that gets the focus (Tab) shows its work, like with the mouse over it
+   - On a project page, going back to the work with Tab (or Shift+Tab) puts "Reach Out" away again
+   ========================================= */
+document.querySelectorAll(".home__frames .home-frame--link").forEach((link) => {
+  link.addEventListener("focus", () => {
+    document.querySelectorAll(".home-frame.is-hovered").forEach((frame) => frame.classList.remove("is-hovered"));
+    link.classList.add("is-hovered");
+  });
+  link.addEventListener("blur", () => link.classList.remove("is-hovered"));
+});
+
+document.querySelectorAll(".project-work").forEach((work) => {
+  work.addEventListener("focusin", () => {
+    if (window.scrollY > 2) window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
