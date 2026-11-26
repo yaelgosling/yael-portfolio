@@ -3326,3 +3326,130 @@ html:has(body.project-page) {
     display: none !important;
   }
 }
+
+/* Phone: changing between the home page (bar at the bottom) and another page (bar at the top).
+   The page's top edge travels with the bar, so nothing of the home page shows between the bar and
+   the page; near the end it goes on off the screen. Timed in steps like the usual easing */
+@media (max-width: 700px) {
+  html.is-rolling-down::view-transition-old(root) {
+    animation: phone-down-with-bar var(--page-change-time) linear both;
+  }
+
+  html.is-rolling-up-home::view-transition-new(root) {
+    animation: phone-up-with-bar var(--page-change-time) linear both;
+  }
+
+  /* the HI page on the home page travels with the bar too (script.js sets --hi-shift) */
+  html.is-phone-home-page .phone-hi {
+    transform: translate3d(0, var(--hi-shift, 100%), 0) !important;
+  }
+
+  @starting-style {
+    html.is-phone-home-page body.is-phone-hi-open .phone-hi {
+      transform: translate3d(0, var(--hi-start, 100%), 0) !important;
+    }
+  }
+}
+
+@keyframes phone-down-with-bar {
+  0.0% { translate: 0 calc(0.0 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  2.5% { translate: 0 calc(0.00044 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  5.0% { translate: 0 calc(0.00182 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  7.5% { translate: 0 calc(0.00425 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  10.0% { translate: 0 calc(0.00786 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  12.5% { translate: 0 calc(0.0128 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  15.0% { translate: 0 calc(0.01925 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  17.5% { translate: 0 calc(0.02745 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  20.0% { translate: 0 calc(0.03767 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  22.5% { translate: 0 calc(0.05029 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  25.0% { translate: 0 calc(0.06577 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  27.5% { translate: 0 calc(0.08474 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  30.0% { translate: 0 calc(0.10807 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  32.5% { translate: 0 calc(0.13695 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 1e-05 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  35.0% { translate: 0 calc(0.17311 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 3e-05 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  37.5% { translate: 0 calc(0.2191 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00011 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  40.0% { translate: 0 calc(0.27852 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00047 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  42.5% { translate: 0 calc(0.35544 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00202 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  45.0% { translate: 0 calc(0.44978 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00828 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  47.5% { translate: 0 calc(0.54894 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.02736 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  50.0% { translate: 0 calc(0.63577 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.06604 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  52.5% { translate: 0 calc(0.705 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.12278 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  55.0% { translate: 0 calc(0.75942 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.19182 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  57.5% { translate: 0 calc(0.80277 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.26764 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  60.0% { translate: 0 calc(0.8379 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.34607 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  62.5% { translate: 0 calc(0.8668 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.42415 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  65.0% { translate: 0 calc(0.89084 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.4998 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  67.5% { translate: 0 calc(0.91099 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.57159 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  70.0% { translate: 0 calc(0.92797 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.63855 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  72.5% { translate: 0 calc(0.9423 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.70007 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  75.0% { translate: 0 calc(0.9544 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.75576 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  77.5% { translate: 0 calc(0.96458 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.80544 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  80.0% { translate: 0 calc(0.9731 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.84908 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  82.5% { translate: 0 calc(0.98016 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.88672 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  85.0% { translate: 0 calc(0.98593 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.91852 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  87.5% { translate: 0 calc(0.99056 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.94466 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  90.0% { translate: 0 calc(0.99415 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.9654 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  92.5% { translate: 0 calc(0.99681 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.981 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  95.0% { translate: 0 calc(0.99862 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.99177 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  97.5% { translate: 0 calc(0.99967 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.99799 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  100.0% { translate: 0 calc(1.0 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 1.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+}
+
+@keyframes phone-up-with-bar {
+  0.0% { translate: 0 calc(1.0 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 1.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  2.5% { translate: 0 calc(0.99956 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.99736 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  5.0% { translate: 0 calc(0.99818 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.98912 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  7.5% { translate: 0 calc(0.99575 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.97475 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  10.0% { translate: 0 calc(0.99214 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.95375 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  12.5% { translate: 0 calc(0.9872 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.92562 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  15.0% { translate: 0 calc(0.98075 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.88991 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  17.5% { translate: 0 calc(0.97255 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.84621 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  20.0% { translate: 0 calc(0.96233 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.79422 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  22.5% { translate: 0 calc(0.94971 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.73376 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  25.0% { translate: 0 calc(0.93423 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.66485 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  27.5% { translate: 0 calc(0.91526 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.58784 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  30.0% { translate: 0 calc(0.89193 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.50349 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  32.5% { translate: 0 calc(0.86305 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.41327 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  35.0% { translate: 0 calc(0.82689 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.31966 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  37.5% { translate: 0 calc(0.7809 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.22677 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  40.0% { translate: 0 calc(0.72148 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.14104 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  42.5% { translate: 0 calc(0.64456 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.07171 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  45.0% { translate: 0 calc(0.55022 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.02775 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  47.5% { translate: 0 calc(0.45106 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00842 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  50.0% { translate: 0 calc(0.36423 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00233 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  52.5% { translate: 0 calc(0.295 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00066 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  55.0% { translate: 0 calc(0.24058 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.00019 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  57.5% { translate: 0 calc(0.19723 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 6e-05 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  60.0% { translate: 0 calc(0.1621 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 2e-05 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  62.5% { translate: 0 calc(0.1332 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 1e-05 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  65.0% { translate: 0 calc(0.10916 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  67.5% { translate: 0 calc(0.08901 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  70.0% { translate: 0 calc(0.07203 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  72.5% { translate: 0 calc(0.0577 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  75.0% { translate: 0 calc(0.0456 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  77.5% { translate: 0 calc(0.03542 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  80.0% { translate: 0 calc(0.0269 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  82.5% { translate: 0 calc(0.01984 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  85.0% { translate: 0 calc(0.01407 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  87.5% { translate: 0 calc(0.00944 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  90.0% { translate: 0 calc(0.00585 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  92.5% { translate: 0 calc(0.00319 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  95.0% { translate: 0 calc(0.00138 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  97.5% { translate: 0 calc(0.00033 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+  100.0% { translate: 0 calc(0.0 * (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390) + 0.0 * (100lvh - (778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390))); }
+}
+
+/* HI opened from the WORKS list: it's there straight away under the list */
+@media (max-width: 700px) {
+  body.is-phone-hi-instant .phone-hi {
+    transition: none !important;
+    --hi-start: 0px;
+  }
+
+  @starting-style {
+    body.is-phone-hi-instant .phone-hi,
+    html.is-phone-home-page body.is-phone-hi-instant.is-phone-hi-open .phone-hi {
+      transform: none !important;
+    }
+  }
+}

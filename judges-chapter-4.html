@@ -15,7 +15,7 @@
       if (!event.viewTransition || !way || innerWidth > 700) return;
       var root = document.documentElement;
       root.classList.add("is-rolling-" + way);
-      if (way === "up-clean") root.classList.add("is-rolling-up");   // (it rolls up like "up")
+      if (way === "up-clean" || way === "up-home") root.classList.add("is-rolling-up");   // (it rolls up like "up")
       if (document.body) document.body.classList.remove("is-sliding-in");   // it doesn't need to slide in by itself too
       var done = function () { root.classList.remove("is-rolling-" + way, "is-rolling-up"); };
       event.viewTransition.finished.then(done, done);
@@ -36,7 +36,7 @@
 
   <link rel="preload" as="image" href="images/judges-chapter-4/animation-poster-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
   <link rel="preload" as="image" href="images/judges-chapter-4/animation-poster.jpg" media="(min-width: 701px)" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=169">
+  <link rel="stylesheet" href="styles.css?v=171">
 </head>
 <body class="project-page">
 
@@ -590,7 +590,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=139"></script>
+  <script src="script.js?v=141"></script>
 
 </body>
 </html>

@@ -1631,6 +1631,11 @@ function movePhoneBar(where, instant = false) {
     phoneBar.classList.remove("is-instant");
   }
   if (isPhoneHome) {
+    // The HI page's top edge stays at the bar while it glides
+    document.querySelectorAll(".phone-hi").forEach((hi) => {
+      hi.style.setProperty("--hi-shift", `${phoneBarTop(where) - phoneBarTop("top")}px`);
+      hi.style.setProperty("--hi-start", `${phoneBarTop("middle") - phoneBarTop("top")}px`);
+    });
     document.querySelectorAll(".phone-works").forEach((list) => {
       // the list really is at the top
       list.style.transform = `translateY(${phoneBarTop(where) - phoneBarTop("top")}px)`;
@@ -1652,6 +1657,16 @@ if (phoneBar) {
 // Opening WORKS while HI is open keeps HI behind the list (blurred), and closing the list
 // goes back to HI
 function setPhoneOpen(which) {
+  // HI from an open WORKS list: HI is already there under the list (no sliding up from the
+  // bottom), and the list rolls up into the bar to show it
+  const hiUnderWorks = which === "hi" && document.body.classList.contains("is-phone-works-open") &&
+    !document.body.classList.contains("is-phone-hi-open");
+  document.body.classList.toggle("is-phone-hi-instant", hiUnderWorks);
+  if (hiUnderWorks) setTimeout(() => document.body.classList.remove("is-phone-hi-instant"), 1000);
+  // Opening HI: it always starts as it first was, with the panel down
+  if (which === "hi" && !document.body.classList.contains("is-phone-hi-open")) {
+    document.querySelectorAll(".phone-hi .phone-scroll").forEach((box) => { box.scrollTop = 0; });
+  }
   document.querySelectorAll(".phone-works__row.is-tapped").forEach((row) => row.classList.remove("is-tapped"));
   const hiStaysBehind = which === "works" && document.body.classList.contains("is-phone-hi-open");
   document.body.classList.toggle("is-phone-works-open", which === "works");
@@ -1771,7 +1786,7 @@ async function phoneOpenProject(href) {
   if (overlayOpen) document.body.classList.add("is-phone-leaving-blurred");
   sessionStorage.removeItem("page-slid-in");   // (if the browser can't animate page changes, the project slides itself in)
   try {
-    sessionStorage.setItem("phone-transition", overlayOpen ? "up-clean" : "up");
+    sessionStorage.setItem("phone-transition", overlayOpen && !isPhoneHome ? "up-clean" : (isPhoneHome ? "up-home" : "up"));
     // the real screen height and where the bottom of the WORKS list is, for the new page (at the
     // moment it appears it can't measure them itself yet)
     const list = document.querySelector(".phone-works");
