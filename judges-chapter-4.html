@@ -17,10 +17,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
   <link rel="preload" as="image" href="images/judges-chapter-4/animation-poster-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/project/new-pause-play.png" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/project/new-pause-play-hover.svg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/judges-chapter-4/cover-mockup-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=142">
+  <link rel="preload" as="image" href="images/judges-chapter-4/animation-poster.jpg" media="(min-width: 701px)" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=143">
 </head>
 <body class="project-page">
 
@@ -120,7 +118,7 @@
 
           <!-- The comic video ("Comp 1"): click to play or pause. The poster (its first frame)
                shows straight away, so the video does not flicker while it loads -->
-          <video class="project-strip__piece project-video" style="--x: 721; --y: 130.04; --w: 868; --h: 642.963" src="images/judges-chapter-4/animation.mp4" poster="images/judges-chapter-4/animation-poster.jpg" preload="none" muted playsinline aria-label="The Judges, Chapter 4 comic. Click to play or pause"></video>
+          <video class="project-strip__piece project-video" style="--x: 721; --y: 130.04; --w: 868; --h: 642.963" src="images/judges-chapter-4/animation.mp4" data-poster="images/judges-chapter-4/animation-poster.jpg" preload="none" muted playsinline aria-label="The Judges, Chapter 4 comic. Click to play or pause"></video>
           <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
                Over the video it changes to "new pause play hover" (orange) -->
           <img loading="lazy" class="project-video__play" style="--x: 1119; --y: 408.05; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
@@ -262,18 +260,18 @@
     -->
     <!-- On the phone the page scrolls inside this box (not the whole browser page) -->
     <div class="phone-scroll">
-    <section class="phone-project" style="--h: 2877">
+    <section class="phone-project" style="--h: 2979">
 
       <!-- The information -->
       <p class="phone-text phone-text--label" style="--x: 18; --y: 88; --w: 55">Project</p>
       <h1 class="phone-title" style="--x: 18; --y: 106">JUDGES<br>CHAPTER 4</h1>
       <p class="phone-text" style="--x: 146; --y: 572; --w: 226">Inspired by Judges Chapter 4, this comic book reimagines the story of Yael and Sisera.<br><br>Traditionally, Yael is celebrated for her decisive act of violence in killing Sisera. I chose to reverse that moment.<br>In this version, Yael spares Sisera, and her hesitation leads to devastating consequences. The change allows me to question heroism, morality, and the fragile line between compassion and destruction in times of war.</p>
-      <p class="phone-text phone-text--label" style="--x: 18; --y: 1713; --w: 53">Year</p>
-      <p class="phone-text" style="--x: 146; --y: 1713; --w: 53">2026</p>
-      <p class="phone-text phone-text--label" style="--x: 18; --y: 1740; --w: 53">Field</p>
-      <p class="phone-text" style="--x: 146; --y: 1740; --w: 171">Illustration. Print.</p>
-      <p class="phone-text phone-text--label" style="--x: 18; --y: 1827; --w: 87">Challenges</p>
-      <ul class="phone-text phone-text--list" style="--x: 137; --y: 1827; --w: 236">
+      <p class="phone-text phone-text--label" style="--x: 18; --y: 1758; --w: 53">Year</p>
+      <p class="phone-text" style="--x: 146; --y: 1758; --w: 53">2026</p>
+      <p class="phone-text phone-text--label" style="--x: 18; --y: 1785; --w: 53">Field</p>
+      <p class="phone-text" style="--x: 146; --y: 1785; --w: 171">Illustration. Print.</p>
+      <p class="phone-text phone-text--label" style="--x: 18; --y: 1872; --w: 87">Challenges</p>
+      <ul class="phone-text phone-text--list" style="--x: 137; --y: 1872; --w: 236">
         <li>Finding an interesting way to change a historical story that bring on a new meaning without being clique.</li>
         <li>This was a new style, so the challenge was understanding what brushes, textures and details to include on a digital drawing.</li>
       </ul>
@@ -281,22 +279,22 @@
       <!-- The video: tap to play or pause. The "pause play" symbol sits in the middle. It turns orange for a moment
            when tapped, then the video starts -->
       <video class="phone-piece phone-video" style="--x: 18; --y: 264; --w: 355.05; --h: 263" src="images/judges-chapter-4/animation.mp4#t=0.1" poster="images/judges-chapter-4/animation-poster-phone.jpg" preload="none" muted playsinline aria-label="The Judges, Chapter 4 comic. Tap to play or pause."></video>
-      <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play" style="--x: 177.948; --y: 374.269; --w: 35.154; --h: 42.462" src="images/project/new-pause-play.png" alt="">
-      <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play phone-video__play--orange" style="--x: 177.948; --y: 374.271; --w: 35.154; --h: 42.448" src="images/project/new-pause-play-hover.svg" alt="">
+      <img decoding="sync" class="phone-piece phone-video__play" style="--x: 177.948; --y: 374.269; --w: 35.154; --h: 42.462" src="images/project/new-pause-play.png" alt="">
+      <img decoding="sync" class="phone-piece phone-video__play phone-video__play--orange" style="--x: 177.948; --y: 374.271; --w: 35.154; --h: 42.448" src="images/project/new-pause-play-hover.svg" alt="">
 
       <!-- The pictures -->
-      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 17; --y: 959; --w: 193.752; --h: 145.314" src="images/judges-chapter-4/cover-mockup-phone.jpg" alt="The comic's cover">
-      <div class="phone-piece phone-crop" style="--x: 177; --y: 1350; --w: 193.752; --h: 145.35">
+      <img decoding="sync" class="phone-piece" style="--x: 24; --y: 925; --w: 254.667; --h: 191" src="images/judges-chapter-4/cover-mockup-phone.jpg" alt="The comic's cover">
+      <div class="phone-piece phone-crop" style="--x: 117; --y: 1323; --w: 255; --h: 191.25">
         <img loading="lazy" style="--crop: -52.02% auto auto -122.47%; --crop-w: 242.2%; --crop-h: 403.55%" src="images/judges-chapter-4/instagram-posts-phone.png" alt="Instagram posts for the comic">
       </div>
-      <div class="phone-piece phone-crop" style="--x: 93; --y: 1469; --w: 194.18; --h: 145.528">
+      <div class="phone-piece phone-crop" style="--x: 57; --y: 1501; --w: 255; --h: 191.25">
         <img loading="lazy" style="--crop: -259.47% auto auto -19.73%; --crop-w: 242.2%; --crop-h: 403.94%" src="images/judges-chapter-4/instagram-posts-phone.png" alt="Instagram posts for the comic">
       </div>
-      <img loading="lazy" class="phone-piece" style="--x: 18; --y: 2244; --w: 299; --h: 224.25" src="images/judges-chapter-4/books-mockup-phone.jpg" alt="Copies of the comic book">
+      <img loading="lazy" class="phone-piece" style="--x: 31; --y: 2294; --w: 324; --h: 243" src="images/judges-chapter-4/books-mockup-phone.jpg" alt="Copies of the comic book">
 
       <!-- Previous and next project. A tap opens it: it slides up (like from the home page).
            Coming Soon frames are not links -->
-      <a class="phone-piece phone-nav" href="grunge.html" aria-label="Previous project: Grunge" style="--x: 10; --y: 2671; --w: 108.781; --h: 116.709">
+      <a class="phone-piece phone-nav" href="grunge.html" aria-label="Previous project: Grunge" style="--x: 10; --y: 2756; --w: 108.781; --h: 116.709">
         <div class="project-nav__layer" style="--inset: 8.91% 11.84% 73.43% 12.52%"><img loading="lazy" src="images/judges-chapter-4/previous-grunge-1.svg" alt=""></div>
         <div class="project-nav__layer" style="--inset: 8.54% 87.61% 87.37% 7.62%"><img loading="lazy" src="images/judges-chapter-4/previous-grunge-2.svg" alt=""></div>
         <div class="project-nav__layer" style="--inset: 27.47% 84.8% 71.19% 10.71%"><img loading="lazy" src="images/judges-chapter-4/previous-grunge-3.svg" alt=""></div>
@@ -320,7 +318,7 @@
         <div class="project-nav__layer" style="--inset: 32.22% 83.96% 64.99% 15.93%"><img loading="lazy" src="images/judges-chapter-4/previous-grunge-21.svg" alt=""></div>
         <p class="phone-nav__text" style="--inset: 32.56% 23.7% 34.88% 27.58%"><span class="project-nav__label">PREVIOUS PROJECT</span><br><span class="phone-nav__name">Grunge</span></p>
       </a>
-      <a class="phone-piece phone-nav" href="mtv-ident.html" aria-label="Next project: MTV Ident" style="--x: 267; --y: 2597; --w: 106.49; --h: 208.769">
+      <a class="phone-piece phone-nav" href="mtv-ident.html" aria-label="Next project: MTV Ident" style="--x: 267; --y: 2682; --w: 106.49; --h: 208.769">
         <div class="project-nav__layer" style="--inset: 7.91% 6.11% 7.46% 10.81%"><img loading="lazy" src="images/judges-chapter-4/next-mtv-1.svg" alt=""></div>
         <div class="project-nav__layer" style="--inset: 10.51% 11.79% 12.29% 22.77%"><img loading="lazy" src="images/judges-chapter-4/next-mtv-2.svg" alt=""></div>
         <div class="project-nav__layer" style="--inset: 36.61% 56% 12.5% 20.62%"><img loading="lazy" src="images/judges-chapter-4/next-mtv-3.svg" alt=""></div>
@@ -343,7 +341,7 @@
 
       <!-- "flip back button": glides back up to the top. It turns orange for a moment when tapped.
            In Figma the arrow is turned to point up -->
-      <button class="phone-piece phone-flip" style="--x: 179.996; --y: 2724; --w: 30.748; --h: 34.999" type="button" aria-label="Back to the top">
+      <button class="phone-piece phone-flip" style="--x: 179.996; --y: 2808.999; --w: 30.748; --h: 34.999" type="button" aria-label="Back to the top">
         <img loading="lazy" class="phone-flip__image" src="images/phone/flip-back.svg" alt="">
         <img loading="lazy" class="phone-flip__image phone-flip__image--orange" src="images/phone/flip-back-orange.svg" alt="">
       </button>
@@ -351,13 +349,13 @@
       <!-- The top pictures: on top of everything, they move a bit faster than the rest
            when you scroll, which gives the page depth (script.js) -->
       <div class="phone-project__fast">
-        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 24; --y: 1139; --w: 187.435; --h: 275">
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 14; --y: 1132; --w: 195.614; --h: 287">
           <img loading="lazy" style="--crop: -158.06% auto auto -170.23%; --crop-w: 535.57%; --crop-h: 258.06%" src="images/judges-chapter-4/artwork-479.png" alt="A drawing from the comic">
         </div>
-        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 9; --y: 2048; --w: 371; --h: 150.315">
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 9; --y: 2101; --w: 371; --h: 150.315">
           <img loading="lazy" style="--crop: 0% auto auto -96.86%; --crop-w: 196.86%; --crop-h: 343.49%" src="images/judges-chapter-4/artwork-482.png" alt="A drawing from the comic">
         </div>
-        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 137; --y: 2416; --w: 146; --h: 152.822">
+        <div class="phone-piece phone-crop phone-fast-piece" style="--x: 169; --y: 2475; --w: 146; --h: 152.822">
           <img loading="lazy" style="--crop: -20.54% auto auto -514.39%; --crop-w: 655.7%; --crop-h: 442.86%" src="images/judges-chapter-4/spreads-4.png" alt="A spread from the comic">
         </div>
       </div>
@@ -502,33 +500,33 @@
       <div class="phone-hi__stage">
         <!-- Me, moving ("Untitled_Artwork 89"): the two pictures of the GIF, switched by the same timer as
              the little drawings, so they always move together -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: -107; --y: 261; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving-1.png" alt="A drawing of me, moving"></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: -107; --y: 261; --w: 517.333; --h: 291"><img style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving-2.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: -107; --y: 261; --w: 517.333; --h: 291"><img loading="lazy" style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving-1.png" alt="A drawing of me, moving"></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: -107; --y: 261; --w: 517.333; --h: 291"><img loading="lazy" style="--iw: 100%; --ih: 100%; --il: 0%; --it: 0%" src="images/hi/me-moving-2.png" alt=""></div>
         <h2 class="phone-title phone-hi__title" style="--x: 20; --y: 88">HIIII I’M YAEL</h2>
 
         <!-- The little drawings. Each one changes to its "Hi page hover" drawing (from the computer) and
              back, in time with the GIF of me (styles.css: phone-doodle-swap) -->
         <!-- mic -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: -4.502; --y: 645.227; --w: 144; --h: 95.625; --rotate: 16.24deg"><img style="--iw: 612.5%; --ih: 922.35%; --il: -372.66%; --it: -343.53%" src="images/hi/mic-sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 42.107; --y: 648.14; --w: 79; --h: 114; --rotate: -17.22deg"><img style="--iw: 1097.47%; --ih: 760.53%; --il: -737.97%; --it: -271.05%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: -4.502; --y: 645.227; --w: 144; --h: 95.625; --rotate: 16.24deg"><img loading="lazy" style="--iw: 612.5%; --ih: 922.35%; --il: -372.66%; --it: -343.53%" src="images/hi/mic-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 42.107; --y: 648.14; --w: 79; --h: 114; --rotate: -17.22deg"><img loading="lazy" style="--iw: 1097.47%; --ih: 760.53%; --il: -737.97%; --it: -271.05%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- cheese -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 275; --y: 407; --w: 90.625; --h: 70"><img style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 271; --y: 391.92; --w: 132; --h: 104.077"><img style="--iw: 833.65%; --ih: 1057.32%; --il: -72.12%; --it: -229.27%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 275; --y: 407; --w: 90.625; --h: 70"><img loading="lazy" style="--iw: 1226.21%; --ih: 1587.5%; --il: -111.03%; --it: -366.96%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 271; --y: 391.92; --w: 132; --h: 104.077"><img loading="lazy" style="--iw: 833.65%; --ih: 1057.32%; --il: -72.12%; --it: -229.27%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- cow -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 257; --y: 218; --w: 92.432; --h: 121.338"><img style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 259.52; --y: 188; --w: 80.427; --h: 156"><img style="--iw: 747.41%; --ih: 385.33%; --il: -152.59%; --it: -135.11%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 257; --y: 218; --w: 92.432; --h: 121.338"><img loading="lazy" style="--iw: 646.55%; --ih: 492.52%; --il: -129.09%; --it: -197.23%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 259.52; --y: 188; --w: 80.427; --h: 156"><img loading="lazy" style="--iw: 747.41%; --ih: 385.33%; --il: -152.59%; --it: -135.11%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- drogo -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 20; --y: 414; --w: 93.252; --h: 92.091"><img style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 31; --y: 414; --w: 95; --h: 80"><img style="--iw: 721.05%; --ih: 856.25%; --il: -195.79%; --it: -198.75%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 20; --y: 414; --w: 93.252; --h: 92.091"><img loading="lazy" style="--iw: 737.76%; --ih: 747.06%; --il: -188.8%; --it: -173.53%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 31; --y: 414; --w: 95; --h: 80"><img loading="lazy" style="--iw: 721.05%; --ih: 856.25%; --il: -195.79%; --it: -198.75%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- ted-lasso -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 247; --y: 620; --w: 73; --h: 85.943"><img style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 247; --y: 622; --w: 107; --h: 87"><img style="--iw: 854.21%; --ih: 1050.57%; --il: -351.4%; --it: -357.47%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 247; --y: 620; --w: 73; --h: 85.943"><img loading="lazy" style="--iw: 1260.99%; --ih: 1071.08%; --il: -519.15%; --it: -362.65%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 247; --y: 622; --w: 107; --h: 87"><img loading="lazy" style="--iw: 854.21%; --ih: 1050.57%; --il: -351.4%; --it: -357.47%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- footy -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 37; --y: 191; --w: 63.439; --h: 53"><img style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 37; --y: 175; --w: 76; --h: 57"><img style="--iw: 597.37%; --ih: 796.49%; --il: -298.68%; --it: -149.12%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 37; --y: 191; --w: 63.439; --h: 53"><img loading="lazy" style="--iw: 750.21%; --ih: 897.98%; --il: -380.59%; --it: -177.78%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 37; --y: 175; --w: 76; --h: 57"><img loading="lazy" style="--iw: 597.37%; --ih: 796.49%; --il: -298.68%; --it: -149.12%" src="images/hi/hover-sheet.png" alt=""></div>
         <!-- hand -->
-        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 156; --y: 582; --w: 77.564; --h: 68.236"><img style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
-        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 152; --y: 547; --w: 79; --h: 105"><img style="--iw: 1097.47%; --ih: 825.71%; --il: -817.72%; --it: -467.62%" src="images/hi/hover-sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--first" style="--x: 156; --y: 582; --w: 77.564; --h: 68.236"><img loading="lazy" style="--iw: 1125.32%; --ih: 1279.14%; --il: -843.67%; --it: -776.26%" src="images/hi/sheet.png" alt=""></div>
+        <div class="phone-doodle phone-doodle--still phone-doodle--second" style="--x: 152; --y: 547; --w: 79; --h: 105"><img loading="lazy" style="--iw: 1097.47%; --ih: 825.71%; --il: -817.72%; --it: -467.62%" src="images/hi/hover-sheet.png" alt=""></div>
       </div>
 
       <!-- "phone top frame hi": it peeks in at the bottom of the screen and comes up over the
@@ -574,7 +572,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=118"></script>
+  <script src="script.js?v=121"></script>
 
 </body>
 </html>

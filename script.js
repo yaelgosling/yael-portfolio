@@ -95,7 +95,8 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    mouse, and everything drifts slowly the other way, a little. Things further from the middle
    move more (with a bit of randomness), which gives a feeling of depth. When the phone is held
    still they glide back to their places. Gentle: no bouncing, turning or shaking */
-const PHONE_MAX_MOVE = 195;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const PHONE_MAX_MOVE = 140;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const TILT_SMOOTHING = 0.12; // how quickly the frames follow a change in tilt, per screen refresh (smaller = smoother)
 const PHONE_FULL_TILT = 30;  // tilting this much (degrees) is like the mouse at the edge of the screen
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
@@ -116,8 +117,13 @@ function driftWithPhone(elements, width, height) {
 }
 
 const swayGroups = [];   // every group of things that drifts, with its isActive()
-let tiltX = 0;           // how the phone is tilted, like the mouse: from -0.5 to 0.5
+let tiltX = 0;           // how the phone is tilted, like the mouse: from -0.5 to 0.5 (smoothed)
 let tiltY = 0;
+let sensorX = 0;         // the tilt as the phone's sensor last said it (it comes in small jumps)
+let sensorY = 0;
+// Tilting further and further only ever brings a frame softly towards its furthest point: it
+// never stops dead there (that looked like the frames bouncing off a wall)
+const softLimit = (value) => 0.5 * Math.tanh(value * 2);
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const phoneFrames = [...document.querySelectorAll(".phone-frame")];
@@ -145,6 +151,10 @@ function swayStep(now) {
   const steps = Math.min((now - lastStep) / 16.7, 3);   // about 1 per screen refresh
   lastStep = now;
   const ease = 1 - Math.pow(1 - EASING, steps);
+  // The sensor's little jumps are smoothed out first, so even a quick tilt glides
+  const follow = 1 - Math.pow(1 - TILT_SMOOTHING, steps);
+  tiltX += (sensorX - tiltX) * follow;
+  tiltY += (sensorY - tiltY) * follow;
 
   swayGroups.forEach(({ items, isActive }) => {
     const active = isActive();
@@ -165,13 +175,17 @@ if (swayGroups.length) {
   // Tilting: side to side counts from upright; forwards and backwards count from the way you
   // usually hold it (which slowly becomes the new "flat")
   let usualForwards = null;
-  const limit = (value) => Math.max(-0.5, Math.min(0.5, value));
   window.addEventListener("deviceorientation", (event) => {
     if (event.gamma === null || event.beta === null) return;   // no tilt sensor
     if (usualForwards === null) usualForwards = event.beta;
     usualForwards += (event.beta - usualForwards) * TILT_SETTLE;
-    tiltX = limit(event.gamma / PHONE_FULL_TILT / 2);
-    tiltY = limit((event.beta - usualForwards) / PHONE_FULL_TILT / 2);
+    const nextX = softLimit(event.gamma / PHONE_FULL_TILT / 2);
+    const nextY = softLimit((event.beta - usualForwards) / PHONE_FULL_TILT / 2);
+    // A phone held almost upright sometimes says it flipped from one side right over to the
+    // other in an instant: that isn't a real tilt, so it's left out
+    if (Math.abs(nextX - sensorX) > 0.6 || Math.abs(nextY - sensorY) > 0.6) return;
+    sensorX = nextX;
+    sensorY = nextY;
   });
 
   // iPhones only share the tilt after asking ("Allow motion and orientation access?"),
@@ -738,7 +752,9 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
 // A mouse wheel's isn't (or it scrolls by lines)
 function isMouseWheel(event) {
   if (event.deltaMode !== 0) return true;
-  if (event.wheelDeltaY) return event.wheelDeltaY !== event.deltaY * -3;
+  // (allowing for rounding: trackpads often send steps like 4.5, which then don't match exactly)
+  if (event.wheelDeltaY) return Math.abs(event.wheelDeltaY + event.deltaY * 3) > 3;
+  if (event.wheelDeltaX) return Math.abs(event.wheelDeltaX + event.deltaX * 3) > 3;
   return false;
 }
 
@@ -761,104 +777,86 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
 
 
 /* =========================================
-   Project page (computer): scrolling down with the mouse wheel or the trackpad moves the strip
-   sideways (down = right, up = left; with a mouse wheel the other way round, see above). At the end of the strip, scrolling on down brings up
-   "Reach Out" as before; scrolling up from Reach Out goes back down to the strip, and then
-   moves the strip back to the left. Sideways swipes on the trackpad still work as before
+   Project page (computer): scrolling moves along one path: first the strip sideways, then
+   "Reach Out" up from the bottom (and the same way back). Down (or a swipe to the right) goes
+   forwards; with a mouse wheel it's the other way round (see above).
+
+   It works swipe by swipe:
+   - A swipe is everything from the moment the fingers start until the trackpad has finished
+     gliding (or one turn of a mouse wheel). Whether it's a mouse or a trackpad, and whether the
+     swipe is sideways or up-down, is decided for the whole swipe, so it never changes halfway
+     (that made Reach Out shake).
+   - Once Reach Out is all the way up, swiping on does nothing: it stays still.
+   - A swipe that brings Reach Out all the way down stops there, however big it is: the
+     project only starts moving back with the next swipe
    ========================================= */
 document.querySelectorAll(".project-strip").forEach((strip) => {
-  // One swipe keeps one direction from start to end. (A trackpad swipe is never perfectly straight:
-  // some of its little steps are more up-down than sideways. Each one used to pick its own way,
-  // so "Reach Out" was pushed up and pulled down in turns and shook as it moved)
-  // (The way is what the swipe has done most so far, so one odd step can't turn it around)
-  let swipeSideways = 0;
-  let swipeUpDown = 0;
+  let swipe = null;
   let lastWheelAt = -Infinity;
-  // A stop between "Reach Out" and the work: once Reach Out is all the way down, the rest of that
-  // scroll (and the trackpad's gliding after it) does nothing, so the next and previous frames
-  // stay still and can be clicked. Only a new scroll moves the work back towards the start
-  // (The trackpad keeps gliding after the fingers lift, and that gliding only ever slows down.
-  // So the stop ends as soon as the movement gets faster again, turns the other way, or pauses:
-  // that's a new swipe)
-  let reachWasOpen = false;
-  let holdStrip = false;
-  let lastSize = 0;
-  let lastSign = 0;
+
+  // Is this the start of a new swipe? After a pause, or when the movement turns the other way,
+  // or when the trackpad's gliding had slowed right down and then the fingers swipe again
+  function isNewSwipe(event, size, sign) {
+    if (!swipe) return true;
+    if (event.timeStamp - lastWheelAt > 180) return true;
+    if (sign && swipe.sign && sign !== swipe.sign && size >= 4) return true;
+    if (swipe.slowedDown && size >= 12 && size > swipe.slowest * 3) return true;
+    return false;
+  }
+
   window.addEventListener("wheel", (event) => {
     if (!strip.offsetWidth) return;                                 // the phone version is showing
-    const pause = event.timeStamp - lastWheelAt;
-    if (pause > 160) swipeSideways = swipeUpDown = 0;               // a new swipe
-    const step = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-    const size = Math.abs(step);
-    const sign = Math.sign(step);
-    if (holdStrip && (pause > 300 || size > lastSize * 1.3 + 2 || (sign && lastSign && sign !== lastSign))) {
-      holdStrip = false;                                            // a new swipe after the stop
-    }
-    lastSize = size;
-    if (sign) lastSign = sign;
-    lastWheelAt = event.timeStamp;
-    const reachOpenNow = window.scrollY > 2;
-    if (reachWasOpen && !reachOpenNow) holdStrip = true;            // Reach Out has just gone all the way down
-    reachWasOpen = reachOpenNow;
-    if (holdStrip && !reachOpenNow && !event.ctrlKey) {
-      event.preventDefault();
-      return;
-    }
-    swipeSideways += Math.abs(event.deltaX);
-    swipeUpDown += Math.abs(event.deltaY);
-    const swipeWay = swipeSideways > swipeUpDown ? "sideways" : "up-down";
     if (event.ctrlKey) return;                                      // zooming with the trackpad
     // WORKS or HI is open: the page underneath stays frozen until it's closed
     if (document.body.matches(".is-index-open, .is-hi-open")) {
       event.preventDefault();
       return;
     }
-    if (swipeWay === "sideways") {
-      // A sideways swipe moves the strip as before. At the end of the strip, swiping on to the
-      // right brings up "Reach Out" from the bottom; once it's up, swiping left puts it away again
-      const sideways = event.deltaX * (event.deltaMode === 1 ? 40 : 1);
-      const end = strip.scrollWidth - strip.clientWidth;
-      const reachOpen = window.scrollY > 2;
-      if (reachOpen || (sideways > 0 && strip.scrollLeft >= end - 2)) {
-        event.preventDefault();
-        window.scrollBy(0, sideways);
-      }
-      return;
-    }
-    // A real mouse wheel turns the other way round from the trackpad (the Mac's "natural"
-    // scrolling feels right on the trackpad but backwards on a mouse), so for a mouse it's flipped
-    const mouse = isMouseWheel(event);
-    // How far: trackpads give pixels, some mice give lines (about 40 pixels each)
-    let amount = event.deltaY * (event.deltaMode === 1 ? 40 : 1);
-    if (mouse) amount = -amount;
+    event.preventDefault();
 
-    // Reach Out is open: the page scrolls (with a mouse, the flipped way)
-    if (window.scrollY > 2) {
-      if (mouse) {
-        event.preventDefault();
-        window.scrollBy({ top: amount, behavior: "smooth" });
-      }
-      return;
+    const lines = event.deltaMode === 1 ? 40 : 1;                   // some mice count in lines
+    const dx = event.deltaX * lines;
+    const dy = event.deltaY * lines;
+    const size = Math.max(Math.abs(dx), Math.abs(dy));
+    if (!size) return;
+
+    if (isNewSwipe(event, size, 0)) {
+      swipe = { mouse: isMouseWheel(event), sideways: 0, upDown: 0, sign: 0, fastest: size, slowest: size, slowedDown: false, closedReach: false };
     }
+    lastWheelAt = event.timeStamp;
+    swipe.sideways += Math.abs(dx);
+    swipe.upDown += Math.abs(dy);
+    // Forwards or backwards along the path
+    let amount = swipe.sideways > swipe.upDown ? dx : (swipe.mouse ? -dy : dy);
+    const sign = Math.sign(amount);
+    if (swipe.sign && sign && sign !== swipe.sign && size >= 4) {
+      // turned the other way: that's a new swipe
+      swipe = { mouse: swipe.mouse, sideways: Math.abs(dx), upDown: Math.abs(dy), sign: 0, fastest: size, slowest: size, slowedDown: false, closedReach: false };
+      amount = swipe.sideways > swipe.upDown ? dx : (swipe.mouse ? -dy : dy);
+    }
+    if (!swipe.sign) swipe.sign = Math.sign(amount);
+    swipe.fastest = Math.max(swipe.fastest, size);
+    swipe.slowest = Math.min(swipe.slowest, size);
+    if (size <= Math.max(2, swipe.fastest * 0.2)) swipe.slowedDown = true;
+    if (!amount) return;
+    const smooth = swipe.mouse || Math.abs(amount) >= 50;           // a mouse moves in big steps, so it glides
 
     const end = strip.scrollWidth - strip.clientWidth;
-    const atEnd = strip.scrollLeft >= end - 2;
-    const atStart = strip.scrollLeft <= 2;
-    if (amount > 0 && atEnd) {                                      // at the end: Reach Out comes up
-      if (mouse) {
-        event.preventDefault();
-        window.scrollBy({ top: amount, behavior: "smooth" });
+    const reachUp = window.scrollY > 2;
+    // The Reach Out part of the path
+    if (reachUp || (amount > 0 && strip.scrollLeft >= end - 2)) {
+      if (amount < 0 && window.scrollY + amount * (smooth ? 1.5 : 1) <= 2) {
+        window.scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });   // all the way down: the swipe stops here
+        swipe.closedReach = true;
+        return;
       }
+      if (swipe.closedReach) return;
+      window.scrollBy({ top: amount * (smooth ? 1.5 : 1), behavior: smooth ? "smooth" : "instant" });
       return;
     }
-    if (amount < 0 && atStart) {                                    // at the start: nothing to do
-      if (mouse) event.preventDefault();
-      return;
-    }
-
-    event.preventDefault();
-    // A mouse wheel moves in big steps, so it glides; a trackpad follows the fingers exactly
-    if (mouse || Math.abs(amount) >= 50) strip.scrollBy({ left: amount * 1.5, behavior: "smooth" });
+    // The strip part of the path (not in the swipe that just brought Reach Out down)
+    if (swipe.closedReach) return;
+    if (smooth) strip.scrollBy({ left: amount * 1.5, behavior: "smooth" });
     else strip.scrollLeft += amount;
   }, { passive: false });
 });
@@ -1841,7 +1839,7 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
 // loads its first screen: that's all it shows while it slides in
 const isComputer = !window.matchMedia("(max-width: 700px)").matches;
 function shownOnThisScreen(img) {
-  return img.offsetParent !== null || getComputedStyle(img).position === "fixed" || img.closest(".hi-page, .phone-hi");
+  return img.offsetParent !== null || getComputedStyle(img).position === "fixed" || img.closest(".phone-hi");
 }
 function loadNow(img) {
   if (img.loading === "lazy") img.loading = "eager";
@@ -1858,12 +1856,17 @@ if (!window.frameElement) {
   window.addEventListener("load", () => {
     const rest = isComputer
       ? '.project-work img[loading="lazy"], .hi-page img[loading="lazy"]'
-      : '.phone-project img[loading="lazy"]';
+      : '.phone-project img[loading="lazy"], .phone-hi img[loading="lazy"]';
     document.querySelectorAll(rest).forEach((img) => {
       if (isComputer || shownOnThisScreen(img)) loadNow(img);
     });
   });
 }
+
+// Each video's cover picture loads only in the version this screen shows (computer or phone)
+document.querySelectorAll("video[data-poster]").forEach((video) => {
+  if (video.offsetParent !== null) video.poster = video.dataset.poster;
+});
 
 // Get the next pages ready in the background a moment after this one has opened, so a tap
 // changes the page straight away: on the home page the projects (one after the other),
