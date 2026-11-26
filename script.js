@@ -983,7 +983,8 @@ document.querySelectorAll("a.project-nav, a.site-bar__process").forEach((link) =
   link.addEventListener("focus", prepareSlide);
   // PROCESS: the process page gets ready out of sight soon after this page has opened,
   // so clicking it slides the process page up straight away
-  if (link.classList.contains("site-bar__process") && !window.frameElement) {
+  // (only on a computer: phones never load other pages in the background)
+  if (link.classList.contains("site-bar__process") && !window.frameElement && !window.matchMedia("(max-width: 700px)").matches) {
     if (document.readyState === "complete") prepareSlide();
     else window.addEventListener("load", prepareSlide, { once: true });
   }
@@ -1314,6 +1315,8 @@ if (phoneHome) {
   });
 }
 
+if (phoneHome && phoneHome.offsetParent !== null) document.documentElement.classList.add("is-phone-home-page");
+
 if (phoneHome && window.frameElement) {
   // A waiting copy of the home page (rolling down from the top): the frames are already out
   phoneHome.classList.add("is-instant", "is-playful");
@@ -1620,31 +1623,17 @@ document.querySelectorAll(".phone-works-blur").forEach((blur) => {
   blur.addEventListener("click", () => setPhoneOpen(afterWorks()));
 });
 
-// A waiting copy of another page, loaded out of sight (an iframe), ready to slide in.
-// kind: "page-slide" (waits below the screen) or "page-behind" (waits behind the page)
-const phoneWaitingPages = {};
-function phonePreparePage(href, kind) {
-  if (phoneWaitingPages[href]) return phoneWaitingPages[href];
-  const page = document.createElement("iframe");
-  page.className = kind;
-  page.src = href;
-  page.tabIndex = -1;
-  page.setAttribute("aria-hidden", "true");
-  page.ready = new Promise((resolve) => page.addEventListener("load", resolve, { once: true }));
-  document.body.appendChild(page);
-  phoneWaitingPages[href] = page;
-  return page;
+// The phone doesn't load other pages in the background any more (they slowed the page you're on
+// down, and swiping one while it slid in made the real page jump back to the top). A tap goes
+// straight to the real page, and that page slides itself in. This stands in for the old waiting
+// copy, so the rest of the code works as before
+function phonePreparePage() {
+  return { ready: Promise.resolve(), classList: { add() {}, remove() {} } };
 }
 
-// Waits for a waiting page to load (it usually loaded already, see below), so it never slides
-// in half-drawn. If it takes very long, it slides in anyway
-function phonePageReady(page, longest = 800) {
-  return Promise.race([page.ready, new Promise((resolve) => setTimeout(resolve, longest))]);
-}
 
 // Opens a project: it slides up from the bottom while the bar glides to the top
 // (and an open list rolls up into the bar at the same time)
-const PHONE_LONGEST_WAIT = 500;    // the longest it waits for a project that isn't loaded yet
 // Only one page change at a time: once one has started, more taps do nothing (no pile of pages)
 let phoneNavigating = false;
 function phoneStartNavigating() {
@@ -1699,23 +1688,12 @@ window.addEventListener("pagehide", () => clearTimeout(phoneLeaveTimer));
 
 async function phoneOpenProject(href) {
   if (!phoneStartNavigating()) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    phoneLeaveTo(href);
-    return;
-  }
-  const page = phonePreparePage(href, "page-slide");
-  // The project is waiting, ready, out of sight. If it couldn't load, check the internet first
-  const ready = await Promise.race([page.ready.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), PHONE_LONGEST_WAIT))]);
-  if (!ready && !navigator.onLine) await phoneWhenReachable(href);
-  page.classList.add("is-sliding");
+  if (!navigator.onLine) await phoneWhenReachable(href);   // no internet: the reload page, then on
   document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
   movePhoneBar("top");
-  setTimeout(async () => {
-    if (!navigator.onLine) await phoneWhenReachable(href);   // no internet: wait for it
-    sessionStorage.setItem("page-slid-in", "yes");   // the project page doesn't need to slide again
-    phoneLeaveTo(href);
-  }, PAGE_CHANGE_TIME);
+  sessionStorage.removeItem("page-slid-in");   // the project page slides itself in when it opens
+  phoneLeaveTo(href);
 }
 
 // The WORKS list. Names roll to italic (made here, like the words in the bar).
@@ -1807,26 +1785,10 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
       phoneLeaveTo(link.href);
       return;
     }
-    const page = phonePreparePage(link.href, "page-behind");
-    // If the WORKS list is open, it first rolls up into the bar, then the bar goes down
-    if (document.body.classList.contains("is-phone-works-open")) {
-      document.body.classList.remove("is-phone-works-open", "is-phone-works-over-hi");
-      await new Promise((resolve) => setTimeout(resolve, INDEX_OPEN_TIME));
-    }
-    // The home page is waiting, ready, behind. If it couldn't load, check the internet first
-    const ready = await Promise.race([page.ready.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), 400))]);
-    if (!ready && !navigator.onLine) await phoneWhenReachable(link.href);
     document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
-    document.querySelector("main").style.setProperty("--scrolled", `${window.scrollY}px`);
-    document.body.classList.remove("is-phone-reach-open");
-    document.documentElement.style.setProperty("--reach-progress", "0");
-    document.body.classList.add("is-phone-going-home");   // HOME rolls to italic, the project slides down
-    movePhoneBar("middle");
-    setTimeout(async () => {
-      if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: wait for it
-      sessionStorage.setItem("phone-home-back", "yes");
-      phoneLeaveTo(link.href);
-    }, PAGE_CHANGE_TIME);
+    if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: the reload page, then on
+    sessionStorage.setItem("phone-home-back", "yes");   // the frames are there straight away
+    phoneLeaveTo(link.href);
   });
 });
 
@@ -1873,6 +1835,7 @@ document.querySelectorAll("video[data-poster]").forEach((video) => {
 // elsewhere the home page. On a project page the home page gets ready soon (2 seconds after the
 // page opens at the latest), without waiting for every picture of the project to load first
 function prepareNextPages() {
+  return;   // (the phone no longer loads other pages in the background, see phonePreparePage)
   if (prepareNextPages.done || window.frameElement || !window.matchMedia("(max-width: 700px)").matches) return;
   prepareNextPages.done = true;
   if (isPhoneHome) {
@@ -1907,10 +1870,6 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
 // Coming back with the browser's back button: put everything back
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
-  Object.keys(phoneWaitingPages).forEach((href) => {
-    phoneWaitingPages[href].remove();
-    delete phoneWaitingPages[href];
-  });
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
     "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
   phoneChanging = false;

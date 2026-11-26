@@ -3025,3 +3025,18 @@ html:has(body.project-page) {
   white-space: nowrap;
 }
 
+
+/* The phone home page never moves when you swipe on it: the window can't scroll or bounce, and a
+   swipe on the frames doesn't move anything (taps still work) */
+@media (max-width: 700px) {
+  html.is-phone-home-page,
+  html.is-phone-home-page body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    height: 100%;
+  }
+
+  html.is-phone-home-page .phone-home {
+    touch-action: none;
+  }
+}
