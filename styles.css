@@ -9,6 +9,10 @@
   --color-blue: #5262f0;       /* card pieces */
   --color-lime: #dffe40;       /* card pieces and small labels */
 
+  /* Keyboard focus ("Focus" state in Figma): a black line around whatever you're on */
+  --focus-line: 2px;           /* how thick the line is */
+  --focus-gap: 4px;            /* the space between the line and the thing it marks */
+
   /* Fonts */
   --font-display: "Instrument Serif", Georgia, serif;
   --font-body: "Inter", Arial, sans-serif;     /* project pages */
@@ -3179,4 +3183,55 @@ html:has(body.project-page) {
 
 @keyframes phone-works-tuck-away {
   to { opacity: 0; translate: 0 -100%; }
+}
+
+/* =========================================
+   Keyboard focus: someone moving around with Tab (no mouse) always sees where they are.
+   Everything you can click gets a black line around it ("Focus" state in Figma).
+   :focus-visible means it only shows for the keyboard, never after a mouse click or a tap
+   ========================================= */
+:focus-visible {
+  outline: var(--focus-line) solid var(--color-black);
+  outline-offset: var(--focus-gap);
+}
+
+/* What happens on hover also happens on focus, so the keyboard sees the same thing as the mouse */
+.project-nav:focus-visible .project-nav__frame {
+  visibility: hidden;
+}
+
+.project-nav:focus-visible .project-nav__hover {
+  visibility: visible;
+}
+
+/* In the WORKS list the rows touch the list's edges, which would cut the line off,
+   so here the line sits just inside the row instead of around it */
+.site-index__name:focus-visible {
+  outline-offset: calc(-1 * (var(--focus-line) + var(--focus-gap)));
+}
+
+/* Opening a project from WORKS while HI is open: HI stays still behind (no rolling away) */
+@media (max-width: 700px) {
+  body.is-phone-hi-held .phone-hi {
+    display: block !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* The black line at the top of a phone project page is never blurred: it is drawn once more on
+   top of everything at the very top of the screen (over the blur behind WORKS and HI; the bar
+   and the list are below it, so it covers nothing) */
+@media (max-width: 700px) {
+  body.project-page::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: var(--project-line);
+    background-color: var(--color-black);
+    z-index: 6;
+    pointer-events: none;
+  }
 }

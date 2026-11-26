@@ -773,6 +773,19 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
     const step = window.innerWidth * 0.4;
     strip.scrollBy({ left: event.key === "ArrowRight" ? step : -step, behavior: "smooth" });
   });
+
+  // Keyboard: reaching something in the strip with Tab (the video, "Next project"...).
+  // The browser would scroll the whole page down to show it, which pulls Reach Out up.
+  // Instead the page stays at the top, and the strip slides sideways so it's in the middle
+  strip.addEventListener("focusin", (event) => {
+    if (!strip.offsetWidth) return;                                 // the phone version is showing
+    window.scrollTo({ top: 0 });
+    const box = event.target.getBoundingClientRect();
+    const view = strip.getBoundingClientRect();
+    if (box.left < view.left || box.right > view.right) {
+      strip.scrollBy({ left: box.left + box.width / 2 - (view.left + view.width / 2), behavior: "smooth" });
+    }
+  });
 });
 
 
@@ -1105,6 +1118,15 @@ document.querySelectorAll(".project-video").forEach((video) => {
     else video.pause();
   });
 
+  // Keyboard: Tab can reach the video, and Enter or Space plays or pauses it, like a click
+  video.tabIndex = 0;
+  video.setAttribute("role", "button");
+  video.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();   // (Space would otherwise scroll the page)
+    video.click();
+  });
+
   // Hide the play symbol while the video plays, show it again when it stops
   video.addEventListener("play", () => video.classList.add("is-playing"));
   video.addEventListener("pause", () => video.classList.remove("is-playing"));
@@ -1113,10 +1135,39 @@ document.querySelectorAll(".project-video").forEach((video) => {
 
 
 /* =========================================
+   Keyboard: when WORKS or HI is open, Tab only moves between its button and what's inside it,
+   so you don't get lost behind the blur. After the last one it goes back to the button
+   ========================================= */
+function keepTabInside(event, button, inside) {
+  if (event.key !== "Tab") return;
+  const canSee = (item) => item.getClientRects().length && getComputedStyle(item).visibility !== "hidden";
+  const items = [button, ...inside.querySelectorAll("a[href], button")].filter(canSee);
+  const here = items.indexOf(document.activeElement);
+  event.preventDefault();
+  if (here === -1) return button.focus();             // somewhere else: start at the button
+  const step = event.shiftKey ? -1 : 1;               // Shift+Tab goes backwards
+  items[(here + step + items.length) % items.length].focus();
+}
+
+// Opened with the keyboard (Enter or Space): go straight to the first thing inside.
+// (A click with the mouse leaves everything where it is.) It waits a moment, until the list
+// has started to show, since something hidden can't be focused
+function focusFirstInside(event, inside) {
+  if (event.detail !== 0) return;   // 0 = the "click" came from the keyboard
+  setTimeout(() => {
+    const first = [...inside.querySelectorAll("a[href], button")]
+      .find((item) => item.getClientRects().length && getComputedStyle(item).visibility !== "hidden");
+    if (first) first.focus();
+  }, 60);
+}
+
+
+/* =========================================
    The index (WORKS in the bar): clicking WORKS opens the list and blurs everything else.
    Clicking on the blur (or pressing Escape) closes it.
    ========================================= */
 const indexButton = document.querySelector(".site-bar__index");
+const indexList = document.getElementById("site-index");
 
 if (indexButton) {
   const blur = document.createElement("div");
@@ -1129,8 +1180,10 @@ if (indexButton) {
     indexButton.setAttribute("aria-expanded", open);
   }
 
-  indexButton.addEventListener("click", () => {
-    setIndexOpen(!document.body.classList.contains("is-index-open"));
+  indexButton.addEventListener("click", (event) => {
+    const open = !document.body.classList.contains("is-index-open");
+    setIndexOpen(open);
+    if (open && indexList) focusFirstInside(event, indexList);
   });
   blur.addEventListener("click", () => setIndexOpen(false));
 
@@ -1182,7 +1235,13 @@ if (indexButton) {
   window.addEventListener("pageshow", () => document.body.classList.remove("is-opening-from-index"));
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setIndexOpen(false);
+    if (!document.body.classList.contains("is-index-open")) return;
+    if (event.key === "Escape") {
+      const wasInside = indexList && indexList.contains(document.activeElement);
+      setIndexOpen(false);
+      if (wasInside) indexButton.focus();   // back to WORKS, where you came from
+    }
+    if (indexList && !document.body.classList.contains("is-hi-open")) keepTabInside(event, indexButton, indexList);
   });
 }
 
@@ -1220,10 +1279,18 @@ if (hiButton && hiPage) {
       document.querySelectorAll(".site-bar__index").forEach((button) => button.setAttribute("aria-expanded", false));
       return;
     }
-    setHiOpen(!document.body.classList.contains("is-hi-open"));
+    const open = !document.body.classList.contains("is-hi-open");
+    setHiOpen(open);
+    if (open) focusFirstInside(event, hiPage);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setHiOpen(false);
+    if (!document.body.classList.contains("is-hi-open")) return;
+    if (event.key === "Escape") {
+      const wasInside = hiPage.contains(document.activeElement);
+      setHiOpen(false);
+      if (wasInside) hiButton.focus();   // back to HI, where you came from
+    }
+    if (!document.body.classList.contains("is-index-open")) keepTabInside(event, hiButton, hiPage);
   });
 
   // "Email me" and "Let's talk": a click copies the email address or the phone number
@@ -1252,6 +1319,9 @@ if (hiButton && hiPage) {
       copy(reveal);
     });
     reveal.addEventListener("mouseleave", () => reveal.classList.remove("is-showing"));
+    // Keyboard: reaching it with Tab shows the email or number, like hovering does
+    reveal.addEventListener("focus", () => reveal.classList.add("is-showing"));
+    reveal.addEventListener("blur", () => reveal.classList.remove("is-showing"));
   });
 
   // A click anywhere else rolls the label back down
@@ -1694,6 +1764,9 @@ async function phoneOpenProject(href) {
   // covered by the project
   // (with WORKS or HI open, the page behind them isn't shown during the change: "up-clean")
   const overlayOpen = document.body.matches(".is-phone-works-open, .is-phone-hi-open");
+  // An open HI page stays exactly where it is (it doesn't roll away while the next page loads):
+  // the new project simply comes up over it
+  if (document.body.classList.contains("is-phone-hi-open")) document.body.classList.add("is-phone-hi-held");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
   sessionStorage.removeItem("page-slid-in");   // (if the browser can't animate page changes, the project slides itself in)
   try {
@@ -1887,7 +1960,7 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
-    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home", "is-phone-to-home");
+    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home", "is-phone-to-home", "is-phone-hi-held");
   phoneChanging = false;
   phoneNavigating = false;
   clearTimeout(phoneLeaveTimer);

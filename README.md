@@ -217,7 +217,7 @@ When Vercel is done, give me the live address of the pages that changed.
 - Open the live site **on a real phone** and check again.
 
 **If the change doesn't show on the live site:**
-The browser remembers the old version of `styles.css` and `script.js`. To make it load the new one, every page has a version number (`styles.css?v=145`, `script.js?v=123`). Raise it by one.
+The browser remembers the old version of `styles.css` and `script.js`. To make it load the new one, every page has a version number (for example `styles.css?v=163`). Raise it by one.
 ```
 Raise the version number of styles.css (and of script.js if it changed) by one in every HTML file,
 then commit and push.
