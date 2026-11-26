@@ -1768,6 +1768,7 @@ async function phoneOpenProject(href) {
   // the new project simply comes up over it
   if (document.body.classList.contains("is-phone-hi-open")) document.body.classList.add("is-phone-hi-held");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
+  if (overlayOpen) document.body.classList.add("is-phone-leaving-blurred");
   sessionStorage.removeItem("page-slid-in");   // (if the browser can't animate page changes, the project slides itself in)
   try {
     sessionStorage.setItem("phone-transition", overlayOpen ? "up-clean" : "up");
@@ -1810,8 +1811,15 @@ phoneWorksRows.forEach((row) => {
       // The name rolls to italic, then the list closes and the project opens
       phoneChanging = true;
       phonePreparePage(href, "page-slide");
-      // The next page starts loading straight away, while the name rolls to italic
-      phoneOpenProject(href);
+      // The next page starts loading straight away, while the names roll (the tapped one to
+      // italic, the one you're on back to normal); the page changes once they've finished
+      try {
+        const early = document.createElement("link");
+        early.rel = "prefetch";
+        early.href = href;
+        document.head.appendChild(early);
+      } catch (error) { /* only a head start */ }
+      setTimeout(() => phoneOpenProject(href), 450);
     }
   });
 });
@@ -1848,7 +1856,7 @@ phoneNavLinks.forEach((link) => {
 // was tapped jumps to the end of its roll, so it's fully italic in the picture (the page can
 // change before the roll has finished, and it must never look like it rolled back)
 window.addEventListener("pageswap", () => {
-  document.querySelectorAll(".phone-works__row.is-tapped .roll__track, .phone-bar .roll__track").forEach((track) => {
+  document.querySelectorAll(".phone-bar .roll__track").forEach((track) => {
     track.style.transition = "none";
   });
 });
@@ -1973,7 +1981,7 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
-    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home", "is-phone-to-home", "is-phone-hi-held");
+    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home", "is-phone-to-home", "is-phone-hi-held", "is-phone-leaving-blurred");
   phoneChanging = false;
   phoneNavigating = false;
   clearTimeout(phoneLeaveTimer);
