@@ -2996,3 +2996,17 @@ body.is-changing-page .reload-page * {
 html:has(body.project-page) {
   overscroll-behavior-y: none;
 }
+
+/* "Reach Out" is as wide as the Figma page (1440). In a window that is wider than that (a wide,
+   low window), white fills the rest of the width too, so the work page never shows through at
+   its two top corners */
+.project-reach::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((100vw - 1440 * var(--stage-pixel)) / -2);
+  width: 100vw;
+  background-color: var(--color-white);
+  z-index: -1;
+}
