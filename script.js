@@ -1844,6 +1844,15 @@ phoneNavLinks.forEach((link) => {
   });
 });
 
+// Just before the browser takes its picture of this page for the page change: the name that
+// was tapped jumps to the end of its roll, so it's fully italic in the picture (the page can
+// change before the roll has finished, and it must never look like it rolled back)
+window.addEventListener("pageswap", () => {
+  document.querySelectorAll(".phone-works__row.is-tapped .roll__track, .phone-bar .roll__track").forEach((track) => {
+    track.style.transition = "none";
+  });
+});
+
 // Tapping somewhere else in the list rolls the names back
 document.querySelectorAll(".phone-works").forEach((list) => {
   list.addEventListener("click", () => phoneWorksRows.forEach((row) => row.classList.remove("is-tapped")));

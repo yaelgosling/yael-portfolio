@@ -43,7 +43,10 @@
           for (var i = 0; i <= 48; i++) {
             var t = i / 48, left = 1 - ease(t), top = height * left;
             var pushed = Math.min(100, Math.max(0, (listBottom - top) / listHeight * 100));
-            page.push({ offset: t, translate: "0 " + (left * 100) + "%" });
+            // (the part of the new page that is above the bar's bottom edge on the screen stays
+            // hidden, so its black line never shows past the bar: it meets the list and goes up with it)
+            var hide = Math.max(0, listTop - 2 - top) / height * 100;
+            page.push({ offset: t, translate: "0 " + (left * 100) + "%", clipPath: "inset(" + hide + "% 0 0 0)" });
             list.push({ offset: t, clipPath: "inset(0 0 " + pushed + "% 0)" });   // it rolls up from the bottom, just above the project's top line
           }
           var timing = { duration: 900, easing: "linear", fill: "both" };
@@ -568,7 +571,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=135"></script>
+  <script src="script.js?v=136"></script>
 
 </body>
 </html>
