@@ -1798,8 +1798,11 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     }
     if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: the reload page, then on
     sessionStorage.setItem("phone-home-back", "yes");   // the frames are there straight away
-    // One movement: the project rolls down to show home (an open WORKS list rolls up into the
-    // bar at the same time)
+    // An open WORKS list (or HI page) closes straight away, here, with its usual roll, while the
+    // home page loads (so there's no frozen moment). Then the project rolls down to show home
+    // and the bar glides down
+    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+    document.body.classList.add("is-phone-to-home");   // (keeps the list's own part in the page change)
     try { sessionStorage.setItem("phone-transition", "down"); } catch (error) { /* private window */ }
     phoneLeaveTo(link.href);
   });
@@ -1884,7 +1887,7 @@ if (isPhoneHome && sessionStorage.getItem("phone-home-back")) {
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
   document.body.classList.remove("is-leaving-home", "is-phone-works-open", "is-phone-hi-open",
-    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home");
+    "is-phone-works-over-hi", "is-phone-opening-project", "is-phone-going-home", "is-phone-to-home");
   phoneChanging = false;
   phoneNavigating = false;
   clearTimeout(phoneLeaveTimer);

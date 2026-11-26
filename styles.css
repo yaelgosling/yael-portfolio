@@ -3095,12 +3095,12 @@ html:has(body.project-page) {
 /* Phone: an open WORKS list rolls up into the bar during the page change, at the same time as
    the new page moves (its own part of the page change, above the pages and under the bar) */
 @media (max-width: 700px) {
-  body.is-phone-works-open .phone-works {
+  body.is-phone-works-open .phone-works,
+  body.is-phone-to-home .phone-works {
     view-transition-name: phone-works;
   }
 
-  html.is-rolling-up::view-transition-group(phone-works),
-  html.is-rolling-down::view-transition-group(phone-works) {
+  html.is-rolling-up::view-transition-group(phone-works) {
     z-index: 1;
     animation: none;
   }
@@ -3139,19 +3139,30 @@ html:has(body.project-page) {
   to { clip-path: inset(0 0 100% 0); }
 }
 
-/* Phone: going HOME with WORKS open: the list rolls up into the bar while the bar glides down */
+/* Phone: going HOME with WORKS open. The list starts rolling up as soon as HOME is tapped (while
+   the home page loads). If the page change starts before it has finished, the rest of the list
+   finishes rolling up while travelling down with the bar, so it always hangs under the bar */
 @media (max-width: 700px) {
-  /* it rolls up at its usual speed, and travels down with the bar (from the top of a project
-     page, 20, to the bottom of the home page, 778) so it always hangs right under the bar */
-  html.is-rolling-down::view-transition-old(phone-works) {
-    animation: phone-works-roll-up var(--index-open-time) var(--page-change-easing) both;
+  html.is-rolling-down::view-transition-group(phone-works) {
+    z-index: 1;
+    animation: phone-works-follow-bar var(--page-change-time) var(--page-change-easing) both;
   }
 
-  html.is-rolling-down::view-transition-group(phone-works) {
-    animation: phone-works-follow-bar var(--page-change-time) var(--page-change-easing) both;
+  html.is-rolling-down::view-transition-old(phone-works) {
+    animation: phone-works-roll-up 0.4s ease-out both;
   }
 }
 
 @keyframes phone-works-follow-bar {
   to { translate: 0 calc(778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390); }
+}
+
+/* Going HOME from the Hi page: the Hi page (and the blur behind WORKS) goes away at once, so
+   only the project slides down, with nothing of the Hi page showing behind it */
+@media (max-width: 700px) {
+  body.is-phone-to-home .phone-hi,
+  body.is-phone-to-home .phone-works-blur {
+    display: none !important;
+    transition: none !important;   /* (otherwise it would only go once its own closing animation ends) */
+  }
 }
