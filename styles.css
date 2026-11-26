@@ -3149,7 +3149,7 @@ html:has(body.project-page) {
   }
 
   html.is-rolling-down::view-transition-old(phone-works) {
-    animation: phone-works-roll-up 0.4s ease-out both;
+    animation: phone-works-tuck-away 0.15s ease-out both;   /* only a sliver is left by now: it slips away under the bar */
   }
 }
 
@@ -3165,4 +3165,18 @@ html:has(body.project-page) {
     display: none !important;
     transition: none !important;   /* (otherwise it would only go once its own closing animation ends) */
   }
+}
+
+/* Going HOME: the WORKS list rolls up into the bar a little faster than usual, so it's (almost)
+   gone by the time the home page is ready and nothing is left hanging under the bar */
+@media (max-width: 700px) {
+  body.is-phone-to-home .phone-works {
+    transition:
+      clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      display 0.4s allow-discrete;
+  }
+}
+
+@keyframes phone-works-tuck-away {
+  to { opacity: 0; translate: 0 -100%; }
 }
