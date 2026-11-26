@@ -3,6 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Phone: when the browser can animate the change from one page to the next, the new project
+       rolls up over the old page (or a project rolls down to show the home page) and the bar
+       glides to its new place. The old page says which way in "phone-transition" -->
+  <!-- (written here too, not only in styles.css, so it is there even before styles.css has loaded) -->
+  <style>@view-transition { navigation: auto; }</style>
+  <script>
+    addEventListener("pagereveal", function (event) {
+      var way = null;
+      try { way = sessionStorage.getItem("phone-transition"); sessionStorage.removeItem("phone-transition"); } catch (e) {}
+      if (!event.viewTransition || !way || innerWidth > 700) return;
+      var root = document.documentElement;
+      root.classList.add("is-rolling-" + way);
+      if (way === "up-clean") root.classList.add("is-rolling-up");   // (it rolls up like "up")
+      if (document.body) document.body.classList.remove("is-sliding-in");   // it doesn't need to slide in by itself too
+      if (way === "up-clean") {
+        // The project comes up at the usual speed (the usual easing, 0.9s). Once its top line
+        // reaches the bottom of the WORKS list (692 in Figma), it pushes the list up with it:
+        // the list slides up and is hidden above the bar's bottom edge, so it tucks in under it
+        event.viewTransition.ready.then(function () {
+          var bezier = function (x1, y1, x2, y2) {
+            var at = function (t, a, b) { return 3 * a * (1 - t) * (1 - t) * t + 3 * b * (1 - t) * t * t + t * t * t; };
+            return function (x) {
+              var lo = 0, hi = 1;
+              for (var k = 0; k < 40; k++) { var m = (lo + hi) / 2; if (at(m, x1, x2) < x) lo = m; else hi = m; }
+              return at((lo + hi) / 2, y1, y2);
+            };
+          };
+          var ease = bezier(0.7, 0, 0.2, 1);
+          var size = {};
+          try { size = JSON.parse(sessionStorage.getItem("phone-transition-size")) || {}; sessionStorage.removeItem("phone-transition-size"); } catch (e) {}
+          if (!size.height) return;   // (then the simple version in styles.css plays)
+          // (in shares, not pixels: at this moment the new page can't count pixels properly yet.
+          // The project moves by a share of the screen, the list by a share of its own height)
+          var height = size.height, listTop = size.listTop || 0, listBottom = size.listBottom || 0;
+          var listHeight = Math.max(1, listBottom - listTop), page = [], list = [];
+          for (var i = 0; i <= 48; i++) {
+            var t = i / 48, left = 1 - ease(t), top = height * left;
+            var pushed = Math.min(100, Math.max(0, (listBottom - top) / listHeight * 100));
+            page.push({ offset: t, translate: "0 " + (left * 100) + "%" });
+            list.push({ offset: t, translate: "0 " + (-pushed) + "%", clipPath: "inset(" + pushed + "% 0 0 0)" });
+          }
+          var timing = { duration: 900, easing: "linear", fill: "both" };
+          try {
+            root.animate(page, Object.assign({ pseudoElement: "::view-transition-new(root)" }, timing));
+            root.animate(list, Object.assign({ pseudoElement: "::view-transition-old(phone-works)" }, timing));
+          } catch (e) {}
+        }, function () {});
+      }
+      var done = function () { root.classList.remove("is-rolling-" + way, "is-rolling-up"); };
+      event.viewTransition.finished.then(done, done);
+    });
+  </script>
   <!-- The phone's top strip (time, battery) is white, like the page -->
   <meta name="theme-color" content="#ffffff">
   <title>Process – Yael Gosling</title>
@@ -16,7 +68,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=144">
+  <link rel="stylesheet" href="styles.css?v=155">
 </head>
 <body class="project-page process-page">
 
@@ -348,7 +400,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=122"></script>
+  <script src="script.js?v=128"></script>
 
 </body>
 </html>

@@ -1689,10 +1689,21 @@ window.addEventListener("pagehide", () => clearTimeout(phoneLeaveTimer));
 async function phoneOpenProject(href) {
   if (!phoneStartNavigating()) return;
   if (!navigator.onLine) await phoneWhenReachable(href);   // no internet: the reload page, then on
-  document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+  // One movement: the project rolls up over this page, and an open WORKS list rolls up into the
+  // bar at the same time (the page change does both, see styles.css). An open HI page just gets
+  // covered by the project
+  // (with WORKS or HI open, the page behind them isn't shown during the change: "up-clean")
+  const overlayOpen = document.body.matches(".is-phone-works-open, .is-phone-hi-open");
   document.body.classList.add("is-phone-opening-project");   // HOME rolls back to the normal font
-  movePhoneBar("top");
-  sessionStorage.removeItem("page-slid-in");   // the project page slides itself in when it opens
+  sessionStorage.removeItem("page-slid-in");   // (if the browser can't animate page changes, the project slides itself in)
+  try {
+    sessionStorage.setItem("phone-transition", overlayOpen ? "up-clean" : "up");
+    // the real screen height and where the bottom of the WORKS list is, for the new page (at the
+    // moment it appears it can't measure them itself yet)
+    const list = document.querySelector(".phone-works");
+    const box = list && document.body.classList.contains("is-phone-works-open") ? list.getBoundingClientRect() : null;
+    sessionStorage.setItem("phone-transition-size", JSON.stringify({ height: window.innerHeight, listTop: box ? box.top : 0, listBottom: box ? box.bottom : 0 }));
+  } catch (error) { /* private window */ }
   phoneLeaveTo(href);
 }
 
@@ -1785,9 +1796,11 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
       phoneLeaveTo(link.href);
       return;
     }
-    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
     if (!navigator.onLine) await phoneWhenReachable(link.href);   // no internet: the reload page, then on
     sessionStorage.setItem("phone-home-back", "yes");   // the frames are there straight away
+    // One movement: the project rolls down to show home (an open WORKS list rolls up into the
+    // bar at the same time)
+    try { sessionStorage.setItem("phone-transition", "down"); } catch (error) { /* private window */ }
     phoneLeaveTo(link.href);
   });
 });

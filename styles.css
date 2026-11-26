@@ -3040,3 +3040,118 @@ html:has(body.project-page) {
     touch-action: none;
   }
 }
+
+/* Phone: changing page with the browser's own animation (see the script in each page's head).
+   "up": the new project rolls up over the old page. "down": the project rolls down and shows
+   the home page underneath. The bar has its own part, so it glides from its old place to its new
+   one while the page moves */
+@media (max-width: 700px) {
+  .phone-bar {
+    view-transition-name: phone-bar;
+  }
+
+  html.is-rolling-up::view-transition-old(root) {
+    animation: none;
+  }
+
+  html.is-rolling-up::view-transition-new(root) {
+    animation: phone-roll-up var(--page-change-time) var(--page-change-easing) both;
+  }
+
+  html.is-rolling-down::view-transition-old(root) {
+    z-index: 1;   /* the project stays on top while it rolls down */
+    animation: phone-roll-down var(--page-change-time) var(--page-change-easing) both;
+  }
+
+  html.is-rolling-down::view-transition-new(root) {
+    animation: none;
+  }
+
+  html.is-rolling-up::view-transition-group(phone-bar),
+  html.is-rolling-down::view-transition-group(phone-bar) {
+    z-index: 2;
+    animation-duration: var(--page-change-time);
+    animation-timing-function: var(--page-change-easing);
+  }
+}
+
+@keyframes phone-roll-up {
+  from { translate: 0 100%; }
+}
+
+@keyframes phone-roll-down {
+  to { translate: 0 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-rolling-up::view-transition-new(root),
+  html.is-rolling-down::view-transition-old(root),
+  html.is-rolling-up::view-transition-group(phone-bar),
+  html.is-rolling-down::view-transition-group(phone-bar) {
+    animation: none;
+  }
+}
+
+/* Phone: an open WORKS list rolls up into the bar during the page change, at the same time as
+   the new page moves (its own part of the page change, above the pages and under the bar) */
+@media (max-width: 700px) {
+  body.is-phone-works-open .phone-works {
+    view-transition-name: phone-works;
+  }
+
+  html.is-rolling-up::view-transition-group(phone-works),
+  html.is-rolling-down::view-transition-group(phone-works) {
+    z-index: 1;
+    animation: none;
+  }
+
+  html.is-rolling-up::view-transition-old(phone-works) {
+    animation: phone-works-roll-up var(--page-change-time) var(--page-change-easing) both;   /* together with the new page */
+  }
+}
+
+@keyframes phone-works-roll-up {
+  from { clip-path: inset(0 0 0 0); }   /* (it needs a start like this: from "no clip" it can't roll, it just vanished halfway) */
+  to { clip-path: inset(0 0 100% 0); }
+}
+
+/* Phone: opening a project while WORKS (or HI with WORKS) was open. The new project comes up at
+   the usual speed, underneath the list. Once its black top line reaches the list's yellow
+   bottom edge, it pushes the list up with it: the whole list (yellow band too) slides up and
+   tucks in under the bar, while the project carries on to the top. The exact movement is
+   worked out in each page's head (it needs the screen's size); these are simple stand-ins */
+@media (max-width: 700px) {
+  html.is-rolling-up-clean::view-transition-new(root) {
+    animation: phone-roll-up-under var(--page-change-time) linear both;
+  }
+
+  html.is-rolling-up-clean::view-transition-old(phone-works) {
+    animation: phone-works-pushed-up var(--page-change-time) linear both;
+  }
+}
+
+@keyframes phone-roll-up-under {
+  from { translate: 0 100%; }
+}
+
+@keyframes phone-works-pushed-up {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(0 0 100% 0); }
+}
+
+/* Phone: going HOME with WORKS open: the list rolls up into the bar while the bar glides down */
+@media (max-width: 700px) {
+  /* it rolls up at its usual speed, and travels down with the bar (from the top of a project
+     page, 20, to the bottom of the home page, 778) so it always hangs right under the bar */
+  html.is-rolling-down::view-transition-old(phone-works) {
+    animation: phone-works-roll-up var(--index-open-time) var(--page-change-easing) both;
+  }
+
+  html.is-rolling-down::view-transition-group(phone-works) {
+    animation: phone-works-follow-bar var(--page-change-time) var(--page-change-easing) both;
+  }
+}
+
+@keyframes phone-works-follow-bar {
+  to { translate: 0 calc(778 * min(100vw / 390, 100svh / 844) - 20 * 100vw / 390); }
+}
