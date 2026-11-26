@@ -1893,7 +1893,8 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
     // An open WORKS list (or HI page) closes straight away, here, with its usual roll, while the
     // home page loads (so there's no frozen moment). Then the project rolls down to show home
     // and the bar glides down
-    document.body.classList.remove("is-phone-works-open", "is-phone-hi-open", "is-phone-works-over-hi");
+    // (an open HI page stays: it rolls down with the page to show home, the project behind it never shows)
+    document.body.classList.remove("is-phone-works-open", "is-phone-works-over-hi");
     document.body.classList.add("is-phone-to-home");   // (keeps the list's own part in the page change)
     try { sessionStorage.setItem("phone-transition", "down"); } catch (error) { /* private window */ }
     // The WORKS list rolls up at its usual speed first; the page changes once it's up

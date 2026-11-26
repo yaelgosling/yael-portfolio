@@ -3235,7 +3235,6 @@ html:has(body.project-page) {
 /* Going HOME from the Hi page: the Hi page (and the blur behind WORKS) goes away at once, so
    only the project slides down, with nothing of the Hi page showing behind it */
 @media (max-width: 700px) {
-  body.is-phone-to-home .phone-hi,
   body.is-phone-to-home .phone-works-blur {
     display: none !important;
     transition: none !important;   /* (otherwise it would only go once its own closing animation ends) */
@@ -3318,5 +3317,12 @@ html:has(body.project-page) {
   html.is-rolling-up::view-transition-group(root),
   html.is-rolling-down::view-transition-group(root) {
     animation: none;
+  }
+}
+
+/* Phone: no black line at the top of the pages */
+@media (max-width: 700px) {
+  .phone-top-line {
+    display: none !important;
   }
 }
