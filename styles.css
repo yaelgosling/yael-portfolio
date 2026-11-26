@@ -3010,3 +3010,18 @@ html:has(body.project-page) {
   background-color: var(--color-white);
   z-index: -1;
 }
+
+/* A card's name: exactly in the middle of its coloured box (the box's place and size in Figma
+   pixels: --x, --y, --box-w, --box-h). Names on two lines keep their lines lined up on the left */
+.process-text--middle {
+  width: calc(var(--box-w) * var(--stage-pixel));
+  height: calc(var(--box-h) * var(--stage-pixel));
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.process-text--middle span {
+  white-space: nowrap;
+}
+

@@ -95,7 +95,7 @@ function followMouse(items, stageWidth, stageHeight, isActive, maxMove = MAX_MOV
    mouse, and everything drifts slowly the other way, a little. Things further from the middle
    move more (with a bit of randomness), which gives a feeling of depth. When the phone is held
    still they glide back to their places. Gentle: no bouncing, turning or shaking */
-const PHONE_MAX_MOVE = 260;   // how far (Figma pixels) something at the edge can move, at a big tilt
+const PHONE_MAX_MOVE = 195;   // how far (Figma pixels) something at the edge can move, at a big tilt
 const PHONE_FULL_TILT = 30;  // tilting this much (degrees) is like the mouse at the edge of the screen
 const TILT_SETTLE = 0.01;    // how quickly the way you hold the phone becomes the "flat" position
 
@@ -774,10 +774,36 @@ document.querySelectorAll(".project-strip").forEach((strip) => {
   let swipeSideways = 0;
   let swipeUpDown = 0;
   let lastWheelAt = -Infinity;
+  // A stop between "Reach Out" and the work: once Reach Out is all the way down, the rest of that
+  // scroll (and the trackpad's gliding after it) does nothing, so the next and previous frames
+  // stay still and can be clicked. Only a new scroll moves the work back towards the start
+  // (The trackpad keeps gliding after the fingers lift, and that gliding only ever slows down.
+  // So the stop ends as soon as the movement gets faster again, turns the other way, or pauses:
+  // that's a new swipe)
+  let reachWasOpen = false;
+  let holdStrip = false;
+  let lastSize = 0;
+  let lastSign = 0;
   window.addEventListener("wheel", (event) => {
     if (!strip.offsetWidth) return;                                 // the phone version is showing
-    if (event.timeStamp - lastWheelAt > 160) swipeSideways = swipeUpDown = 0;   // a new swipe
+    const pause = event.timeStamp - lastWheelAt;
+    if (pause > 160) swipeSideways = swipeUpDown = 0;               // a new swipe
+    const step = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    const size = Math.abs(step);
+    const sign = Math.sign(step);
+    if (holdStrip && (pause > 300 || size > lastSize * 1.3 + 2 || (sign && lastSign && sign !== lastSign))) {
+      holdStrip = false;                                            // a new swipe after the stop
+    }
+    lastSize = size;
+    if (sign) lastSign = sign;
     lastWheelAt = event.timeStamp;
+    const reachOpenNow = window.scrollY > 2;
+    if (reachWasOpen && !reachOpenNow) holdStrip = true;            // Reach Out has just gone all the way down
+    reachWasOpen = reachOpenNow;
+    if (holdStrip && !reachOpenNow && !event.ctrlKey) {
+      event.preventDefault();
+      return;
+    }
     swipeSideways += Math.abs(event.deltaX);
     swipeUpDown += Math.abs(event.deltaY);
     const swipeWay = swipeSideways > swipeUpDown ? "sideways" : "up-down";
@@ -1276,6 +1302,7 @@ const PHONE_WAIT = 1000;   // how long the blank page shows (milliseconds)
 // Each frame changes from its gradient drawing to its work once it lands in its place
 // (when its jump ends; FRAME_LAND_WAIT in case the browser never says so)
 const FRAME_LAND_WAIT = 2500;
+const GRADIENT_STAY = 200;   // how long a frame keeps its gradient after it lands (milliseconds)
 function landFramesNow() {
   phoneHome.querySelectorAll(".phone-frame").forEach((frame) => frame.classList.add("is-arrived"));
 }
@@ -1283,7 +1310,7 @@ if (phoneHome) {
   phoneHome.querySelectorAll(".phone-frame").forEach((frame) => {
     frame.addEventListener("transitionend", (event) => {
       if (event.target === frame && event.propertyName === "transform" && phoneHome.classList.contains("is-playful")) {
-        frame.classList.add("is-arrived");
+        setTimeout(() => frame.classList.add("is-arrived"), GRADIENT_STAY);
       }
     });
   });
@@ -1296,14 +1323,24 @@ if (phoneHome && window.frameElement) {
 } else if (phoneHome) {
   const openedAt = performance.now();
 
-  // Waits until the pictures have loaded, but never less than a second after opening
-  window.addEventListener('load', function () {
+  // Waits until the frames' own pictures have loaded (not the rest of the page: the Hi page,
+  // the works list...), but never less than a second after opening
+  let started = false;
+  function startFrames() {
+    if (started) return;
+    started = true;
     const waitLeft = Math.max(0, PHONE_WAIT - (performance.now() - openedAt));
     setTimeout(function () {
       phoneHome.classList.add('is-playful');
       setTimeout(landFramesNow, FRAME_LAND_WAIT);
     }, waitLeft);
-  });
+  }
+  const framePictures = [...phoneHome.querySelectorAll(".phone-home__frames img")];
+  Promise.all(framePictures.map((img) => (img.complete ? null : new Promise((done) => {
+    img.addEventListener("load", done, { once: true });
+    img.addEventListener("error", done, { once: true });
+  })))).then(startFrames);
+  window.addEventListener('load', startFrames);   // (just in case)
 }
 
 
@@ -1795,10 +1832,37 @@ document.querySelectorAll(".phone-bar__box--blue").forEach((link) => {
   });
 });
 
-// The computer home, project and Hi pictures wait until they're needed (loading="lazy", so phones never
-// download them). On a computer they all load straight away, also the tiny pieces of the drawings
-if (!window.matchMedia("(max-width: 700px)").matches) {
-  document.querySelectorAll('.home img[loading="lazy"], .project-work img[loading="lazy"], .hi-page img[loading="lazy"]').forEach((img) => { img.loading = "eager"; });
+// Pictures load in order of need, so the page shows quickly:
+// 1. What is on the first screen loads straight away (the rest waits: loading="lazy" in the HTML,
+//    and the version the screen doesn't show, computer or phone, never loads at all)
+// 2. Once the page has loaded, the rest of what this screen shows loads too, so it's all there
+//    when you swipe or scroll to it.
+// A waiting copy of a page (loaded in the background so changing page is instant) only ever
+// loads its first screen: that's all it shows while it slides in
+const isComputer = !window.matchMedia("(max-width: 700px)").matches;
+function shownOnThisScreen(img) {
+  return img.offsetParent !== null || getComputedStyle(img).position === "fixed" || img.closest(".hi-page, .phone-hi");
+}
+function loadNow(img) {
+  if (img.loading === "lazy") img.loading = "eager";
+}
+// The computer home page: its frames are the first screen
+if (isComputer) document.querySelectorAll('.home img[loading="lazy"]').forEach(loadNow);
+// The first screen of the computer strip (about one and a half windows wide)
+if (isComputer) {
+  document.querySelectorAll('.project-work img[loading="lazy"]').forEach((img) => {
+    if (img.getBoundingClientRect().left < window.innerWidth * 1.5) loadNow(img);
+  });
+}
+if (!window.frameElement) {
+  window.addEventListener("load", () => {
+    const rest = isComputer
+      ? '.project-work img[loading="lazy"], .hi-page img[loading="lazy"]'
+      : '.phone-project img[loading="lazy"]';
+    document.querySelectorAll(rest).forEach((img) => {
+      if (isComputer || shownOnThisScreen(img)) loadNow(img);
+    });
+  });
 }
 
 // Get the next pages ready in the background a moment after this one has opened, so a tap
@@ -1822,7 +1886,7 @@ function prepareNextPages() {
   }
 }
 window.addEventListener("load", () => setTimeout(prepareNextPages, isPhoneHome ? 1500 : 300));
-if (!isPhoneHome) setTimeout(prepareNextPages, 2000);
+if (!isPhoneHome) setTimeout(prepareNextPages, 6000);   // (in case the page takes very long to load)
 
 // Arriving back home from another page: the frames are already out (they came out while
 // the home page rolled down), so they are there straight away

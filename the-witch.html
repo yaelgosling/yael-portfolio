@@ -16,13 +16,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;1,600&display=block" rel="stylesheet">
 
-  <link rel="preload" as="image" href="images/the-witch/animation-poster.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/animation-poster-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
   <link rel="preload" as="image" href="images/project/new-pause-play.png" media="(max-width: 700px)" fetchpriority="high">
   <link rel="preload" as="image" href="images/project/new-pause-play-hover.svg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/the-witch/cover.jpg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/the-witch/forzats.jpg" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="preload" as="image" href="images/the-witch/spread-6.png" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=139">
+  <link rel="preload" as="image" href="images/the-witch/cover-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/forzats-phone.jpg" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/the-witch/spread-6-phone.png" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=142">
 </head>
 <body class="project-page">
 
@@ -123,7 +123,7 @@
 
           <!-- The book, page by page ("Comp 1_3"): click to play or pause. The poster (its first frame)
                shows straight away, so the video does not flicker while it loads -->
-          <video class="project-strip__piece project-video" style="--x: 738; --y: 112; --w: 914.262; --h: 658.142" src="images/the-witch/animation.mp4" poster="images/the-witch/animation-poster.jpg" preload="metadata" muted playsinline aria-label="The Witch book, page by page. Click to play or pause"></video>
+          <video class="project-strip__piece project-video" style="--x: 738; --y: 112; --w: 914.262; --h: 658.142" src="images/the-witch/animation.mp4" poster="images/the-witch/animation-poster.jpg" preload="none" muted playsinline aria-label="The Witch book, page by page. Click to play or pause"></video>
           <!-- The "pause play" symbol in the middle of the video: hidden while it plays.
                Over the video it changes to "new pause play hover" (orange) -->
           <img loading="lazy" class="project-video__play" style="--x: 1159.13; --y: 397.6; --w: 72; --h: 86.943" src="images/project/new-pause-play.png" alt="">
@@ -259,61 +259,61 @@
 
       <!-- The video: tap to play or pause. The "pause play" symbol sits in the middle. It turns orange for a moment
            when tapped, then the video starts -->
-      <video class="phone-piece phone-video" style="--x: 17; --y: 195; --w: 356; --h: 256.271" src="images/the-witch/animation.mp4#t=0.1" poster="images/the-witch/animation-poster.jpg" preload="metadata" muted playsinline aria-label="The Witch book, page by page. Tap to play or pause."></video>
+      <video class="phone-piece phone-video" style="--x: 17; --y: 195; --w: 356; --h: 256.271" src="images/the-witch/animation.mp4#t=0.1" poster="images/the-witch/animation-poster-phone.jpg" preload="none" muted playsinline aria-label="The Witch book, page by page. Tap to play or pause."></video>
       <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play" style="--x: 177.423; --y: 301.904; --w: 35.154; --h: 42.462" src="images/project/new-pause-play.png" alt="">
       <img decoding="sync" fetchpriority="high" class="phone-piece phone-video__play phone-video__play--orange" style="--x: 177.423; --y: 301.906; --w: 35.154; --h: 42.448" src="images/project/new-pause-play-hover.svg" alt="">
 
       <!-- The pictures -->
-      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 45; --y: 805; --w: 200; --h: 144" src="images/the-witch/cover.jpg" alt="The Witch book cover">
-      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 145; --y: 969; --w: 199.836; --h: 143.882" src="images/the-witch/forzats.jpg" alt="The Witch book's endpapers">
-      <img class="phone-piece" style="--x: 18; --y: 1288; --w: 292; --h: 219" src="images/the-witch/books.jpg" alt="Copies of The Witch book">
-      <img class="phone-piece" style="--x: 30; --y: 2056; --w: 215.405; --h: 143.621" src="images/the-witch/process-2.jpg" alt="Painting The Witch">
-      <img class="phone-piece" style="--x: 118; --y: 2226; --w: 215.405; --h: 143.621" src="images/the-witch/process-4.jpg" alt="Painting The Witch">
-      <img class="phone-piece" style="--x: 62; --y: 2494; --w: 215.405; --h: 143.621" src="images/the-witch/process-3.jpg" alt="Painting The Witch">
+      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 45; --y: 805; --w: 200; --h: 144" src="images/the-witch/cover-phone.jpg" alt="The Witch book cover">
+      <img decoding="sync" fetchpriority="high" class="phone-piece" style="--x: 145; --y: 969; --w: 199.836; --h: 143.882" src="images/the-witch/forzats-phone.jpg" alt="The Witch book's endpapers">
+      <img loading="lazy" class="phone-piece" style="--x: 18; --y: 1288; --w: 292; --h: 219" src="images/the-witch/books-phone.jpg" alt="Copies of The Witch book">
+      <img loading="lazy" class="phone-piece" style="--x: 30; --y: 2056; --w: 215.405; --h: 143.621" src="images/the-witch/process-2-phone.jpg" alt="Painting The Witch">
+      <img loading="lazy" class="phone-piece" style="--x: 118; --y: 2226; --w: 215.405; --h: 143.621" src="images/the-witch/process-4-phone.jpg" alt="Painting The Witch">
+      <img loading="lazy" class="phone-piece" style="--x: 62; --y: 2494; --w: 215.405; --h: 143.621" src="images/the-witch/process-3-phone.jpg" alt="Painting The Witch">
 
       <!-- Previous and next project. A tap opens it: it slides up (like from the home page).
            Coming Soon frames are not links -->
       <div class="phone-piece phone-nav phone-nav--soon" style="--x: 0; --y: 2865.91; --w: 158; --h: 82.591">
-        <div class="project-nav__layer" style="--inset: 12.44% 11.32% 9.21% 3.25%"><img src="images/the-witch/previous-soon-1.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 27.75% 18.94% 52.78% 12.34%"><img src="images/the-witch/previous-soon-2.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 24.2% 19.17% 19.14% 8.79%"><img src="images/the-witch/previous-soon-3.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 23.89% 52.85% 50.42% 10.1%"><img src="images/the-witch/previous-soon-4.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 25.05% 18.99% 71.87% 45.89%"><img src="images/the-witch/previous-soon-5.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 79.77% 20.65% 19.23% 66.97%"><img src="images/the-witch/previous-soon-6.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 12.44% 11.32% 9.21% 3.25%"><img loading="lazy" src="images/the-witch/previous-soon-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 27.75% 18.94% 52.78% 12.34%"><img loading="lazy" src="images/the-witch/previous-soon-2.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 24.2% 19.17% 19.14% 8.79%"><img loading="lazy" src="images/the-witch/previous-soon-3.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 23.89% 52.85% 50.42% 10.1%"><img loading="lazy" src="images/the-witch/previous-soon-4.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 25.05% 18.99% 71.87% 45.89%"><img loading="lazy" src="images/the-witch/previous-soon-5.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 79.77% 20.65% 19.23% 66.97%"><img loading="lazy" src="images/the-witch/previous-soon-6.svg" alt=""></div>
         <p class="phone-nav__text" style="--inset: 38.75% 55.19% 33.83% 15.19%"><span class="project-nav__label">COMING SOON</span></p>
         <p class="phone-nav__text" style="--inset: 39.96% 20.89% 35.83% 50.63%">Paintings / Illustrations</p>
       </div>
       <a class="phone-piece phone-nav" href="i-dont-touch-meat.html" aria-label="Next project: I Don't Touch Meat" style="--x: 274; --y: 2835.17; --w: 112.771; --h: 121.54">
-        <div class="project-nav__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img src="images/the-witch/meat-frame-1.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img src="images/the-witch/meat-frame-2.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 12.19% 20.91% 81.34% 10.85%"><img src="images/the-witch/meat-frame-3.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 24.83% 84.95% 49.29% 13.11%"><img src="images/the-witch/meat-frame-4.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img src="images/the-witch/meat-frame-5.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img src="images/the-witch/meat-frame-6.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img src="images/the-witch/meat-frame-7.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img src="images/the-witch/meat-frame-8.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img src="images/the-witch/meat-frame-9.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img src="images/the-witch/meat-frame-10.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 66.34% 83.2% 31.72% 16.45%"><img src="images/the-witch/meat-frame-11.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img src="images/the-witch/meat-frame-12.svg" alt=""></div>
-        <div class="project-nav__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img src="images/the-witch/meat-frame-13.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 7.97% 11.05% 4.63% 6.02%"><img loading="lazy" src="images/the-witch/meat-frame-1.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 14.53% 20.95% 12.26% 16.69%"><img loading="lazy" src="images/the-witch/meat-frame-2.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 12.19% 20.91% 81.34% 10.85%"><img loading="lazy" src="images/the-witch/meat-frame-3.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 24.83% 84.95% 49.29% 13.11%"><img loading="lazy" src="images/the-witch/meat-frame-4.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 57.06% 83.43% 34.12% 15.79%"><img loading="lazy" src="images/the-witch/meat-frame-5.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 51.17% 84.01% 42.91% 14.9%"><img loading="lazy" src="images/the-witch/meat-frame-6.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 18.36% 86.8% 76.29% 11.7%"><img loading="lazy" src="images/the-witch/meat-frame-7.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 22.85% 86.67% 74.23% 12.84%"><img loading="lazy" src="images/the-witch/meat-frame-8.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 67.59% 83.09% 30.17% 16.53%"><img loading="lazy" src="images/the-witch/meat-frame-9.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 65.15% 83.34% 32.68% 16.3%"><img loading="lazy" src="images/the-witch/meat-frame-10.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 66.34% 83.2% 31.72% 16.45%"><img loading="lazy" src="images/the-witch/meat-frame-11.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 56.07% 83.99% 42.29% 15.74%"><img loading="lazy" src="images/the-witch/meat-frame-12.svg" alt=""></div>
+        <div class="project-nav__layer" style="--inset: 50.35% 84.87% 48.44% 14.71%"><img loading="lazy" src="images/the-witch/meat-frame-13.svg" alt=""></div>
         <p class="phone-nav__text" style="--inset: 30.33% 30.83% 24.59% 26.6%"><span class="project-nav__label">NEXT PROJECT</span><br><span class="phone-nav__name">I Don’t</span><br>Touch Meat</p>
       </a>
 
       <!-- "flip back button": glides back up to the top. It turns orange for a moment when tapped.
            In Figma the arrow is turned to point up -->
       <button class="phone-piece phone-flip" style="--x: 179.996; --y: 2898.91; --w: 30.748; --h: 34.999" type="button" aria-label="Back to the top">
-        <img class="phone-flip__image" src="images/phone/flip-back.svg" alt="">
-        <img class="phone-flip__image phone-flip__image--orange" src="images/phone/flip-back-orange.svg" alt="">
+        <img loading="lazy" class="phone-flip__image" src="images/phone/flip-back.svg" alt="">
+        <img loading="lazy" class="phone-flip__image phone-flip__image--orange" src="images/phone/flip-back-orange.svg" alt="">
       </button>
 
       <!-- The top pictures: on top of everything, they move a bit faster than the rest
            when you scroll, which gives the page depth (script.js) -->
       <div class="phone-project__fast">
-        <img decoding="sync" fetchpriority="high" class="phone-piece phone-fast-piece" style="--x: 40; --y: 1036; --w: 129.564; --h: 103.122" src="images/the-witch/spread-6.png" alt="A spread from The Witch">
-        <img class="phone-piece phone-fast-piece" style="--x: 247; --y: 1475; --w: 144.12; --h: 106.395" src="images/the-witch/insta-6.png" alt="A drawing from The Witch">
-        <img class="phone-piece phone-fast-piece" style="--x: 256; --y: 2135; --w: 126; --h: 201.069" src="images/the-witch/insta-4.png" alt="A drawing from The Witch">
-        <img class="phone-piece phone-fast-piece" style="--x: 138; --y: 2661; --w: 225.441; --h: 144.919" src="images/the-witch/spread-5.png" alt="A spread from The Witch">
+        <img decoding="sync" fetchpriority="high" class="phone-piece phone-fast-piece" style="--x: 40; --y: 1036; --w: 129.564; --h: 103.122" src="images/the-witch/spread-6-phone.png" alt="A spread from The Witch">
+        <img loading="lazy" class="phone-piece phone-fast-piece" style="--x: 247; --y: 1475; --w: 144.12; --h: 106.395" src="images/the-witch/insta-6-phone.png" alt="A drawing from The Witch">
+        <img loading="lazy" class="phone-piece phone-fast-piece" style="--x: 256; --y: 2135; --w: 126; --h: 201.069" src="images/the-witch/insta-4.png" alt="A drawing from The Witch">
+        <img loading="lazy" class="phone-piece phone-fast-piece" style="--x: 138; --y: 2661; --w: 225.441; --h: 144.919" src="images/the-witch/spread-5-phone.png" alt="A spread from The Witch">
       </div>
     </section>
     </div>
@@ -528,7 +528,7 @@
     </div>
   </section>
 
-  <script src="script.js?v=111"></script>
+  <script src="script.js?v=118"></script>
 
 </body>
 </html>
